@@ -5,9 +5,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.registry.*;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import java.util.concurrent.CompletableFuture;
 
 import static com.mythicmetals.data.MythicOreBiomeTags.*;
@@ -44,7 +44,7 @@ public class MythicBiomeTagProvider extends FabricTagProvider<Biome> {
             } else if (tag.equals(PROMETHEUM_BIOMES)) {
                 getOrCreateTagBuilder(tag)
                     .forceAddTag(ConventionalBiomeTags.IS_JUNGLE)
-                    .add(BiomeKeys.LUSH_CAVES);
+                    .add(Biomes.LUSH_CAVES);
             } else if (tag.equals(AQUARIUM_BIOMES)) {
                 getOrCreateTagBuilder(tag)
                     .forceAddTag(ConventionalBiomeTags.IS_AQUATIC);

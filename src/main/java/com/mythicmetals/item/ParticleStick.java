@@ -1,12 +1,12 @@
 package com.mythicmetals.item;
 
 import io.wispforest.owo.particles.systems.ParticleSystem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.level.Level;
 
 public class ParticleStick<T> extends Item {
     private final ParticleSystem<T> particle;
@@ -19,13 +19,13 @@ public class ParticleStick<T> extends Item {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
         var stack = user.getStackInHand(hand);
         if (this.extraData != null) {
             particle.spawn(world, user.getPos(), extraData);
         } else {
             particle.spawn(world, user.getPos());
         }
-        return TypedActionResult.pass(stack);
+        return InteractionResultHolder.pass(stack);
     }
 }

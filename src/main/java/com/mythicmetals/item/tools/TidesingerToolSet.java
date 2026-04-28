@@ -1,99 +1,107 @@
 package com.mythicmetals.item.tools;
 
 import com.mythicmetals.misc.RegistryHelper;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
-import static net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+// TODO(Ravel): ambiguous static import, members with name ADD_MULTIPLIED_BASE have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name ADD_MULTIPLIED_BASE have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name ADD_MULTIPLIED_BASE have different new names
+//
+import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
 
 public class TidesingerToolSet extends ToolSet {
-    public TidesingerToolSet(ToolMaterial material, int[] damage, float[] speed) {
+    public TidesingerToolSet(Tier material, int[] damage, float[] speed) {
         super(material, damage, speed);
     }
 
     @Override
-    protected SwordItem makeSword(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new TidesingerSword(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected SwordItem makeSword(Tier material, int damage, float speed, Item.Properties settings) {
+        return new TidesingerSword(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected AxeItem makeAxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new TidesingerAxe(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected AxeItem makeAxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new TidesingerAxe(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     public static class TidesingerSword extends SwordItem implements RiptideTool {
 
-        public TidesingerSword(ToolMaterial material, Settings settings) {
+        public TidesingerSword(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
             return activateRiptide(user, hand);
         }
 
         @Override
-        public UseAction getUseAction(ItemStack stack) {
-            return UseAction.SPEAR;
+        public UseAnim getUseAnimation(ItemStack stack) {
+            return UseAnim.SPEAR;
         }
 
         @Override
-        public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+        public int getUseDuration(ItemStack stack, LivingEntity user) {
             return RiptideTool.MAX_USE_TIME;
         }
 
 
         @Override
-        public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        public void releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
             performRiptide(stack, world, user, remainingUseTicks);
         }
     }
 
     public static class TidesingerAxe extends AxeItem implements RiptideTool {
 
-        public TidesingerAxe(ToolMaterial material, Settings settings) {
+        public TidesingerAxe(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
             return activateRiptide(user, hand);
         }
 
         @Override
-        public UseAction getUseAction(ItemStack stack) {
-            return UseAction.SPEAR;
+        public UseAnim getUseAnimation(ItemStack stack) {
+            return UseAnim.SPEAR;
         }
 
         @Override
-        public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+        public int getUseDuration(ItemStack stack, LivingEntity user) {
             return RiptideTool.MAX_USE_TIME;
         }
 
         @Override
-        public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        public void releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
             performRiptide(stack, world, user, remainingUseTicks);
         }
 
         @Override
-        public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-            stack.damage(1, attacker, EquipmentSlot.MAINHAND);
+        public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+            stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         }
     }
 
     @Override
-    public AttributeModifiersComponent.Builder createAttributeBuilder(ToolMaterial material, double damage, float speed) {
-        return super.createAttributeBuilder(material, damage, speed).add(EntityAttributes.PLAYER_SUBMERGED_MINING_SPEED,
-            new EntityAttributeModifier(RegistryHelper.id("tidesinger_tool_bonus"), 1.5f, ADD_MULTIPLIED_BASE),
-            AttributeModifierSlot.MAINHAND
+    public ItemAttributeModifiers.Builder createAttributeBuilder(Tier material, double damage, float speed) {
+        return super.createAttributeBuilder(material, damage, speed).add(Attributes.SUBMERGED_MINING_SPEED,
+            new AttributeModifier(RegistryHelper.id("tidesinger_tool_bonus"), 1.5f, ADD_MULTIPLIED_BASE),
+            EquipmentSlotGroup.MAINHAND
         );
     }
 }

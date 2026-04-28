@@ -2,84 +2,84 @@ package com.mythicmetals.item.tools;
 
 import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.component.PrometheumComponent;
-import net.minecraft.item.*;
+import net.minecraft.world.item.*;
 
 public class PrometheumToolSet extends ToolSet {
 
-    public PrometheumToolSet(ToolMaterial material, int[] damage, float[] speed) {
+    public PrometheumToolSet(Tier material, int[] damage, float[] speed) {
         super(material, damage, speed);
     }
 
     @Override
-    protected PickaxeItem makePickaxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
+    protected PickaxeItem makePickaxe(Tier material, int damage, float speed, Item.Properties settings) {
         return new PrometheumPick(material, settings
-            .attributeModifiers(createAttributeModifiers(material, damage, speed))
+            .attributes(createAttributeModifiers(material, damage, speed))
             .component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT)
         );
     }
 
     @Override
-    protected SwordItem makeSword(ToolMaterial material, int damage, float speed, Item.Settings settings) {
+    protected SwordItem makeSword(Tier material, int damage, float speed, Item.Properties settings) {
         return new PrometheumSword(material, settings
-            .attributeModifiers(createAttributeModifiers(material, damage, speed))
+            .attributes(createAttributeModifiers(material, damage, speed))
             .component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT)
         );
     }
 
     @Override
-    protected AxeItem makeAxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
+    protected AxeItem makeAxe(Tier material, int damage, float speed, Item.Properties settings) {
         return new PrometheumAxe(material, settings
-            .attributeModifiers(createAttributeModifiers(material, damage, speed))
+            .attributes(createAttributeModifiers(material, damage, speed))
             .component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT)
         );
     }
 
     @Override
-    protected HoeItem makeHoe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
+    protected HoeItem makeHoe(Tier material, int damage, float speed, Item.Properties settings) {
         return new PrometheumHoe(material, settings
-            .attributeModifiers(createAttributeModifiers(material, damage, speed))
+            .attributes(createAttributeModifiers(material, damage, speed))
             .component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT)
         );
     }
 
     @Override
-    protected ShovelItem makeShovel(ToolMaterial material, int damage, float speed, Item.Settings settings) {
+    protected ShovelItem makeShovel(Tier material, int damage, float speed, Item.Properties settings) {
         return new PrometheumShovel(material, settings
-            .attributeModifiers(createAttributeModifiers(material, damage, speed))
+            .attributes(createAttributeModifiers(material, damage, speed))
             .component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT)
         );
     }
 
     public static class PrometheumAxe extends AxeItem implements AutoRepairable {
-        public PrometheumAxe(ToolMaterial material, Item.Settings settings) {
+        public PrometheumAxe(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 
     }
 
     public static class PrometheumHoe extends HoeItem implements AutoRepairable {
-        public PrometheumHoe(ToolMaterial material, Item.Settings settings) {
+        public PrometheumHoe(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 
     }
 
     public static class PrometheumPick extends PickaxeItem implements AutoRepairable {
-        public PrometheumPick(ToolMaterial material, Item.Settings settings) {
+        public PrometheumPick(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 
     }
 
     public static class PrometheumShovel extends ShovelItem implements AutoRepairable {
-        public PrometheumShovel(ToolMaterial material, Item.Settings settings) {
+        public PrometheumShovel(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 
     }
 
     public static class PrometheumSword extends SwordItem implements AutoRepairable {
-        public PrometheumSword(ToolMaterial material, Item.Settings settings) {
+        public PrometheumSword(Tier material, Item.Properties settings) {
             super(material, settings);
         }
 

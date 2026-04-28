@@ -5,18 +5,18 @@ import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.registry.RegisterSounds;
 import de.dafuqs.additionalentityattributes.AdditionalEntityAttributes;
 import io.wispforest.owo.ops.WorldOps;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.entity.*;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ShulkerBulletEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShieldItem;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ShulkerBullet;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.level.Level;
 
 import static com.mythicmetals.component.MythicDataComponents.WAS_USED;
 
@@ -25,7 +25,7 @@ public class StormyxShield extends ShieldItem {
     public static final int MAGIC_DAMAGE_REDUCTION = 2;
     public static final ProjectileDeflection STORMYX_SHIELD_DEFLECTOR = (projectile, hitEntity, random) -> {
         // Shulker bullet handling
-        if (projectile instanceof ShulkerBulletEntity bullet) {
+        if (projectile instanceof ShulkerBullet bullet) {
             bullet.damage(bullet.getWorld().getDamageSources().generic(), 1.0F);
             return;
         }
@@ -45,28 +45,28 @@ public class StormyxShield extends ShieldItem {
     }
 
     @Override
-    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+    public void onStoppedUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
         disableShield(stack, world, user);
         super.onStoppedUsing(stack, world, user, remainingUseTicks);
     }
 
     @Override
-    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+    public void usageTick(Level world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
         super.usageTick(world, user, stack, remainingUseTicks);
 
         if (remainingUseTicks % 40 == 1) {
-            WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_MAINTAIN, SoundCategory.AMBIENT, 1.0F, 1.5F);
+            WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_MAINTAIN, SoundSource.AMBIENT, 1.0F, 1.5F);
             stack.damage(1, user, LivingEntity.getSlotForHand(user.getActiveHand()));
         }
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
         var stack = user.getStackInHand(hand);
         user.setCurrentHand(hand);
         stack.set(WAS_USED, true);
-        WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_BEGIN, SoundCategory.AMBIENT, 1.0F, 1.5F);
-        return TypedActionResult.consume(stack);
+        WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_BEGIN, SoundSource.AMBIENT, 1.0F, 1.5F);
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class StormyxShield extends ShieldItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (entity instanceof PlayerEntity player && stack.contains(WAS_USED)) {
+    public void inventoryTick(ItemStack stack, Level world, Player entity, int slot, boolean selected) {
+        if (entity instanceof Player player && stack.contains(WAS_USED)) {
             if (!player.getMainHandStack().equals(stack) && !player.getOffHandStack().equals(stack)) {
                 stack.remove(WAS_USED);
                 finishUsing(stack, world, player);
@@ -87,31 +87,31 @@ public class StormyxShield extends ShieldItem {
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+    public ItemStack finishUsing(ItemStack stack, Level world, LivingEntity user) {
         return disableShield(stack, world, user);
     }
 
-    private ItemStack disableShield(ItemStack stack, World world, LivingEntity user) {
-        if (!world.isClient && user instanceof PlayerEntity player) {
+    private ItemStack disableShield(ItemStack stack, Level world, LivingEntity user) {
+        if (!world.isClient && user instanceof Player player) {
             stack.remove(WAS_USED);
             player.getItemCooldownManager().set(stack.getItem(), 160);
         }
-        WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_END, SoundCategory.AMBIENT, 0.9F, 1.5F);
+        WorldOps.playSound(world, user.getBlockPos(), RegisterSounds.PROJECTILE_BARRIER_END, SoundSource.AMBIENT, 0.9F, 1.5F);
         return stack;
     }
 
-    public static AttributeModifiersComponent createStormyxShieldAttributes() {
-        var modifier = new EntityAttributeModifier(RegistryHelper.id("stormyx_shield_magic_protection"), MAGIC_DAMAGE_REDUCTION, EntityAttributeModifier.Operation.ADD_VALUE);
-        return AttributeModifiersComponent.builder()
-            .add(AdditionalEntityAttributes.MAGIC_PROTECTION, modifier, AttributeModifierSlot.MAINHAND)
-            .add(AdditionalEntityAttributes.MAGIC_PROTECTION, modifier, AttributeModifierSlot.OFFHAND)
+    public static ItemAttributeModifiers createStormyxShieldAttributes() {
+        var modifier = new EntityAttributeModifier(RegistryHelper.id("stormyx_shield_magic_protection"), MAGIC_DAMAGE_REDUCTION, AttributeModifier.Operation.ADD_VALUE);
+        return ItemAttributeModifiers.builder()
+            .add(AdditionalEntityAttributes.MAGIC_PROTECTION, modifier, EquipmentSlotGroup.MAINHAND)
+            .add(AdditionalEntityAttributes.MAGIC_PROTECTION, modifier, EquipmentSlotGroup.OFFHAND)
             .build();
     }
 
     // Don't update the item in hand if durability is repaired
     // Might affect mending as a side effect
     @Override
-    public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+    public boolean allowComponentsUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
         return oldStack.getDamage() == newStack.getDamage();
     }
 }

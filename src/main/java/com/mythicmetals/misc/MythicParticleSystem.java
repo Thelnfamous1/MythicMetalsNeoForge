@@ -6,15 +6,15 @@ import io.wispforest.owo.particles.systems.ParticleSystem;
 import io.wispforest.owo.particles.systems.ParticleSystemController;
 import io.wispforest.owo.util.VectorRandomUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import java.util.Random;
 
 public class MythicParticleSystem {
     public static final ParticleSystemController CONTROLLER = new ParticleSystemController(RegistryHelper.id("particles"));
 
-    public static final ParticleSystem<Vec3d> EXPLOSION_TRAIL = CONTROLLER.register(Vec3d.class, (world, pos, pos2) -> {
+    public static final ParticleSystem<Vec3> EXPLOSION_TRAIL = CONTROLLER.register(Vec3.class, (world, pos, pos2) -> {
         ClientParticles.reset();
         ClientParticles.setParticleCount(4);
 
@@ -38,7 +38,7 @@ public class MythicParticleSystem {
         ClientParticles.setParticleCount(1);
         Random r = new Random();
         var velocity = VectorRandomUtils.getRandomOffset(world,
-            Vec3d.ZERO.add(r.nextDouble(-1, 1), 0.75D, r.nextDouble(-1, 1)), 1.25D);
+            Vec3.ZERO.add(r.nextDouble(-1, 1), 0.75D, r.nextDouble(-1, 1)), 1.25D);
         ClientParticles.setVelocity(velocity);
 
         ClientParticles.spawn(ParticleTypes.SMOKE, world, pos, 0.0D);
@@ -48,7 +48,7 @@ public class MythicParticleSystem {
         ClientParticles.setParticleCount(1);
         Random r = new Random();
         var velocity = VectorRandomUtils.getRandomOffset(world,
-            Vec3d.ZERO.add(r.nextDouble(-1, 1), 0.75D, r.nextDouble(-1, 1)), 1.25D);
+            Vec3.ZERO.add(r.nextDouble(-1, 1), 0.75D, r.nextDouble(-1, 1)), 1.25D);
         ClientParticles.setVelocity(velocity);
 
         ClientParticles.spawn(ParticleTypes.LAVA, world, pos, 0.0D);

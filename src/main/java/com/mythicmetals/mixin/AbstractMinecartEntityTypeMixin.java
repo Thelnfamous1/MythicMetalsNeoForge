@@ -1,35 +1,35 @@
 package com.mythicmetals.mixin;
 
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@Mixin(AbstractMinecartEntity.Type.class)
+@Mixin(AbstractMinecart.Type.class)
 public abstract class AbstractMinecartEntityTypeMixin {
     @Shadow
     @Final
     @Mutable
-    private static AbstractMinecartEntity.Type[] field_7673;
+    private static AbstractMinecart.Type[] $VALUES;
 
     @Unique
-    private static final AbstractMinecartEntity.Type BANGLUM_TNT = mythicmetals$addType("BANGLUM_TNT");
+    private static final AbstractMinecart.Type BANGLUM_TNT = mythicmetals$addType("BANGLUM_TNT");
 
     @Unique
-    private static final AbstractMinecartEntity.Type PALLADIUM_MINECART = mythicmetals$addType("PALLADIUM_MINECART");
+    private static final AbstractMinecart.Type PALLADIUM_MINECART = mythicmetals$addType("PALLADIUM_MINECART");
 
     @Invoker("<init>")
-    public static AbstractMinecartEntity.Type mythicmetals$init(String internalName, int internalId) {
+    public static AbstractMinecart.Type mythicmetals$init(String internalName, int internalId) {
         throw new AssertionError();
     }
 
     @Unique
-    private static AbstractMinecartEntity.Type mythicmetals$addType(String internalName) {
-        ArrayList<AbstractMinecartEntity.Type> types = new ArrayList<>(Arrays.asList(AbstractMinecartEntityTypeMixin.field_7673));
-        AbstractMinecartEntity.Type type = mythicmetals$init(internalName, types.get(types.size() - 1).ordinal() + 1);
+    private static AbstractMinecart.Type mythicmetals$addType(String internalName) {
+        ArrayList<AbstractMinecart.Type> types = new ArrayList<>(Arrays.asList(AbstractMinecartEntityTypeMixin.$VALUES));
+        AbstractMinecart.Type type = mythicmetals$init(internalName, types.get(types.size() - 1).ordinal() + 1);
         types.add(type);
-        AbstractMinecartEntityTypeMixin.field_7673 = types.toArray(new AbstractMinecartEntity.Type[0]);
+        AbstractMinecartEntityTypeMixin.$VALUES = types.toArray(new AbstractMinecart.Type[0]);
         return type;
     }
 }

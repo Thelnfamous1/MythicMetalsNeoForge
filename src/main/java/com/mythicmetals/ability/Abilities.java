@@ -6,10 +6,14 @@ import com.mythicmetals.item.MythicItems;
 import com.mythicmetals.item.tools.MythicTools;
 import com.mythicmetals.item.tools.MythrilDrill;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.item.Items;
-import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
+import net.minecraft.world.item.Items;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
 
+// TODO(Ravel): ambiguous static import, members with name MetalColors have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name MetalColors have different new names
+//
 import static com.mythicmetals.misc.UsefulSingletonForColorUtil.MetalColors;
 
 /**
@@ -53,13 +57,13 @@ public class Abilities {
         });
         // Aegis Sword abilities
         FIRE_ASPECT.addItem(MythicTools.RED_AEGIS_SWORD, Style.EMPTY.withColor(MetalColors.RED_AEGIS.rgb()));
-        SMITE.addItem(MythicTools.WHITE_AEGIS_SWORD, Style.EMPTY.withColor(Formatting.YELLOW));
+        SMITE.addItem(MythicTools.WHITE_AEGIS_SWORD, Style.EMPTY.withColor(ChatFormatting.YELLOW));
         // Material Tooltips
         MATERIAL_TOOLTIP.addItem(MythicItems.Mats.AQUARIUM_PEARL, MetalColors.AQUA_STYLE);
         MATERIAL_TOOLTIP.addItem(MythicItems.Mats.BANGLUM_CHUNK, MetalColors.GOLD_STYLE);
         MATERIAL_TOOLTIP.addItem(MythicItems.Mats.CARMOT_STONE, MetalColors.CARMOT_STYLE);
         MATERIAL_TOOLTIP.addItem(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK.asItem(), MetalColors.GOLD_STYLE);
-        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.STORMYX_SHELL, Style.EMPTY.withColor(Formatting.LIGHT_PURPLE));
+        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.STORMYX_SHELL, Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE));
         // Mod compat specific abilities
         // TODO - Uncomment once Origins compat is updated and tested
         if (FabricLoader.getInstance().isModLoaded("origins")) {

@@ -3,28 +3,28 @@ package com.mythicmetals.entity;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.item.tools.MythicTools;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.vehicle.TntMinecartEntity;
-import net.minecraft.item.Item;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.vehicle.MinecartTNT;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class BanglumTntMinecartEntity extends TntMinecartEntity {
+public class BanglumTntMinecartEntity extends MinecartTNT {
     private static final double MAX_POWER = 8.0;
     private int fuseTicks = -1;
 
-    public BanglumTntMinecartEntity(EntityType<? extends TntMinecartEntity> entityType, World world) {
+    public BanglumTntMinecartEntity(EntityType<? extends MinecartTNT> entityType, Level world) {
         super(entityType, world);
     }
 
-    public BanglumTntMinecartEntity(World world, double x, double y, double z) {
+    public BanglumTntMinecartEntity(Level world, double x, double y, double z) {
         this(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE, world);
         this.setPosition(x, y, z);
         this.prevX = x;
@@ -51,7 +51,7 @@ public class BanglumTntMinecartEntity extends TntMinecartEntity {
                 d = MAX_POWER;
             }
 
-            this.getWorld().createExplosion(this, damageSource, null, this.getX(), this.getY(), this.getZ(), (float) (4.0 + this.random.nextDouble() * 1.5 * d), false, World.ExplosionSourceType.TNT);
+            this.getWorld().createExplosion(this, damageSource, null, this.getX(), this.getY(), this.getZ(), (float) (4.0 + this.random.nextDouble() * 1.5 * d), false, Level.ExplosionInteraction.TNT);
             this.discard();
         }
     }
@@ -108,15 +108,15 @@ public class BanglumTntMinecartEntity extends TntMinecartEntity {
     public void prime() {
         this.fuseTicks = 120;
         if (!this.getWorld().isClient) {
-            this.getWorld().sendEntityStatus(this, EntityStatuses.SET_SHEEP_EAT_GRASS_TIMER_OR_PRIME_TNT_MINECART);
+            this.getWorld().sendEntityStatus(this, EntityEvent.SET_SHEEP_EAT_GRASS_TIMER_OR_PRIME_TNT_MINECART);
             if (!this.isSilent()) {
-                this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 0.8F);
+                this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 0.8F);
             }
         }
     }
 
     @Override
-    public Type getMinecartType() {
+    public EntityType getMinecartType() {
         return MythicMetals.BANGLUM_TNT;
     }
 }

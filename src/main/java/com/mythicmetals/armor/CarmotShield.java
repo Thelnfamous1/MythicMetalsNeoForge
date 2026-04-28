@@ -2,22 +2,25 @@ package com.mythicmetals.armor;
 
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.entity.MythicEntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.math.MathHelper;
-import org.ladysnake.cca.api.v3.component.Component;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
+import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Nullable;
 
-public class CarmotShield implements Component, AutoSyncedComponent {
-    private final PlayerEntity player;
+public class CarmotShield implements INBTSerializable<CompoundTag> {
+    private final Player player;
     public float shieldHealth;
     public int renderTime;
     public int cooldown;
 
     public static final int MAX_COOLDOWN = 160;
 
-    public CarmotShield(PlayerEntity player) {
+    public CarmotShield(Player player) {
         this.player = player;
         shieldHealth = 0;
         renderTime = 0;
@@ -29,7 +32,7 @@ public class CarmotShield implements Component, AutoSyncedComponent {
     }
 
     public void damageShield(float damage) {
-        shieldHealth = MathHelper.clamp(shieldHealth - damage, 0f, getMaxHealth());
+        shieldHealth = Mth.clamp(shieldHealth - damage, 0f, getMaxHealth());
 
         // Put the shield on cooldown when you take damage
         if (shieldHealth > 0) {
@@ -48,7 +51,7 @@ public class CarmotShield implements Component, AutoSyncedComponent {
     }
 
     public void tickShield() {
-        if (player.getWorld() == null) return;
+        if (player.level() == null) return;
 
         // Prevent overshields
         if (shieldHealth > getMaxHealth()) {
@@ -58,7 +61,7 @@ public class CarmotShield implements Component, AutoSyncedComponent {
         // Regenerate shield if not on cooldown
         if (shieldHealth < getMaxHealth()) {
             if (cooldown == 0) {
-                shieldHealth = MathHelper.clamp(shieldHealth += 0.1f, 0f, this.getMaxHealth());
+                shieldHealth = Mth.clamp(shieldHealth += 0.1f, 0f, this.getMaxHealth());
                 renderTime = 40;
             } else {
                 cooldown--;
@@ -67,7 +70,8 @@ public class CarmotShield implements Component, AutoSyncedComponent {
 
         if (shouldRenderShield()) {
             renderTime--;
-            MythicMetals.CARMOT_SHIELD.sync(player);
+            //MythicMetals.CARMOT_SHIELD.sync(player);
+            player.syncData(MythicMetals.CARMOT_SHIELD);
         }
 
         // No shield, stop rendering
@@ -87,17 +91,42 @@ public class CarmotShield implements Component, AutoSyncedComponent {
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    public void deserializeNBT(HolderLookup.Provider registryLookup, CompoundTag tag) {
         shieldHealth = tag.getFloat("health");
         renderTime = tag.getInt("rendertime");
         cooldown = tag.getInt("cooldown");
     }
 
+
+
     @Override
-    public void writeToNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    public CompoundTag serializeNBT(HolderLookup.Provider registryLookup) {
+        CompoundTag tag = new  CompoundTag();
         tag.putFloat("health", shieldHealth);
         tag.putInt("rendertime", renderTime);
         tag.putInt("cooldown", cooldown);
-
+        return tag;
     }
+
+    public static class SyncHandler implements AttachmentSyncHandler<CarmotShield> {
+        @Override
+        public void write(RegistryFriendlyByteBuf registryFriendlyByteBuf, CarmotShield carmotShield, boolean b) {
+            registryFriendlyByteBuf.writeFloat(carmotShield.shieldHealth);
+            registryFriendlyByteBuf.writeInt(carmotShield.renderTime);
+            registryFriendlyByteBuf.writeInt(carmotShield.cooldown);
+        }
+
+        @Override
+        public @Nullable CarmotShield read(IAttachmentHolder iAttachmentHolder, RegistryFriendlyByteBuf registryFriendlyByteBuf, @Nullable CarmotShield carmotShield) {
+            if(!(iAttachmentHolder instanceof Player player)) return null;
+
+            CarmotShield readInCarmotShield = new CarmotShield(player);
+            readInCarmotShield.shieldHealth = registryFriendlyByteBuf.readFloat();
+            readInCarmotShield.renderTime = registryFriendlyByteBuf.readInt();
+            readInCarmotShield.cooldown = registryFriendlyByteBuf.readInt();
+            return readInCarmotShield;
+        }
+    }
+
+
 }

@@ -4,16 +4,16 @@ import com.mythicmetals.misc.BlockBreaker;
 import com.mythicmetals.misc.MythicParticleSystem;
 import com.mythicmetals.registry.RegisterCriteria;
 import io.wispforest.owo.ops.WorldOps;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.*;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 public class BanglumShovel extends ShovelItem {
 
@@ -26,7 +26,7 @@ public class BanglumShovel extends ShovelItem {
      * When the tool is used on a block, it breaks a bunch of blocks in a set radius.
      */
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public InteractionResult useOnBlock(ItemUsageContext context) {
         boolean shouldPass = false;
         var world = context.getWorld();
         var player = context.getPlayer();
@@ -51,20 +51,20 @@ public class BanglumShovel extends ShovelItem {
             var pos = context.getBlockPos();
             var facing = context.getHorizontalPlayerFacing();
             var pos2 = context.getBlockPos().offset(facing, 5);
-            MythicParticleSystem.EXPLOSION_TRAIL.spawn(world, Vec3d.of(pos), Vec3d.of(pos2));
-            WorldOps.playSound(world, pos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.PLAYERS);
+            MythicParticleSystem.EXPLOSION_TRAIL.spawn(world, Vec3.of(pos), Vec3.of(pos2));
+            WorldOps.playSound(world, pos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundSource.PLAYERS);
 
-            RegisterCriteria.USED_BLAST_MINING.trigger((ServerPlayerEntity) player);
+            RegisterCriteria.USED_BLAST_MINING.trigger((ServerPlayer) player);
             player.getItemCooldownManager().set(this, 100);
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     public static boolean isCoolingDown(LivingEntity entity, ItemStack stack) {
         if (entity != null && entity.isPlayer()) {
-            return ((PlayerEntity) entity).getItemCooldownManager().isCoolingDown(stack.getItem());
+            return ((Player) entity).getItemCooldownManager().isCoolingDown(stack.getItem());
         }
         return false;
     }

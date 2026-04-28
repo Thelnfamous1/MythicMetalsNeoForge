@@ -1,14 +1,14 @@
 package com.mythicmetals.mixin;
 
 import com.mythicmetals.ability.Abilities;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
 
-    @Inject(method = "getProtectionAmount", at = @At("TAIL"), cancellable = true)
-    private static void mythicmetals$damageReduction(ServerWorld world, LivingEntity user, DamageSource source, CallbackInfoReturnable<Float> cir) {
+    @Inject(method = "getDamageProtection", at = @At("TAIL"), cancellable = true)
+    private static void mythicmetals$damageReduction(ServerLevel world, LivingEntity user, DamageSource source, CallbackInfoReturnable<Float> cir) {
         // Make sure that there is any gear to check
         if (!user.getArmorItems().iterator().hasNext()) return;
 
@@ -51,8 +51,8 @@ public class EnchantmentHelperMixin {
             cir.setReturnValue(amount + change);
     }
 
-    @Inject(method = "getDamage", at = @At("TAIL"), cancellable = true)
-    private static void mythicmetals$increaseDamage(ServerWorld world, ItemStack stack, Entity target, DamageSource damageSource, float baseDamage, CallbackInfoReturnable<Float> cir) {
+    @Inject(method = "modifyDamage", at = @At("TAIL"), cancellable = true)
+    private static void mythicmetals$increaseDamage(ServerLevel world, ItemStack stack, Entity target, DamageSource damageSource, float baseDamage, CallbackInfoReturnable<Float> cir) {
         var amount = cir.getReturnValue();
         int change = 0;
         if (Abilities.SMITE.getItems().contains(stack.getItem()) && target.getType() != null && target.getType().isIn(EntityTypeTags.UNDEAD)) {
@@ -64,7 +64,7 @@ public class EnchantmentHelperMixin {
     }
 
     @Inject(method = "modifyKnockback", at = @At("TAIL"), cancellable = true)
-    private static void mythicmetals$increaseKnockback(ServerWorld world, ItemStack stack, Entity target, DamageSource damageSource, float baseKnockback, CallbackInfoReturnable<Float> cir) {
+    private static void mythicmetals$increaseKnockback(ServerLevel world, ItemStack stack, Entity target, DamageSource damageSource, float baseKnockback, CallbackInfoReturnable<Float> cir) {
         var amount = cir.getReturnValue();
         if (Abilities.KNOCKBACK.getItems().contains(stack.getItem()))
             cir.setReturnValue(amount + Abilities.KNOCKBACK.getLevel());

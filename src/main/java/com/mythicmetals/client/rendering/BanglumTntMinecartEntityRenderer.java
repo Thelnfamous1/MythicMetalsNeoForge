@@ -2,31 +2,31 @@ package com.mythicmetals.client.rendering;
 
 import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.entity.BanglumTntMinecartEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MinecartEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.vehicle.TntMinecartEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.vehicle.MinecartTNT;
+import net.minecraft.util.Mth;
 
-public class BanglumTntMinecartEntityRenderer extends MinecartEntityRenderer<BanglumTntMinecartEntity> {
-    private final BlockRenderManager tntBlockRenderManager;
+public class BanglumTntMinecartEntityRenderer extends MinecartRenderer<BanglumTntMinecartEntity> {
+    private final BlockRenderDispatcher tntBlockRenderManager;
 
-    public BanglumTntMinecartEntityRenderer(EntityRendererFactory.Context context) {
+    public BanglumTntMinecartEntityRenderer(EntityRendererProvider.Context context) {
         super(context, MythicModelHandler.BANGLUM_TNT_MINECART);
         this.tntBlockRenderManager = context.getBlockRenderManager();
     }
 
     protected void renderBlock(
-        TntMinecartEntity tntMinecartEntity, float f, BlockState blockState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i
+            TntMinecartEntity tntMinecartEntity, float f, BlockState blockState, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i
     ) {
         int j = tntMinecartEntity.getFuseTicks();
         if (j > -1 && (float) j - f + 1.0F < 10.0F) {
             float g = 1.0F - ((float) j - f + 1.0F) / 10.0F;
-            g = MathHelper.clamp(g, 0.0F, 1.0F);
+            g = Mth.clamp(g, 0.0F, 1.0F);
             g *= g;
             g *= g;
             float h = 1.0F + g * 0.3F;
@@ -43,7 +43,7 @@ public class BanglumTntMinecartEntityRenderer extends MinecartEntityRenderer<Ban
      * @param drawFlash whether a white semi-transparent overlay is added to the block to indicate the flash
      */
     public static void renderFlashingBlock(
-        BlockRenderManager blockRenderManager, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, boolean drawFlash
+            BlockRenderDispatcher blockRenderManager, BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, boolean drawFlash
     ) {
         int i;
         if (drawFlash) {

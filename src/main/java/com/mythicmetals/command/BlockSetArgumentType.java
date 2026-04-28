@@ -9,12 +9,12 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mythicmetals.block.BlockSet;
 import com.mythicmetals.block.MythicBlocks;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import java.util.concurrent.CompletableFuture;
 
 public class BlockSetArgumentType implements ArgumentType<BlockSet> {
     private final SimpleCommandExceptionType EXCEPTION = new SimpleCommandExceptionType(
-        Text.translatable("command.mythicmetals.argument.blockset.error")
+        Component.translatable("command.mythicmetals.argument.blockset.error")
     );
 
     public static <S> BlockSet getBlockSet(CommandContext<S> context, String name) {

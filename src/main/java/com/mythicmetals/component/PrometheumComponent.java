@@ -4,14 +4,14 @@ import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.endec.StructEndec;
 import io.wispforest.endec.impl.StructEndecBuilder;
-import net.minecraft.component.EnchantmentEffectComponentTypes;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 /**
  * A data carrier which holds and tracks the Prometheum Auto Repair ability.
@@ -30,9 +30,9 @@ public record PrometheumComponent(int durabilityRepaired) {
         StructEndec.INT.fieldOf("durability_repaired", PrometheumComponent::durabilityRepaired),
         PrometheumComponent::new
     );
-    public static final Identifier ARMOR_BONUS_ID = RegistryHelper.id("prometheum_armor_bonus");
-    public static final Identifier TOUGHNESS_BONUS_ID = RegistryHelper.id("prometheum_toughness_bonus");
-    public static final Identifier DAMAGE_BONUS_ID = RegistryHelper.id("prometheum_damage_bonus");
+    public static final ResourceLocation ARMOR_BONUS_ID = RegistryHelper.id("prometheum_armor_bonus");
+    public static final ResourceLocation TOUGHNESS_BONUS_ID = RegistryHelper.id("prometheum_toughness_bonus");
+    public static final ResourceLocation DAMAGE_BONUS_ID = RegistryHelper.id("prometheum_damage_bonus");
     public static final PrometheumComponent DEFAULT = new PrometheumComponent(0);
 
     /**
@@ -41,7 +41,7 @@ public record PrometheumComponent(int durabilityRepaired) {
      * @param stack ItemStack to repair
      * @param world World where the ItemStack exists
      */
-    public static void tickAutoRepair(ItemStack stack, World world) {
+    public static void tickAutoRepair(ItemStack stack, Level world) {
         if (!stack.isDamaged()) return; // Don't handle auto repair if item is fully repaired
         if (world.isClient()) return; // Desyncs if done on client
         if (!stack.contains(MythicDataComponents.PROMETHEUM)) return;
@@ -59,11 +59,11 @@ public record PrometheumComponent(int durabilityRepaired) {
         int damageToRepair = isOvergrown(stack) ? 2 : 1;
 
         // Extra repair speed if bound
-        if (EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponentTypes.PREVENT_ARMOR_CHANGE)) {
+        if (EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
             damageToRepair += 1;
         }
 
-        int newDamage = MathHelper.clamp(dmg - damageToRepair, 0, Integer.MAX_VALUE);
+        int newDamage = Mth.clamp(dmg - damageToRepair, 0, Integer.MAX_VALUE);
         stack.setDamage(newDamage);
         stack.set(MythicDataComponents.PROMETHEUM, component.increase(damageToRepair));
     }
@@ -80,11 +80,11 @@ public record PrometheumComponent(int durabilityRepaired) {
         return stack.getOrDefault(MythicDataComponents.PROMETHEUM, DEFAULT).durabilityRepaired > OVERGROWN_THRESHOLD;
     }
 
-    public static EntityAttributeModifier createOvergrownModifier(ItemStack stack, int base) {
+    public static AttributeModifier createOvergrownModifier(ItemStack stack, int base) {
         return createOvergrownModifier(stack, base, EquipmentSlot.MAINHAND);
     }
 
-    public static EntityAttributeModifier createOvergrownModifier(ItemStack stack, int base, EquipmentSlot slot) {
+    public static AttributeModifier createOvergrownModifier(ItemStack stack, int base, EquipmentSlot slot) {
         var id = switch (slot.getType()) {
             case HAND -> DAMAGE_BONUS_ID;
             case HUMANOID_ARMOR, ANIMAL_ARMOR -> ARMOR_BONUS_ID;
@@ -95,17 +95,17 @@ public record PrometheumComponent(int durabilityRepaired) {
         return new EntityAttributeModifier(
             id,
             bonus,
-            EntityAttributeModifier.Operation.ADD_VALUE);
+            AttributeModifier.Operation.ADD_VALUE);
     }
 
-    public static EntityAttributeModifier createOvergrownToughnessModifier(ItemStack stack, int base) {
+    public static AttributeModifier createOvergrownToughnessModifier(ItemStack stack, int base) {
         var component = stack.getOrDefault(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT);
         int bonus = base;
         bonus += component.durabilityRepaired() > (OVERGROWN_THRESHOLD * 2) ? 2 : 1;
-        bonus += EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponentTypes.PREVENT_ARMOR_CHANGE) ? 1 : 0;
+        bonus += EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) ? 1 : 0;
         return new EntityAttributeModifier(
             TOUGHNESS_BONUS_ID,
             bonus,
-            EntityAttributeModifier.Operation.ADD_VALUE);
+            AttributeModifier.Operation.ADD_VALUE);
     }
 }

@@ -5,34 +5,34 @@ import com.mythicmetals.armor.CarmotShield;
 import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.misc.UsefulSingletonForColorUtil;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.PlayerModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.mythicmetals.misc.UsefulSingletonForColorUtil.MetalColors.SHIELD_BREAK_COLOR;
 
-public class PlayerEnergySwirlFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+public class PlayerEnergySwirlFeatureRenderer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
-    public static final Identifier SWIRL_TEXTURE = RegistryHelper.id("textures/models/carmot_shield.png");
+    public static final ResourceLocation SWIRL_TEXTURE = RegistryHelper.id("textures/models/carmot_shield.png");
 
-    private final PlayerEntityModel<AbstractClientPlayerEntity> swirlModel;
+    private final PlayerModel<AbstractClientPlayer> swirlModel;
 
     public PlayerEnergySwirlFeatureRenderer(
-        FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context,
-        EntityModelLoader loader) {
+            RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> context,
+            EntityModelSet loader) {
         super(context);
         this.swirlModel = new PlayerEntityModel<>(loader.getModelPart(MythicModelHandler.CARMOT_SWIRL), false);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        if (entity.getComponent(MythicMetals.CARMOT_SHIELD).shouldRenderShield()) {
-            var shield = entity.getComponent(MythicMetals.CARMOT_SHIELD);
+    public void render(PoseStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayer entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+        if (entity.getData(MythicMetals.CARMOT_SHIELD).shouldRenderShield()) {
+            var shield = entity.getData(MythicMetals.CARMOT_SHIELD);
             float f = entity.age + tickDelta;
 
             this.swirlModel.animateModel(entity, limbAngle, limbDistance, tickDelta);

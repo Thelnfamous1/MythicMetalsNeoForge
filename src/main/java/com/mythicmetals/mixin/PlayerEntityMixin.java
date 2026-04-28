@@ -4,41 +4,62 @@ import com.mythicmetals.MythicMetals;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.tools.HammerBase;
 import com.mythicmetals.misc.IsAttackCritical;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stat.Stat;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerEntity.class)
+// TODO(Ravel): can not resolve target class PlayerEntity
+// TODO(Ravel): can not resolve target class PlayerEntity
+// TODO(Ravel): can not resolve target class PlayerEntity
+@Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements IsAttackCritical {
 
-    protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+    protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Unique
     public boolean mythicmetals$isCritical = false;
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract PlayerInventory getInventory();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract Iterable<ItemStack> getArmorItems();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract void incrementStat(Stat<?> stat);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     @Final
     private ItemCooldownManager itemCooldownManager;
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
     private void slowBreak(BlockState blockState, CallbackInfoReturnable<Float> cir) {
         var mainHandStack = getInventory().getMainHandStack();
@@ -69,20 +90,26 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IsAttack
 
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "tick", at = @At("TAIL"))
     private void tickCarmotShield(CallbackInfo ci) {
-        getComponent(MythicMetals.CARMOT_SHIELD).tickShield();
+        getData(MythicMetals.CARMOT_SHIELD).tickShield();
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @ModifyVariable(
         method = "applyDamage",
         at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/entity/player/PlayerEntity;applyArmorToDamage(Lnet/minecraft/entity/damage/DamageSource;F)F",
+            target = "Lnet/minecraft/world/entity/player/Player;applyArmorToDamage(Lnet/minecraft/world/damagesource/DamageSource;F)F",
             shift = At.Shift.BY, by = -2),
         ordinal = 0,
         argsOnly = true)
     public float carmotShieldCancel(float amount) {
-        var shield = getComponent(MythicMetals.CARMOT_SHIELD);
+        var shield = getData(MythicMetals.CARMOT_SHIELD);
         if (shield.getMaxHealth() > 0) {
             float health = shield.shieldHealth;
             shield.damageShield(amount);
@@ -93,12 +120,18 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IsAttack
         return amount;
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "attack", at = @At("HEAD"))
     private void setMythicmetals$resetCritical(Entity target, CallbackInfo ci) {
         mythicmetals$setCritical(false);
     }
 
-    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addCritParticles(Lnet/minecraft/entity/Entity;)V"))
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
+    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;crit(Lnet/minecraft/world/entity/Entity;)V"))
     private void mythicmetals$captureCritical(CallbackInfo ci) {
         mythicmetals$setCritical(true);
     }

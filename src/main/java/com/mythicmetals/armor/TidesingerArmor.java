@@ -7,22 +7,22 @@ import com.mythicmetals.component.TidesingerPatternComponent;
 import com.mythicmetals.misc.RegistryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class TidesingerArmor extends HallowedArmor {
 
     @Environment(EnvType.CLIENT)
-    private BipedEntityModel<LivingEntity> model;
+    private HumanoidModel<LivingEntity> model;
     public final Type type;
 
     public TidesingerArmor(Type type, Settings settings) {
@@ -35,7 +35,7 @@ public class TidesingerArmor extends HallowedArmor {
     }
 
     @Environment(EnvType.CLIENT)
-    public BipedEntityModel<LivingEntity> getArmorModel() {
+    public HumanoidModel<LivingEntity> getArmorModel() {
         if (model == null) {
             model = provideArmorModelForSlot(type.getEquipmentSlot());
         }
@@ -44,8 +44,8 @@ public class TidesingerArmor extends HallowedArmor {
 
     @Environment(EnvType.CLIENT)
     @Override
-    protected BipedEntityModel<LivingEntity> provideArmorModelForSlot(EquipmentSlot slot) {
-        var models = MinecraftClient.getInstance().getEntityModelLoader();
+    protected HumanoidModel<LivingEntity> provideArmorModelForSlot(EquipmentSlot slot) {
+        var models = Minecraft.getInstance().getEntityModelLoader();
         var root = models.getModelPart(MythicModelHandler.TIDESINGER);
         return new TidesingerBipedModel(root, slot);
     }
@@ -53,7 +53,7 @@ public class TidesingerArmor extends HallowedArmor {
     // TODO - Feels like magic string, maybe refactor
     @NotNull
     @Override
-    public Identifier getArmorTexture(ItemStack stack, EquipmentSlot slot) {
+    public ResourceLocation getArmorTexture(ItemStack stack, EquipmentSlot slot) {
         var component = stack.getOrDefault(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.empty());
         String model = switch (component.pattern()) {
             case "brain" -> "textures/models/tidesinger_model_brain.png";
@@ -67,7 +67,7 @@ public class TidesingerArmor extends HallowedArmor {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> lines, TooltipType type) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag type) {
         if (stack.contains(MythicDataComponents.TIDESINGER)) {
             stack.get(MythicDataComponents.TIDESINGER).appendTooltip(context, lines::add, type);
         }

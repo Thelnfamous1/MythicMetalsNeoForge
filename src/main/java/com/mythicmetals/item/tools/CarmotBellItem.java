@@ -4,16 +4,16 @@ import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.misc.CarmotBellDamageSource;
 import com.mythicmetals.misc.MythicParticleSystem;
 import com.mythicmetals.registry.RegisterSounds;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.*;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class CarmotBellItem extends BlockItem {
@@ -25,9 +25,9 @@ public class CarmotBellItem extends BlockItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public TypedActionResult<ItemStack> use(Level world, Player user, Hand hand) {
         var stack = user.getStackInHand(hand);
-        var entities = world.getOtherEntities(user, Box.of(user.getPos(), RANGE * 2, RANGE, RANGE * 2));
+        var entities = world.getOtherEntities(user, AABB.of(user.getPos(), RANGE * 2, RANGE, RANGE * 2));
         entities.forEach(entity -> {
             if (entity instanceof LivingEntity livingEntity) {
                 if (livingEntity.getType().isIn(EntityTypeTags.UNDEAD)) {
@@ -38,15 +38,15 @@ public class CarmotBellItem extends BlockItem {
                     livingEntity.heal(Math.max(10.0f, livingEntity.getMaxHealth() * 0.1f));
                     MythicParticleSystem.HEALING_HEARTS.spawn(world, livingEntity.getPos());
                 }
-                stack.damage(1, user, PlayerEntity.getSlotForHand(hand));
+                stack.damage(1, user, Player.getSlotForHand(hand));
             }
         });
         user.heal(Math.max(10.0f, user.getMaxHealth() * 0.1f));
-        stack.damage(1, user, PlayerEntity.getSlotForHand(hand));
+        stack.damage(1, user, Player.getSlotForHand(hand));
         MythicParticleSystem.HEALING_AREA.spawn(world, user.getPos(), RANGE);
         MythicParticleSystem.HEALING_HEARTS.spawn(world, user.getPos());
         user.getItemCooldownManager().set(this, 480);
-        world.playSound(user, user.getBlockPos(), RegisterSounds.CARMOT_BELL_RING, SoundCategory.PLAYERS);
+        world.playSound(user, user.getBlockPos(), RegisterSounds.CARMOT_BELL_RING, SoundSource.PLAYERS);
         return TypedActionResult.success(stack);
     }
 
@@ -59,9 +59,9 @@ public class CarmotBellItem extends BlockItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
         super.appendTooltip(stack, context, tooltip, type);
-        tooltip.add(Text.translatable("tooltip.carmot_bell.info1"));
-        tooltip.add(Text.translatable("tooltip.carmot_bell.info2"));
+        tooltip.add(Component.translatable("tooltip.carmot_bell.info1"));
+        tooltip.add(Component.translatable("tooltip.carmot_bell.info2"));
     }
 }

@@ -2,8 +2,8 @@ package com.mythicmetals.mixin;
 
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.LegacyIds;
-import net.minecraft.registry.SimpleDefaultedRegistry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,19 +12,21 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 // This Mixin is a class that works as a datafixer.
 // Upon loading a world it will check for missing objects in the recipe and replace them in order to
 // prevent air pockets when upgrading from older worlds, as well as returning changed/removed items.
-@Mixin(SimpleDefaultedRegistry.class)
+@Mixin(DefaultedMappedRegistry.class)
 public class DefaultedRegistryMixin {
 
+    // TODO(Ravel): target method get with the signature not found
+// TODO(Ravel): target method get with the signature not found
     @ModifyVariable(at = @At("HEAD"), method = "get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;", ordinal = 0, argsOnly = true)
-    Identifier fixMissingFromRegistry(@Nullable Identifier id) {
+    ResourceLocation fixMissingFromRegistry(@Nullable ResourceLocation id) {
         if (id != null) {
             // Various MOD_ID renames across mod versions, including Mythic Metals Decorations
             if (id.getNamespace().equals("mm_decorations"))
-                return Identifier.of("mythicmetals_decorations", id.getPath());
+                return ResourceLocation.of("mythicmetals_decorations", id.getPath());
             if (id.getNamespace().equals("mythicaddons") && !id.getPath().contains("aegis"))
-                return Identifier.of("mythicmetals_decorations", id.getPath());
+                return ResourceLocation.of("mythicmetals_decorations", id.getPath());
             if (id.getNamespace().equals("mythicaddons") && id.getPath().contains("aegis"))
-                return Identifier.of(MythicMetals.MOD_ID, id.getPath());
+                return ResourceLocation.of(MythicMetals.MOD_ID, id.getPath());
             if (LegacyIds.getLegacyIds().containsKey(id)) return LegacyIds.getLegacyIds().get(id);
 
         }

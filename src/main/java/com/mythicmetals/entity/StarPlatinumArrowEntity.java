@@ -2,32 +2,32 @@ package com.mythicmetals.entity;
 
 import com.mythicmetals.item.tools.MythicTools;
 import com.mythicmetals.misc.MythicDamageTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class StarPlatinumArrowEntity extends PersistentProjectileEntity {
+public class StarPlatinumArrowEntity extends AbstractArrow {
     public static final ItemStack STAR_PLAT_STACK = new ItemStack(MythicTools.STAR_PLATINUM_ARROW);
 
-    public StarPlatinumArrowEntity(LivingEntity owner, World world, ItemStack stack, @Nullable ItemStack weapon) {
+    public StarPlatinumArrowEntity(LivingEntity owner, Level world, ItemStack stack, @Nullable ItemStack weapon) {
         super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE, owner, world, stack, weapon);
     }
 
-    public StarPlatinumArrowEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) {
+    public StarPlatinumArrowEntity(Level world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) {
         super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE, x, y, z, world, stack, shotFrom);
     }
 
-    public StarPlatinumArrowEntity(EntityType<StarPlatinumArrowEntity> type, World world) {
+    public StarPlatinumArrowEntity(EntityType<StarPlatinumArrowEntity> type, Level world) {
         super(type, world);
     }
 
@@ -50,23 +50,23 @@ public class StarPlatinumArrowEntity extends PersistentProjectileEntity {
     protected void onHit(LivingEntity target) {
         super.onHit(target);
         var source = new DamageSource(
-            this.getWorld().getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).getEntry(MythicDamageTypes.STAR_PLATINUM_ARROW).orElseThrow(),
+            this.getWorld().getRegistryManager().get(Registries.DAMAGE_TYPE).getEntry(MythicDamageTypes.STAR_PLATINUM_ARROW).orElseThrow(),
             this,
             getOwner());
         if (target.getType().isIn(EntityTypeTags.UNDEAD)) {
-            target.addStatusEffect(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, 3));
+            target.addStatusEffect(new StatusEffectInstance(MobEffects.INSTANT_HEALTH, 1, 3));
         } else {
             target.damage(source, 24);
         }
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
+    public void writeCustomDataToNbt(CompoundTag nbt) {
         super.writeCustomDataToNbt(nbt);
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
+    public void readCustomDataFromNbt(CompoundTag nbt) {
         super.readCustomDataFromNbt(nbt);
     }
 }

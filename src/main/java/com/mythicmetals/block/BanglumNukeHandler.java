@@ -4,30 +4,30 @@ import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.entity.BanglumNukeEntity;
 import com.mythicmetals.registry.RegisterSounds;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public class BanglumNukeHandler {
     public static void init() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             var stack = player.getStackInHand(hand);
 
-            if (!stack.isOf(Items.FLINT_AND_STEEL)) return ActionResult.PASS;
+            if (!stack.isOf(Items.FLINT_AND_STEEL)) return InteractionResult.PASS;
 
             var targetBlock = world.getBlockState(hitResult.getBlockPos());
 
             if (!targetBlock.isOf(MythicBlocks.BANGLUM.getStorageBlock())
                 && !targetBlock.isOf(MythicBlocks.MORKITE.getStorageBlock()))
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
 
             var pos = hitResult.getBlockPos();
 
@@ -37,17 +37,17 @@ public class BanglumNukeHandler {
                         if (tryLightBigTntAt(world, player, pos.getX() - x, pos.getY() - y, pos.getZ() - z)) {
                             stack.damage(1, player, LivingEntity.getSlotForHand(hand));
 
-                            return ActionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         }
                     }
                 }
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
-    public static boolean tryLightBigTntWithDispenser(BlockPointer dispenser) {
+    public static boolean tryLightBigTntWithDispenser(BlockSource dispenser) {
         var world = dispenser.world();
         BlockState state = world.getBlockState(dispenser.pos().offset(dispenser.state().get(DispenserBlock.FACING)));
         var pos = dispenser.pos().offset(dispenser.state().get(DispenserBlock.FACING));
@@ -68,8 +68,8 @@ public class BanglumNukeHandler {
         return false;
     }
 
-    private static boolean tryLightBigTntAt(World world, PlayerEntity player, int x, int y, int z) {
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+    private static boolean tryLightBigTntAt(Level world, Player player, int x, int y, int z) {
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.Mutable();
 
         for (int ox = 0; ox < 2; ox++) {
             for (int oy = 0; oy < 2; oy++) {
@@ -101,7 +101,7 @@ public class BanglumNukeHandler {
             BanglumNukeEntity nuke = new BanglumNukeEntity(world, x + 1.5, y, z + 1.5, player, coreState.getBlock());
             world.spawnEntity(nuke);
             world.playSound(
-                null, nuke.getX(), nuke.getY(), nuke.getZ(), RegisterSounds.BANGLUM_NUKE_IGNITE, SoundCategory.BLOCKS, 1.0F, 1.0F
+                null, nuke.getX(), nuke.getY(), nuke.getZ(), RegisterSounds.BANGLUM_NUKE_IGNITE, SoundSource.BLOCKS, 1.0F, 1.0F
             );
             world.emitGameEvent(player, GameEvent.PRIME_FUSE, new BlockPos(x, y, z));
         }

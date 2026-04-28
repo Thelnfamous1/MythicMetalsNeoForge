@@ -1,15 +1,15 @@
 package com.mythicmetals.misc;
 
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 
 /**
  * All of these damage types are present in the built-in datapack
  */
 public class MythicDamageTypes {
-    public static final RegistryKey<DamageType> ASCENSION = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, RegistryHelper.id("ascension"));
-    public static final RegistryKey<DamageType> BANGLUM_NUKE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, RegistryHelper.id("banglum_nuke"));
-    public static final RegistryKey<DamageType> CARMOT_BELL = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, RegistryHelper.id("carmot_bell"));
-    public static final RegistryKey<DamageType> STAR_PLATINUM_ARROW = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, RegistryHelper.id("star_platinum_arrow"));
+    public static final ResourceKey<DamageType> ASCENSION = ResourceKey.of(Registries.DAMAGE_TYPE, RegistryHelper.id("ascension"));
+    public static final ResourceKey<DamageType> BANGLUM_NUKE = ResourceKey.of(Registries.DAMAGE_TYPE, RegistryHelper.id("banglum_nuke"));
+    public static final ResourceKey<DamageType> CARMOT_BELL = ResourceKey.of(Registries.DAMAGE_TYPE, RegistryHelper.id("carmot_bell"));
+    public static final ResourceKey<DamageType> STAR_PLATINUM_ARROW = ResourceKey.of(Registries.DAMAGE_TYPE, RegistryHelper.id("star_platinum_arrow"));
 }

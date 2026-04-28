@@ -6,11 +6,11 @@ import com.mythicmetals.config.OreConfig;
 import com.mythicmetals.item.tools.MythicTools;
 import com.mythicmetals.item.tools.ToolSet;
 import com.mythicmetals.misc.StringUtilsAtHome;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ToolItem;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Language;
-import net.minecraft.util.Util;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
+import net.minecraft.Util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -151,18 +151,18 @@ public class WikiExporter {
         var atkSpd = new ArrayDeque<>(toolSet.getAttackSpeed());
         output.append(ADMONITION_HEADER);
         toolSet.get().forEach(tool -> {
-            String id = Registries.ITEM.getId(tool).getPath();
+            String id = BuiltInRegistries.ITEM.getKey(tool).getPath();
             output.append(ADMONITION_TOOL_IMAGE.formatted(
-                translationStorage.get(tool.getTranslationKey()),
+                translationStorage.getOrDefault(tool.getDescriptionId()),
                 "(../../assets/mythicmetals/%s.png)".formatted(id) + RECIPE_SCALING
             ));
             output.append("""
                     +%s Attack Damage, %s Attack Speed<br>
                     %s Durability<br>
                 """.formatted(
-                tool.getMaterial().getAttackDamage() + damageDeque.pop() + 1,
+                tool.getTier().getAttackDamageBonus() + damageDeque.pop() + 1,
                 BigDecimal.valueOf(atkSpd.pop()).setScale(1, RoundingMode.HALF_UP).toPlainString(),
-                tool.getDefaultStack().getMaxDamage()
+                tool.getDefaultInstance().getMaxDamage()
             ));
         });
 
@@ -171,8 +171,8 @@ public class WikiExporter {
 
     static String computeToolRecipes(ToolSet toolSet) {
         StringBuilder output = new StringBuilder();
-        for (ToolItem tool : toolSet.get()) {
-            String id = Registries.ITEM.getId(tool).getPath();
+        for (TieredItem tool : toolSet.get()) {
+            String id = BuiltInRegistries.ITEM.getKey(tool).getPath();
             String name = StringUtilsAtHome.toTitleCase(id.replace('_', ' '));
             output.append(("""
                     ![Image of the recipe for %s](../../assets/mythicmetals/recipes/tools/%s.png)%s
@@ -188,12 +188,12 @@ public class WikiExporter {
 
         output.append(ADMONITION_HEADER);
         output.append(ADMONIITION_TOP_IMAGE.formatted(
-            translationStorage.get(blockSet.getOre().getTranslationKey()),
+            translationStorage.getOrDefault(blockSet.getOre().getDescriptionId()),
             "../../assets/mythicmetals/%s.png".formatted(blockSet.getName() + "_ore")
         ));
 
         blockSet.getOreVariantsMap().forEach((variantName, block) -> {
-            String variantOreName = translationStorage.get(block.getTranslationKey());
+            String variantOreName = translationStorage.getOrDefault(block.getDescriptionId());
             output.append(ADMONIITION_TOP_IMAGE.formatted(
                 variantOreName,
                 "../../assets/mythicmetals/" + variantName + "_" + blockSet.getName() + "_ore.png"
@@ -228,11 +228,11 @@ public class WikiExporter {
         output.append(ADMONIITION_TOP_IMAGE.formatted(armorTitleName + " Armor", armorModelImage));
 
         for (var armor : armorSet.getArmorItems()) {
-            var item = Registries.ITEM.getId(armor);
-            String name = translationStorage.get(Util.createTranslationKey("item", item));
+            var item = BuiltInRegistries.ITEM.getKey(armor);
+            String name = translationStorage.getOrDefault(Util.makeDescriptionId("item", item));
             String id = item.getPath();
 
-            int protection = armor.getProtection();
+            int protection = armor.getDefense();
 
             output.append("\n");
             output.append("\t<h4>**").append(name).append("**</h4>").append("\n");
@@ -255,7 +255,7 @@ public class WikiExporter {
                 output.append("\t+%s Knockback Resistance".formatted(kbRes)).append("<br>\n");
             }
             // 350 Durability
-            output.append("\t%s Durability".formatted(armor.getDefaultStack().getMaxDamage())).append("<br>\n");
+            output.append("\t%s Durability".formatted(armor.getDefaultInstance().getMaxDamage())).append("<br>\n");
         }
         return output.toString();
     }
@@ -263,7 +263,7 @@ public class WikiExporter {
     static String computeArmorRecipes(ArmorSet armorSet) {
         StringBuilder output = new StringBuilder();
         for (ArmorItem armor : armorSet.getArmorItems()) {
-            String id = Registries.ITEM.getId(armor).getPath();
+            String id = BuiltInRegistries.ITEM.getKey(armor).getPath();
             String name = StringUtilsAtHome.toTitleCase(id.replace('_', ' '));
             output.append(("""
                     ![Image of the recipe for %s](../../assets/mythicmetals/recipes/armor/%s.png)%s

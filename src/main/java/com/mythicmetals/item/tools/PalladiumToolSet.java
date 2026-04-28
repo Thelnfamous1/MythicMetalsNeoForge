@@ -4,112 +4,113 @@ import com.mythicmetals.effects.MythicStatusEffects;
 import com.mythicmetals.misc.IsAttackCritical;
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.owo.ops.WorldOps;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.*;
+
 import java.util.function.Consumer;
 
 public class PalladiumToolSet extends ToolSet {
     // TODO - Move to config
     public static final int MAX_HEAT = 6;
 
-    public PalladiumToolSet(ToolMaterial material, int[] damage, float[] speed, Consumer<Item.Settings> settingsProcessor) {
+    public PalladiumToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
         super(material, damage, speed, settingsProcessor);
     }
 
     @Override
-    protected SwordItem makeSword(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PalladiumSword(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected SwordItem makeSword(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PalladiumSword(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected AxeItem makeAxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PalladiumAxe(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected AxeItem makeAxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PalladiumAxe(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected PickaxeItem makePickaxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PalladiumPick(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected PickaxeItem makePickaxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PalladiumPick(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected ShovelItem makeShovel(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PalladiumShovel(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected ShovelItem makeShovel(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PalladiumShovel(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected HoeItem makeHoe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PalladiumHoe(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected HoeItem makeHoe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PalladiumHoe(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     public static class PalladiumAxe extends AxeItem {
-        public PalladiumAxe(ToolMaterial material, Settings settings) {
+        public PalladiumAxe(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
             applyHeatToTarget(target, attacker);
-            return super.postHit(stack, target, attacker);
+            return super.hurtEnemy(stack, target, attacker);
         }
     }
 
     public static class PalladiumHoe extends HoeItem {
-        public PalladiumHoe(ToolMaterial material, Settings settings) {
+        public PalladiumHoe(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
             applyHeatToTarget(target, attacker);
-            return super.postHit(stack, target, attacker);
+            return super.hurtEnemy(stack, target, attacker);
         }
     }
 
     public static class PalladiumPick extends PickaxeItem {
-        public PalladiumPick(ToolMaterial material, Settings settings) {
+        public PalladiumPick(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
             applyHeatToTarget(target, attacker);
-            return super.postHit(stack, target, attacker);
+            return super.hurtEnemy(stack, target, attacker);
         }
     }
 
     public static class PalladiumShovel extends ShovelItem {
-        public PalladiumShovel(ToolMaterial material, Settings settings) {
+        public PalladiumShovel(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
             applyHeatToTarget(target, attacker);
-            return super.postHit(stack, target, attacker);
+            return super.hurtEnemy(stack, target, attacker);
         }
     }
 
     public static class PalladiumSword extends SwordItem {
-        public PalladiumSword(ToolMaterial material, Settings settings) {
+        public PalladiumSword(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
             applyHeatToTarget(target, attacker);
-            return super.postHit(stack, target, attacker);
+            return super.hurtEnemy(stack, target, attacker);
         }
     }
 
     public static void applyHeatToTarget(LivingEntity target, LivingEntity attacker) {
         var effect = RegistryHelper.getEntry(MythicStatusEffects.HEAT);
-        if (!target.hasStatusEffect(effect)) {
-            target.addStatusEffect(new StatusEffectInstance(effect, 100), attacker);
+        if (!target.hasEffect(effect)) {
+            target.addEffect(new MobEffectInstance(effect, 100), attacker);
         } else {
-            var activeEffect = target.getStatusEffect(effect);
+            var activeEffect = target.getEffect(effect);
             int amplifier = activeEffect == null ? 0 : activeEffect.getAmplifier();
             if (((IsAttackCritical) attacker).mythicmetals$isCritical()) {
                 amplifier += 1;
@@ -118,9 +119,9 @@ public class PalladiumToolSet extends ToolSet {
             }
 
             if (amplifier >= MAX_HEAT) {
-                WorldOps.playSound(target.getWorld(), target.getPos(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.PLAYERS);
+                WorldOps.playSound(target.level(), target.position(), SoundEvents.GENERIC_BURN, SoundSource.PLAYERS);
             }
-            target.addStatusEffect(new StatusEffectInstance(effect, 100 + (20 * amplifier * amplifier), Math.min(amplifier, MAX_HEAT)), attacker);
+            target.addEffect(new MobEffectInstance(effect, 100 + (20 * amplifier * amplifier), Math.min(amplifier, MAX_HEAT)), attacker);
         }
     }
 }

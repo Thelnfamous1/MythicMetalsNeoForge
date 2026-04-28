@@ -3,10 +3,10 @@ package com.mythicmetals.item;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.owo.util.TagInjector;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import java.util.function.Consumer;
 
 public class ItemSet {
@@ -18,7 +18,7 @@ public class ItemSet {
     // Used for smelting recipes during datagen
     private final float xp;
 
-    private static Item.Settings createSettings(Consumer<Item.Settings> settingsProcessor) {
+    private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
         final var settings = new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(0);
         settingsProcessor.accept(settings);
         return settings;
@@ -49,11 +49,11 @@ public class ItemSet {
         });
     }
 
-    public ItemSet(boolean isAlloy, boolean requiresBlasting, Consumer<Item.Settings> settingsConsumer) {
+    public ItemSet(boolean isAlloy, boolean requiresBlasting, Consumer<Item.Properties> settingsConsumer) {
         this(isAlloy, requiresBlasting, 0.1f, settingsConsumer);
     }
 
-    public ItemSet(boolean isAlloy, boolean requiresBlasting, float xp, Consumer<Item.Settings> settingsConsumer) {
+    public ItemSet(boolean isAlloy, boolean requiresBlasting, float xp, Consumer<Item.Properties> settingsConsumer) {
         this.ingotItem = makeItem(createSettings(settingsConsumer));
         if (!isAlloy) {
             this.rawOreItem = makeItem(createSettings(settingsConsumer));
@@ -69,28 +69,28 @@ public class ItemSet {
     }
 
     public void register(String name) {
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_ingot"), ingotItem);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_ingot"), ingotItem);
         if (rawOreItem != null) {
-            Registry.register(Registries.ITEM, RegistryHelper.id("raw_" + name), rawOreItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id("raw_" + name), rawOreItem);
         }
         if (nuggetItem != null) {
-            Registry.register(Registries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
             // Conditionally add nuggets to nuggets tag
-            TagInjector.inject(Registries.ITEM, Identifier.of("c", "nuggets"), nuggetItem);
+            TagInjector.inject(BuiltInRegistries.ITEM, ResourceLocation.of("c", "nuggets"), nuggetItem);
         }
         if (dustItem != null) {
-            Registry.register(Registries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
         }
     }
 
     public void register(String name, boolean imStarPlatinum) {
         if (imStarPlatinum) {
-            Registry.register(Registries.ITEM, RegistryHelper.id(name), ingotItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name), ingotItem);
             if (nuggetItem != null) {
-                Registry.register(Registries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
+                Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
             }
             if (dustItem != null) {
-                Registry.register(Registries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
+                Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
             }
         } else {
             register(name);
@@ -98,7 +98,7 @@ public class ItemSet {
 
     }
 
-    protected Item makeItem(Item.Settings settings) {
+    protected Item makeItem(Item.Properties settings) {
         return new Item(settings);
     }
 

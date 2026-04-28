@@ -2,9 +2,12 @@ package com.mythicmetals.registry;
 
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.owo.registration.reflect.AutoRegistryContainer;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.sound.*;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.SoundType;
 
 public class RegisterSounds implements AutoRegistryContainer<SoundEvent> {
 
@@ -46,22 +49,22 @@ public class RegisterSounds implements AutoRegistryContainer<SoundEvent> {
     public static final SoundEvent CARMOT_BELL_DING = SoundEvent.of(RegistryHelper.id("carmot_bell_ding"));
     public static final SoundEvent CARMOT_BELL_DING_PLAIN = SoundEvent.of(RegistryHelper.id("carmot_bell_ding_plain"));
 
-    public static final BlockSoundGroup MORKITE_ORE = new BlockSoundGroup(1.0F, 1.0F,
+    public static final SoundType MORKITE_ORE = new SoundType(1.0F, 1.0F,
         MORKITE_ORE_BREAK,
-        SoundEvents.BLOCK_DRIPSTONE_BLOCK_STEP,
-        SoundEvents.BLOCK_DRIPSTONE_BLOCK_PLACE,
-        SoundEvents.BLOCK_DRIPSTONE_BLOCK_HIT,
-        SoundEvents.BLOCK_DRIPSTONE_BLOCK_FALL);
-    public static final BlockSoundGroup DEEPSLATE_MORKITE_ORE = new BlockSoundGroup(1.0F, 1.0F,
+        SoundEvents.DRIPSTONE_BLOCK_STEP,
+        SoundEvents.DRIPSTONE_BLOCK_PLACE,
+        SoundEvents.DRIPSTONE_BLOCK_HIT,
+        SoundEvents.DRIPSTONE_BLOCK_FALL);
+    public static final SoundType DEEPSLATE_MORKITE_ORE = new SoundType(1.0F, 1.0F,
         DEEPSLATE_MORKITE_ORE_BREAK,
-        SoundEvents.BLOCK_DEEPSLATE_STEP,
-        SoundEvents.BLOCK_DEEPSLATE_PLACE,
-        SoundEvents.BLOCK_DEEPSLATE_HIT,
-        SoundEvents.BLOCK_DEEPSLATE_FALL);
+        SoundEvents.DEEPSLATE_STEP,
+        SoundEvents.DEEPSLATE_PLACE,
+        SoundEvents.DEEPSLATE_HIT,
+        SoundEvents.DEEPSLATE_FALL);
 
     @Override
     public Registry<SoundEvent> getRegistry() {
-        return Registries.SOUND_EVENT;
+        return BuiltInRegistries.SOUND_EVENT;
     }
 
     @Override

@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.mythicmetals.config.OreConfig;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.registry.*;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.structure.rule.RuleTest;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.YOffset;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.placementmodifier.*;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 public class OreFeatureHelper {
 
     public static void ore(RegistryKey<PlacedFeature> ore, TagKey<Biome> tag) {
-        BiomeModifications.addFeature(BiomeSelectors.tag(tag), GenerationStep.Feature.UNDERGROUND_ORES, ore);
+        BiomeModifications.addFeature(BiomeSelectors.tag(tag), GenerationStep.Decoration.UNDERGROUND_ORES, ore);
     }
 
     public static void configuredFeature(Registerable<ConfiguredFeature<?, ?>> registerable, RegistryKey<ConfiguredFeature<?, ?>> featureKey, RuleTest rule, Block oreBlock, OreConfig config) {
@@ -55,17 +55,17 @@ public class OreFeatureHelper {
 
     public static void placeUniform(Registerable<PlacedFeature> registerable, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey, RegistryKey<PlacedFeature> placedFeatureKey, OreConfig config) {
         var featureLookup = registerable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
-        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.uniform(YOffset.fixed(config.bottom), YOffset.fixed(config.top))));
+        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.uniform(VerticalAnchor.fixed(config.bottom), VerticalAnchor.fixed(config.top))));
     }
 
     public static void placeAboveBottom(Registerable<PlacedFeature> registerable, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey, RegistryKey<PlacedFeature> placedFeatureKey, OreConfig config) {
         var featureLookup = registerable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
-        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.uniform(YOffset.aboveBottom(config.bottom), YOffset.fixed(config.top))));
+        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.uniform(VerticalAnchor.aboveBottom(config.bottom), VerticalAnchor.fixed(config.top))));
     }
 
     public static void placeTrapezoid(Registerable<PlacedFeature> registerable, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey, RegistryKey<PlacedFeature> placedFeatureKey, OreConfig config) {
         var featureLookup = registerable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
-        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.trapezoid(YOffset.fixed(config.bottom), YOffset.fixed(config.top))));
+        PlacedFeatures.register(registerable, placedFeatureKey, featureLookup.getOrThrow(configuredFeatureKey), modifiersWithCount(config.perChunk, HeightRangePlacementModifier.trapezoid(VerticalAnchor.fixed(config.bottom), VerticalAnchor.fixed(config.top))));
     }
 
     //From Mojanks OrePlacedFeatures

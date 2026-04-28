@@ -5,21 +5,21 @@ import com.mythicmetals.block.Lavaloggable;
 import com.mythicmetals.block.PalladiumRailBlock;
 import com.mythicmetals.entity.BanglumTntMinecartEntity;
 import com.mythicmetals.entity.PalladiumMinecartEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(AbstractMinecartEntity.class)
-public class AbstractMinecartEntityMixin {
+@Mixin(AbstractMinecart.class)
+public class AbstractMinecartMixin {
 
-    @Inject(method = "create", at = @At("HEAD"), cancellable = true)
-    private static void mythicmetals$createCustomMinecart(ServerWorld world, double x, double y, double z, AbstractMinecartEntity.Type type, ItemStack stack, PlayerEntity player, CallbackInfoReturnable<AbstractMinecartEntity> cir) {
+    @Inject(method = "createMinecart", at = @At("HEAD"), cancellable = true)
+    private static void mythicmetals$createCustomMinecart(ServerLevel world, double x, double y, double z, AbstractMinecart.Type type, ItemStack stack, Player player, CallbackInfoReturnable<AbstractMinecart> cir) {
         if (type.equals(MythicMetals.BANGLUM_TNT)) {
             cir.setReturnValue(new BanglumTntMinecartEntity(world, x, y, z));
         }
@@ -29,7 +29,7 @@ public class AbstractMinecartEntityMixin {
         }
     }
 
-    @ModifyVariable(method = "moveOnRail", at = @At(value = "STORE", ordinal = 0))
+    @ModifyVariable(method = "moveAlongTrack", at = @At(value = "STORE", ordinal = 0))
     private boolean mythicmetals$boostInLava(boolean original, BlockPos pos, BlockState state) {
         if (state.getBlock() instanceof Lavaloggable && PalladiumRailBlock.isLavaLogged(state)) {
             return true;

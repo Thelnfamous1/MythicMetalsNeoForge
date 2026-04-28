@@ -1,15 +1,16 @@
+// TODO(Ravel): Failed to fully resolve file: null cannot be cast to non-null type com.intellij.psi.PsiClass
 package com.mythicmetals.mixin;
 
 import com.mythicmetals.armor.MythicArmorMaterials;
 import com.mythicmetals.entity.MythicEntityAttributes;
 import com.mythicmetals.misc.RegistryHelper;
 import de.dafuqs.additionalentityattributes.AdditionalEntityAttributes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.*;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.core.Holder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,8 +23,8 @@ import static net.minecraft.entity.attribute.EntityAttributeModifier.Operation.*
 @Mixin(ArmorItem.class)
 public abstract class ArmorItemMixin {
 
-    @Inject(method = "method_56689", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private static void constructor(RegistryEntry<?> registryEntry, ArmorItem.Type type, CallbackInfoReturnable<AttributeModifiersComponent> cir, int i, float f, AttributeModifiersComponent.Builder builder, AttributeModifierSlot slot) {
+    @Inject(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourceLocation;withDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private static void constructor(Holder<?> registryEntry, ArmorItem.Type type, CallbackInfoReturnable<ItemAttributeModifiers> cir, int i, float f, ItemAttributeModifiers.Builder builder, EquipmentSlotGroup slot) {
         var material = registryEntry.value();
         if (material == MythicArmorMaterials.TIDESINGER) {
             mythicmetals$armorMapBuilder(builder, "tidesinger_%s_swim_speed_bonus".formatted(type.getName()), AdditionalEntityAttributes.WATER_SPEED, 0.1F, ADD_MULTIPLIED_TOTAL, slot);
@@ -77,7 +78,7 @@ public abstract class ArmorItemMixin {
     }
 
     @Unique
-    private static void mythicmetals$armorMapBuilder(AttributeModifiersComponent.Builder builder, String id, RegistryEntry<EntityAttribute> attributeEntry, float value, EntityAttributeModifier.Operation operation, AttributeModifierSlot slot) {
+    private static void mythicmetals$armorMapBuilder(ItemAttributeModifiers.Builder builder, String id, Holder<EntityAttribute> attributeEntry, float value, EntityAttributeModifier.Operation operation, EquipmentSlotGroup slot) {
         builder.add(attributeEntry, new EntityAttributeModifier(RegistryHelper.id(id), value, operation), slot);
     }
 

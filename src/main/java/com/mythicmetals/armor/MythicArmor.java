@@ -7,8 +7,8 @@ import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.component.PrometheumComponent;
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.owo.registration.reflect.SimpleFieldProcessingSubject;
-import net.minecraft.item.Item;
-import net.minecraft.util.Rarity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import java.lang.reflect.Field;
 
 @SuppressWarnings("unused")
@@ -20,7 +20,7 @@ public class MythicArmor implements SimpleFieldProcessingSubject<ArmorSet> {
     public static final ArmorSet BRONZE = new ArmorSet(MythicArmorMaterials.BRONZE, 15);
     public static final ArmorSet CARMOT = new ArmorSet(MythicArmorMaterials.CARMOT, 26, settings -> settings.rarity(Rarity.UNCOMMON));
     public static final ArmorSet CELESTIUM = new CelestiumArmorSet(MythicArmorMaterials.CELESTIUM, 41, settings -> settings.rarity(Rarity.RARE).fireproof());
-    public static final Item CELESTIUM_ELYTRA = new CelestiumElytra(new Item.Settings()
+    public static final Item CELESTIUM_ELYTRA = new CelestiumElytra(new Item.Properties()
         .rarity(Rarity.RARE)
         .group(MythicMetals.TABBED_GROUP).tab(3)
         .maxDamage(832)
@@ -37,7 +37,7 @@ public class MythicArmor implements SimpleFieldProcessingSubject<ArmorSet> {
     public static final ArmorSet ORICHALCUM = new ArmorSet(MythicArmorMaterials.ORICHALCUM, 40);
     public static final ArmorSet OSMIUM = new ArmorSet(MythicArmorMaterials.OSMIUM, 25);
     public static final ArmorSet OSMIUM_CHAINMAIL = new ArmorSet(MythicArmorMaterials.OSMIUM_CHAINMAIL, 25);
-    public static final ArmorSet PALLADIUM = new ArmorSet(MythicArmorMaterials.PALLADIUM, 28, Item.Settings::fireproof);
+    public static final ArmorSet PALLADIUM = new ArmorSet(MythicArmorMaterials.PALLADIUM, 28, Item.Properties::fireproof);
     public static final ArmorSet PROMETHEUM = new ArmorSet(MythicArmorMaterials.PROMETHEUM, 18, settings -> settings.component(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT));
     public static final ArmorSet RUNITE = new RuniteArmorSet(MythicArmorMaterials.RUNITE, 27);
     public static final ArmorSet SILVER = new ArmorSet(MythicArmorMaterials.SILVER, 10);

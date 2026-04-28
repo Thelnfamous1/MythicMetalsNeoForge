@@ -4,15 +4,15 @@ import com.google.common.base.Suppliers;
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.MythicItems;
-import net.minecraft.block.Block;
-import net.minecraft.item.Items;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import java.util.function.Supplier;
 
-public enum MythicToolMaterials implements ToolMaterial {
+public enum MythicToolMaterials implements Tier {
     ADAMANTITE(4, 1024, 7.0F, 5F, 16, () -> Ingredient.ofItems(MythicItems.ADAMANTITE.getIngot())),
     AEGIS_RED(4, 2170, 8.0F, 6.0F, 25, () -> Ingredient.ofItems(MythicItems.PALLADIUM.getIngot())),
     AEGIS_WHITE(4, 2070, 10.0F, 5.0F, 25, () -> Ingredient.ofItems(MythicItems.HALLOWED.getIngot())),

@@ -1,14 +1,14 @@
 package com.mythicmetals.client.models;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.client.model.geom.ModelPart;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.HumanoidModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class TidesingerBipedModel extends BipedEntityModel<LivingEntity> {
+public class TidesingerBipedModel extends HumanoidModel<LivingEntity> {
     final EquipmentSlot slot;
 
     public TidesingerBipedModel(ModelPart root, EquipmentSlot slot) {
@@ -23,7 +23,7 @@ public class TidesingerBipedModel extends BipedEntityModel<LivingEntity> {
 
     @Override
     public void setAngles(LivingEntity entity, float f, float g, float h, float i, float j) {
-        if (!(entity instanceof ArmorStandEntity stand)) {
+        if (!(entity instanceof ArmorStand stand)) {
             super.setAngles(entity, f, g, h, i, j);
             return;
         }
@@ -52,7 +52,7 @@ public class TidesingerBipedModel extends BipedEntityModel<LivingEntity> {
     }
 
     @Override
-    public void render(MatrixStack ms, VertexConsumer buffer, int light, int overlay, int color) {
+    public void render(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
         renderArmorPart(slot);
         super.render(ms, buffer, light, overlay, color);
     }

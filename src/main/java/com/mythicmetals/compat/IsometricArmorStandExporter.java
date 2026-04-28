@@ -11,11 +11,11 @@ import com.mythicmetals.armor.TidesingerArmor;
 import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.component.TidesingerPatternComponent;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class IsometricArmorStandExporter {
 
     public static int batchRenderArmor(CommandContext<FabricClientCommandSource> context) {
         if (MythicArmor.ARMOR_MAP.isEmpty()) {
-            context.getSource().sendFeedback(Text.literal("Unable to summon. Somehow the armor map is empty..."));
+            context.getSource().sendFeedback(Component.literal("Unable to summon. Somehow the armor map is empty..."));
             return 0; // "how could this happen to me? I made my mistakes..."
         }
 
@@ -56,7 +56,7 @@ public class IsometricArmorStandExporter {
             var armorStand = new ArmorStandEntity(EntityType.ARMOR_STAND, context.getSource().getWorld());
             var armorSet = MythicArmor.TIDESINGER;
             armorSet.getArmorItems().forEach(armorItem -> {
-                var armorStack = new ItemStack(armorItem.getRegistryEntry(), 1, ComponentChanges.builder().add(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.fromItem(patternItem)).build());
+                var armorStack = new ItemStack(armorItem.getRegistryEntry(), 1, DataComponentPatch.builder().add(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.fromItem(patternItem)).build());
                 armorStand.equipStack(armorItem.getSlotType(), armorStack);
             });
             armorStand.setHideBasePlate(true);

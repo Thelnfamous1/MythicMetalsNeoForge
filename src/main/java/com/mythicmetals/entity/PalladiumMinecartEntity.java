@@ -1,17 +1,17 @@
 package com.mythicmetals.entity;
 
 import com.mythicmetals.MythicMetals;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.vehicle.MinecartEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.level.Level;
 
-public class PalladiumMinecartEntity extends MinecartEntity {
+public class PalladiumMinecartEntity extends Minecart {
 
-    public PalladiumMinecartEntity(EntityType<?> entityType, World world) {
+    public PalladiumMinecartEntity(EntityType<?> entityType, Level world) {
         super(entityType, world);
     }
 
-    public PalladiumMinecartEntity(World world, double x, double y, double z) {
+    public PalladiumMinecartEntity(Level world, double x, double y, double z) {
         this(MythicEntities.PALLADIUM_MINECART_ENTITY_TYPE, world);
         this.setPosition(x, y, z);
         this.prevX = x;
@@ -20,7 +20,7 @@ public class PalladiumMinecartEntity extends MinecartEntity {
     }
 
     @Override
-    public Type getMinecartType() {
+    public EntityType getMinecartType() {
         return MythicMetals.PALLADIUM_MINECART;
     }
 }

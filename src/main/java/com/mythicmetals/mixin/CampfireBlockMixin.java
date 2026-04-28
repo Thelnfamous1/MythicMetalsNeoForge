@@ -1,13 +1,13 @@
 package com.mythicmetals.mixin;
 
 import com.mythicmetals.armor.MythicArmor;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class CampfireBlockMixin {
 
     @Inject(method = "onEntityCollision", at = @At("HEAD"), cancellable = true)
-    private void stompMarshmellows(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo ci) {
+    private void stompMarshmellows(BlockState state, Level world, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (!entity.isLiving()) return;
         for (ItemStack armorItems : ((LivingEntity) entity).getArmorItems()) {
             if (armorItems.getItem().equals(MythicArmor.PALLADIUM.getBoots())) {

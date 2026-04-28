@@ -4,31 +4,31 @@ import com.mojang.authlib.GameProfile;
 import com.mythicmetals.item.tools.HammerBase;
 import eu.pb4.common.protection.api.CommonProtection;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Explosion;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockBreaker {
 
-    public static boolean isProtected(World world, BlockPos blockPos, GameProfile profile, @Nullable PlayerEntity player) {
+    public static boolean isProtected(Level world, BlockPos blockPos, GameProfile profile, @Nullable Player player) {
         return !CommonProtection.canBreakBlock(world, blockPos, profile, player);
     }
 
-    public static boolean isProtected(World world, BlockPos blockPos, Explosion explosion, GameProfile profile, @Nullable PlayerEntity player) {
+    public static boolean isProtected(Level world, BlockPos blockPos, Explosion explosion, GameProfile profile, @Nullable Player player) {
         return !CommonProtection.canExplodeBlock(world, blockPos, explosion, profile, player);
     }
 
-    public static Iterable<BlockPos> findBlocks(ItemUsageContext context, int depth) {
+    public static Iterable<BlockPos> findBlocks(UseOnContext context, int depth) {
 
         Iterable<BlockPos> iterator;
 
@@ -72,8 +72,8 @@ public class BlockBreaker {
         return iterator;
     }
 
-    public static double getReachDistance(PlayerEntity playerEntity) {
-        return playerEntity.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE);
+    public static double getReachDistance(Player playerEntity) {
+        return playerEntity.getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
     }
 
     public static void initHammerTime() {
@@ -108,7 +108,7 @@ public class BlockBreaker {
                     // Call Block.onBreak here, to allow interactions when a player breaks blocks
                     // Note that the center block still calls onBreak twice
                     world.getBlockState(pos).getBlock().onBreak(world, pos, state, player);
-                    BlockEntity breakEntity = world.getBlockState(pos).getBlock() instanceof BlockEntityProvider ? world.getBlockEntity(pos) : null;
+                    BlockEntity breakEntity = world.getBlockState(pos).getBlock() instanceof EntityBlock ? world.getBlockEntity(pos) : null;
                     Block.dropStacks(world.getBlockState(pos), world, originalBlockPos, breakEntity, player, stack);
                     world.breakBlock(pos, false, player);
                     hasMined = true;
@@ -122,7 +122,7 @@ public class BlockBreaker {
         });
     }
 
-    public static float calculateHardestDelta(BlockHitResult blockHitResult, PlayerEntity player, HammerBase hammer) {
+    public static float calculateHardestDelta(BlockHitResult blockHitResult, Player player, HammerBase hammer) {
         // The hardest, and slowest, delta
         // This speed is how much progress you are making each tick (I think...)
         float hardestDelta = 1.0F;

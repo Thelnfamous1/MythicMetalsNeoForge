@@ -12,22 +12,22 @@ import io.wispforest.owo.util.ReflectionUtils;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import java.util.concurrent.CompletableFuture;
 
 public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
-    public MythicItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+    public MythicItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
+    protected void configure(HolderLookup.Provider arg) {
         ReflectionUtils.iterateAccessibleStaticFields(MythicBlocks.class, BlockSet.class, (blockSet, name, field) -> {
             if (blockSet.getOre() != null) {
                 var string = "ores/" + name;
@@ -122,9 +122,9 @@ public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 var modTag = MythicMetalsData.createModItemTag(string);
                 var commonTag = ConventionalItemTags.NUGGETS;
                 getOrCreateTagBuilder(modTag)
-                    .addOptional(Registries.ITEM.getId(itemSet.getNugget()));
+                    .addOptional(BuiltInRegistries.ITEM.getId(itemSet.getNugget()));
                 getOrCreateTagBuilder(modRawOreTag)
-                    .addOptional(Registries.ITEM.getId(itemSet.getNugget()));
+                    .addOptional(BuiltInRegistries.ITEM.getId(itemSet.getNugget()));
                 getOrCreateTagBuilder(commonTag)
                     .addOptionalTag(modTag);
             }
@@ -143,9 +143,9 @@ public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 var modTag = MythicMetalsData.createModItemTag(string);
                 var commonTag = ConventionalItemTags.DUSTS;
                 getOrCreateTagBuilder(modTag)
-                    .addOptional(Registries.ITEM.getId(itemSet.getDust()));
+                    .addOptional(BuiltInRegistries.ITEM.getId(itemSet.getDust()));
                 getOrCreateTagBuilder(modRawOreTag)
-                    .addOptionalTag(Registries.ITEM.getId(itemSet.getDust()));
+                    .addOptionalTag(BuiltInRegistries.ITEM.getId(itemSet.getDust()));
                 getOrCreateTagBuilder(commonTag)
                     .addOptionalTag(modTag);
             }

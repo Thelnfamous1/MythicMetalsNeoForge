@@ -9,13 +9,13 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mythicmetals.armor.ArmorSet;
 import com.mythicmetals.armor.MythicArmor;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import java.util.concurrent.CompletableFuture;
 
 public class ArmorSetArgumentType implements ArgumentType<ArmorSet> {
 
     private final SimpleCommandExceptionType EXCEPTION = new SimpleCommandExceptionType(
-        Text.translatable("command.mythicmetals.argument.armorset.error")
+        Component.translatable("command.mythicmetals.argument.armorset.error")
     );
 
     public static <S> ArmorSet getArmorSet(CommandContext<S> context, String name) {

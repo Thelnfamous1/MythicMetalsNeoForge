@@ -4,15 +4,15 @@ import io.wispforest.endec.Endec;
 import io.wispforest.endec.StructEndec;
 import io.wispforest.endec.impl.StructEndecBuilder;
 import io.wispforest.owo.serialization.endec.MinecraftEndecs;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 @Deprecated(since = "0.23.0", forRemoval = true)
 public record CarmotStaffComponent(Block block, boolean showTooltip) {
 
     public static final StructEndec<CarmotStaffComponent> ENDEC = StructEndecBuilder.of(
-        MinecraftEndecs.ofRegistry(Registries.BLOCK).fieldOf("block", CarmotStaffComponent::getBlock),
+        MinecraftEndecs.ofRegistry(BuiltInRegistries.BLOCK).fieldOf("block", CarmotStaffComponent::getBlock),
         Endec.BOOLEAN.fieldOf("show_tooltip", carmotStaffComponent -> carmotStaffComponent.showTooltip),
         CarmotStaffComponent::new
     );

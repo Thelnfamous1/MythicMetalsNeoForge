@@ -3,19 +3,25 @@ package com.mythicmetals.item.tools;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.misc.StringUtilsAtHome;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE;
+// TODO(Ravel): ambiguous static import, members with name ADD_VALUE have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name ADD_VALUE have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name ADD_VALUE have different new names
+//
+import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE;
 
 public class ToolSet {
 
@@ -27,18 +33,18 @@ public class ToolSet {
 
     private final List<Float> attackSpeed = new ArrayList<>();
 
-    private static Item.Settings createSettings(Consumer<Item.Settings> settingsProcessor) {
-        final var settings = new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(2);
+    private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
+        final var settings = new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(2);
         settingsProcessor.accept(settings);
         return settings;
     }
 
-    public ToolSet(ToolMaterial material, int[] damage, float[] speed) {
+    public ToolSet(Tier material, int[] damage, float[] speed) {
         this(material, damage, speed, settings -> {
         });
     }
 
-    public ToolSet(ToolMaterial material, int[] damage, float[] speed, Consumer<Item.Settings> settingsProcessor) {
+    public ToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
         this.sword = this.makeSword(material, damage[0], speed[0], createSettings(settingsProcessor));
         this.axe = this.makeAxe(material, damage[1], speed[1], createSettings(settingsProcessor));
         this.pickaxe = this.makePickaxe(material, damage[2], speed[2], createSettings(settingsProcessor));
@@ -52,31 +58,31 @@ public class ToolSet {
     }
 
     public void register(String name) {
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_sword"), sword);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_axe"), axe);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_pickaxe"), pickaxe);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_shovel"), shovel);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_hoe"), hoe);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_sword"), sword);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_axe"), axe);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_pickaxe"), pickaxe);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_shovel"), shovel);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_hoe"), hoe);
     }
 
-    protected SwordItem makeSword(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new SwordItem(material, settings.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
+    protected SwordItem makeSword(Tier material, int damage, float speed, Item.Properties settings) {
+        return new SwordItem(material, settings.component(DataComponents.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
     }
 
-    protected AxeItem makeAxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new AxeItem(material, settings.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
+    protected AxeItem makeAxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new AxeItem(material, settings.component(DataComponents.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
     }
 
-    protected PickaxeItem makePickaxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new PickaxeItem(material, settings.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
+    protected PickaxeItem makePickaxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new PickaxeItem(material, settings.component(DataComponents.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
     }
 
-    protected ShovelItem makeShovel(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new ShovelItem(material, settings.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
+    protected ShovelItem makeShovel(Tier material, int damage, float speed, Item.Properties settings) {
+        return new ShovelItem(material, settings.component(DataComponents.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
     }
 
-    protected HoeItem makeHoe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new HoeItem(material, settings.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
+    protected HoeItem makeHoe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new HoeItem(material, settings.component(DataComponents.ATTRIBUTE_MODIFIERS, createAttributeModifiers(material, damage, speed)));
     }
 
     /**
@@ -84,7 +90,7 @@ public class ToolSet {
      *
      * @return List of ToolItems in order: Sword, Axe, Pickaxe, Shovel, Hoe
      */
-    public List<ToolItem> get() {
+    public List<TieredItem> get() {
         return List.of(sword, axe, pickaxe, shovel, hoe);
     }
 
@@ -112,51 +118,51 @@ public class ToolSet {
         return attackSpeed;
     }
 
-    public static AttributeModifiersComponent createAttributeModifiers(double damage, float speed) {
+    public static ItemAttributeModifiers createAttributeModifiers(double damage, float speed) {
         if (speed < 0.0f) {
             speed = 0;
         }
-        return AttributeModifiersComponent.builder()
+        return ItemAttributeModifiers.builder()
             .add(
-                EntityAttributes.GENERIC_ATTACK_DAMAGE,
-                new EntityAttributeModifier(Item.BASE_ATTACK_DAMAGE_MODIFIER_ID, damage, ADD_VALUE),
-                AttributeModifierSlot.MAINHAND
+                Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, damage, ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
             )
             .add(
-                EntityAttributes.GENERIC_ATTACK_SPEED,
-                new EntityAttributeModifier(Item.BASE_ATTACK_SPEED_MODIFIER_ID, -4.0 + speed, ADD_VALUE),
-                AttributeModifierSlot.MAINHAND
+                Attributes.ATTACK_SPEED,
+                new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -4.0 + speed, ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
             )
             .build();
     }
 
 
-    public static AttributeModifiersComponent createAttributeModifiers(ToolMaterial material, double damage, float speed) {
-        return createAttributeModifiers(material.getAttackDamage() + damage, speed);
+    public static ItemAttributeModifiers createAttributeModifiers(Tier material, double damage, float speed) {
+        return createAttributeModifiers(material.getAttackDamageBonus() + damage, speed);
     }
 
-    public AttributeModifiersComponent.Builder createAttributeBuilder(ToolMaterial material, double damage, float speed) {
+    public ItemAttributeModifiers.Builder createAttributeBuilder(Tier material, double damage, float speed) {
         if (speed < 0.0f) {
             speed = 0;
         }
-        return AttributeModifiersComponent.builder()
+        return ItemAttributeModifiers.builder()
             .add(
-                EntityAttributes.GENERIC_ATTACK_DAMAGE,
-                new EntityAttributeModifier(Item.BASE_ATTACK_DAMAGE_MODIFIER_ID, material.getAttackDamage() + damage, ADD_VALUE),
-                AttributeModifierSlot.MAINHAND
+                Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, material.getAttackDamageBonus() + damage, ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
             )
             .add(
-                EntityAttributes.GENERIC_ATTACK_SPEED,
-                new EntityAttributeModifier(Item.BASE_ATTACK_SPEED_MODIFIER_ID, -4.0 + speed, ADD_VALUE),
-                AttributeModifierSlot.MAINHAND
+                Attributes.ATTACK_SPEED,
+                new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -4.0 + speed, ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
             );
     }
 
-    public AttributeModifiersComponent createAttributes(ToolMaterial material, double damage, float speed) {
+    public ItemAttributeModifiers createAttributes(Tier material, double damage, float speed) {
         return this.createAttributeBuilder(material, damage, speed).build();
     }
 
     public String getTitlecaseName() {
-        return StringUtilsAtHome.toTitleCase(this.getSword().getMaterial().toString());
+        return StringUtilsAtHome.toTitleCase(this.getSword().getTier().toString());
     }
 }

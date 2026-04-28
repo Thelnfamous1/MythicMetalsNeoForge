@@ -1,6 +1,6 @@
 package com.mythicmetals.item;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.item.*;
 
 public class RedAegisSword extends SwordItem {

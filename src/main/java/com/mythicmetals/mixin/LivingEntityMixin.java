@@ -15,24 +15,24 @@ import com.mythicmetals.misc.WasSpawnedFromCreeper;
 import com.mythicmetals.registry.RegisterCriteria;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.*;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.entity.effect.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -43,57 +43,105 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mythicmetals.entity.MythicEntityAttributes.FIRE_VULNERABILITY;
 
+// TODO(Ravel): can not resolve target class LivingEntity
+// TODO(Ravel): can not resolve target class LivingEntity
+// TODO(Ravel): can not resolve target class LivingEntity
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Player {
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract Iterable<ItemStack> getArmorItems();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract boolean canFreeze();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract int getArmor();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract boolean damage(DamageSource source, float amount);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract boolean addStatusEffect(StatusEffectInstance effect);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     private @Nullable LivingEntity attacker;
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract boolean canHaveStatusEffect(StatusEffectInstance effect);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract ItemStack getStackInHand(Hand hand);
+    public abstract ItemStack getStackInHand(InteractionHand hand);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract void stopRiding();
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
+    public abstract boolean hasStatusEffect(Holder<StatusEffect> effect);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract double getAttributeValue(RegistryEntry<EntityAttribute> attribute);
+    public abstract double getAttributeValue(Holder<EntityAttribute> attribute);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract @Nullable StatusEffectInstance getStatusEffect(RegistryEntry<StatusEffect> effect);
+    public abstract @Nullable StatusEffectInstance getStatusEffect(Holder<StatusEffect> effect);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract boolean removeStatusEffect(RegistryEntry<StatusEffect> effect);
+    public abstract boolean removeStatusEffect(Holder<StatusEffect> effect);
 
+    // TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
+// TODO(Ravel): Could not determine a single target
     @Shadow
     public abstract AttributeContainer getAttributes();
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityMixin(EntityType<?> type, ServerLevel world) {
         super(type, world);
     }
 
     @Unique
     Random r = new Random();
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "createLivingAttributes()Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;", require = 1, allow = 1, at = @At("RETURN"))
     private static void mythicmetals$addAttributes(final CallbackInfoReturnable<DefaultAttributeContainer.Builder> info) {
         info.getReturnValue().add(MythicEntityAttributes.CARMOT_SHIELD);
@@ -101,14 +149,20 @@ public abstract class LivingEntityMixin extends Entity {
         info.getReturnValue().add(MythicEntityAttributes.ELYTRA_ROCKET_SPEED);
     }
 
-    @ModifyExpressionValue(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z"))
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
+    @ModifyExpressionValue(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z"))
     private boolean mythicmetals$bypassFireResistance(boolean original) {
         // We respect Fire Invulnerability, but not Fire Resistance
         // original = source.isFire() && this.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)
         return original && !(this.getAttributeValue(FIRE_VULNERABILITY) > 0);
     }
 
-    /**
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
+/**
      * Increase fire damage taken by 1 for each point of Fire Vulnerability
      * Fire Resistance halves this, although you will still take fire damage this way
      */
@@ -119,10 +173,13 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         float baseDamage = (float) this.getAttributeValue(FIRE_VULNERABILITY);
-        float modifier = this.hasStatusEffect(StatusEffects.FIRE_RESISTANCE) ? Math.min(MathHelper.floor((baseDamage / 2.0f)), 1) : baseDamage;
+        float modifier = this.hasStatusEffect(StatusEffects.FIRE_RESISTANCE) ? Math.min(Mth.floor((baseDamage / 2.0f)), 1) : baseDamage;
         return original + modifier;
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "tick", at = @At("HEAD"))
     private void mythicmetals$tick(CallbackInfo ci) {
         if (!getWorld().isClient()) {
@@ -134,15 +191,15 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void mythicmetals$tickCombustion() {
-        var component = getComponent(MythicMetals.COMBUSTION_COOLDOWN);
+        var component = getData(MythicMetals.COMBUSTION_COOLDOWN);
         component.tickCooldown();
         mythicmetals$handleCombustion(component);
     }
 
     @Unique
     private void mythicmetals$handleCombustion(CombustionCooldown component) {
-        var entry = Registries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT);
-        if (this.isOnFire() && this.hasStatusEffect(Registries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT)) && component.isCombustible()) {
+        var entry = BuiltInRegistries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT);
+        if (this.isOnFire() && this.hasStatusEffect(BuiltInRegistries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT)) && component.isCombustible()) {
             var effect = this.getStatusEffect(entry);
             if (effect != null) {
                 int level = effect.getAmplifier();
@@ -161,7 +218,7 @@ public abstract class LivingEntityMixin extends Entity {
                     });
                 }
 
-                this.addStatusEffect(new StatusEffectInstance(Registries.STATUS_EFFECT.getEntry(MythicStatusEffects.COMBUSTION), multiplier.get() + 40, Math.max(MathHelper.floor(level / 2.0f), 0), false, true));
+                this.addStatusEffect(new StatusEffectInstance(BuiltInRegistries.STATUS_EFFECT.getEntry(MythicStatusEffects.COMBUSTION), multiplier.get() + 40, Math.max(Mth.floor(level / 2.0f), 0), false, true));
 
                 this.setOnFireForTicks((duration * multiplier.get()) + 40);
                 component.setCooldown(1800);
@@ -188,8 +245,8 @@ public abstract class LivingEntityMixin extends Entity {
             }
 
             if (MythicArmor.COPPER.isInArmorSet(armorStack) && getWorld().isThundering()) {
-                Vec3d playerPos = this.getPos();
-                boolean isConductive = playerPos.y == getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, (int) playerPos.x, (int) playerPos.z);
+                Vec3 playerPos = this.getPos();
+                boolean isConductive = playerPos.y == getWorld().getTopY(Heightmap.Types.WORLD_SURFACE, (int) playerPos.x, (int) playerPos.z);
                 int rng = r.nextInt(60000);
 
                 // Display particles on client
@@ -211,9 +268,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Unique
     private void mythicmetals$carmotParticle() {
         if (!this.getWorld().isClient()) return;
-        Vec3d velocity = this.getVelocity();
+        Vec3 velocity = this.getVelocity();
 
-        if (this.isPlayer() && this.getComponent(MythicMetals.CARMOT_SHIELD).shieldHealth == 0) {
+        if (this.isPlayer() && this.getData(MythicMetals.CARMOT_SHIELD).shieldHealth == 0) {
             return; // If you are a player, and your shield ran out, do not display particles
         }
 
@@ -232,47 +289,53 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void mythicmetals$palladiumParticles() {
-        var heatEntry = Registries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT);
+        var heatEntry = BuiltInRegistries.STATUS_EFFECT.getEntry(MythicStatusEffects.HEAT);
         if (this.hasStatusEffect(heatEntry)) {
             var status = this.getStatusEffect(heatEntry);
             if (status == null || status.getAmplifier() < 3) return;
 
-            Vec3d velocity = this.getVelocity();
+            Vec3 velocity = this.getVelocity();
             if (velocity.length() >= 0.1 && r.nextInt(6) < 1) {
                 MythicParticleSystem.SMOKING_PALLADIUM_PARTICLE.spawn(getWorld(), this.getPos().add(0, 0.25, 0));
             }
         }
 
-        if (this.hasStatusEffect(Registries.STATUS_EFFECT.getEntry(MythicStatusEffects.COMBUSTION))) {
-            Vec3d velocity = this.getVelocity();
+        if (this.hasStatusEffect(BuiltInRegistries.STATUS_EFFECT.getEntry(MythicStatusEffects.COMBUSTION))) {
+            Vec3 velocity = this.getVelocity();
             if (velocity.length() >= 0.1 && r.nextInt(6) < 1) {
                 MythicParticleSystem.OVERENGINEERED_PALLADIUM_PARTICLE.spawn(getWorld(), this.getPos().add(0, 0.25, 0));
             }
         }
     }
 
-    /**
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
+/**
      * Bonus advancement if you combust yourself via a creeper. Good job.
      */
     @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("HEAD"))
-    private void mythicmetals$grantAdvancementOnStatusEffectFromCreepers(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
+    private void mythicmetals$grantAdvancementOnStatusEffectFromCreepers(StatusEffectInstance effect, Player source, CallbackInfoReturnable<Boolean> cir) {
         if (this.getWorld().isClient() || source == null || !this.canHaveStatusEffect(effect)) return;
         if (effect.getEffectType().value().equals(MythicStatusEffects.COMBUSTION) && this.isPlayer()) {
             if (source instanceof AreaEffectCloudEntity cloudEntity && ((WasSpawnedFromCreeper) cloudEntity).mythicmetals$isSpawnedFromCreeper()) {
                 //noinspection ConstantConditions
-                RegisterCriteria.RECEIVED_COMBUSTION_FROM_CREEPER.trigger(((ServerPlayerEntity) (Object) this));
+                RegisterCriteria.RECEIVED_COMBUSTION_FROM_CREEPER.trigger(((ServerPlayer) (Object) this));
             }
         }
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Environment(EnvType.CLIENT)
     @Inject(method = "swingHand(Lnet/minecraft/util/Hand;Z)V", at = @At("HEAD"), cancellable = true)
-    private void mythicmetals$cancelSwingOnActiveMythrilDrill(Hand hand, boolean fromServerPlayer, CallbackInfo ci) {
+    private void mythicmetals$cancelSwingOnActiveMythrilDrill(InteractionHand hand, boolean fromServerPlayer, CallbackInfo ci) {
         if (!this.getWorld().isClient()) {
             return;
         }
         var stack = this.getStackInHand(hand);
-        var camera = MinecraftClient.getInstance().getEntityRenderDispatcher().camera;
+        var camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         // This can be null, according to #252
         if (camera == null) return;
         if (camera.isThirdPerson() && stack.getOrDefault(MythicDataComponents.DRILL, DrillComponent.DEFAULT).hasFuel()) {
@@ -280,16 +343,22 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "dropEquipment", at = @At(value = "HEAD"))
-    private void mythicmetals$dropMidasGold(ServerWorld world, DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
+    private void mythicmetals$dropMidasGold(ServerLevel world, DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
         if (source.getAttacker() == null) return;
-        if (source.getAttacker() instanceof PlayerEntity attacker1) {
+        if (source.getAttacker() instanceof Player attacker1) {
             if (MythicMetals.CONFIG.midasGold() && attacker1.getMainHandStack().isIn(MythicTags.MIDAS_TOUCH)) {
                 this.dropStack(new ItemStack(MythicItems.MIDAS_GOLD.getRawOre()));
             }
         }
     }
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @Inject(method = "tickRiding", at = @At("HEAD"))
     private void mythicmetals$tickRiding(CallbackInfo ci) {
         if (this.hasVehicle() && this.getWorld().getTime() % 40 == 1 && this.getVehicle().getType().isIn(MythicTags.GRANTS_FIRE_RES_WHILE_RIDING)) {

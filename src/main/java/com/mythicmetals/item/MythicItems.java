@@ -4,10 +4,10 @@ import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.*;
 import io.wispforest.owo.registration.reflect.ItemRegistryContainer;
 import io.wispforest.owo.registration.reflect.SimpleFieldProcessingSubject;
-import net.minecraft.item.Item;
-import net.minecraft.item.SmithingTemplateItem;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SmithingTemplateItem;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class MythicItems implements SimpleFieldProcessingSubject<ItemSet> {
     public static final ItemSet MYTHRIL = new ItemSet(1.5f, true);
     public static final ItemSet ORICHALCUM = new ItemSet(1.5f, true);
     public static final ItemSet OSMIUM = new ItemSet(0.8f);
-    public static final ItemSet PALLADIUM = new ItemSet(false, true, 1.5f, Item.Settings::fireproof);
+    public static final ItemSet PALLADIUM = new ItemSet(false, true, 1.5f, Item.Properties::fireproof);
     public static final ItemSet PLATINUM = new ItemSet(0.7f);
     public static final ItemSet PROMETHEUM = new ItemSet(0.7f);
     public static final ItemSet QUADRILLUM = new ItemSet(0.7f);
@@ -97,31 +97,31 @@ public class MythicItems implements SimpleFieldProcessingSubject<ItemSet> {
             });
 
         public static final Item UNOBTAINIUM_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.unobtainium.applies_to").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.unobtainium.ingredients").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.unobtainium.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.unobtainium.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.unobtainium.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.unobtainium.applies_to").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.unobtainium.ingredients").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.unobtainium.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.unobtainium.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.unobtainium.additions_slot_description"),
             UNOBTAINIUM_ALLOY_ITEMS,
             SmithingTemplateItem.getNetheriteUpgradeEmptyAdditionsSlotTextures()
         );
 
         public static final Item MYTHRIL_DRILL_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.mythril_drill.applies_to").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.mythril_drill.ingredients").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.mythril_drill.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.mythril_drill.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.mythril_drill.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.mythril_drill.applies_to").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.mythril_drill.ingredients").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.mythril_drill.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.mythril_drill.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.mythril_drill.additions_slot_description"),
             List.of(RegistryHelper.id("item/template/empty_slot_mythril_pick")),
             List.of(RegistryHelper.id("item/template/empty_slot_engine"))
         );
 
         public static final Item MIDAS_FOLDING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.midas_folding.applies_to").formatted(Formatting.GOLD),
-            Text.translatable("smithing_template.mythicmetals.midas_folding.ingredients").formatted(Formatting.GOLD),
-            Text.translatable("smithing_template.mythicmetals.midas_folding.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.midas_folding.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.midas_folding.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.midas_folding.applies_to").formatted(Formatting.GOLD),
+            Component.translatable("smithing_template.mythicmetals.midas_folding.ingredients").formatted(Formatting.GOLD),
+            Component.translatable("smithing_template.mythicmetals.midas_folding.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.midas_folding.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.midas_folding.additions_slot_description"),
             List.of(
                 RegistryHelper.id("item/template/empty_slot_midas_dagger"),
                 RegistryHelper.id("item/template/empty_slot_midas"),
@@ -132,51 +132,51 @@ public class MythicItems implements SimpleFieldProcessingSubject<ItemSet> {
         );
 
         public static final Item ROYAL_MIDAS_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.royal_midas.applies_to").formatted(Formatting.GOLD),
-            Text.translatable("smithing_template.mythicmetals.royal_midas.ingredients").formatted(Formatting.GOLD),
-            Text.translatable("smithing_template.mythicmetals.royal_midas.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.royal_midas.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.royal_midas.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.royal_midas.applies_to").formatted(Formatting.GOLD),
+            Component.translatable("smithing_template.mythicmetals.royal_midas.ingredients").formatted(Formatting.GOLD),
+            Component.translatable("smithing_template.mythicmetals.royal_midas.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.royal_midas.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.royal_midas.additions_slot_description"),
             List.of(RegistryHelper.id("item/template/empty_slot_gilded_midas")),
             List.of(RegistryHelper.id("item/template/empty_slot_block"))
         );
 
         public static final Item AEGIS_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.aegis.applies_to").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.aegis.ingredients").formatted(Formatting.BLUE),
-            Text.translatable("smithing_template.mythicmetals.aegis.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.aegis.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.aegis.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.aegis.applies_to").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.aegis.ingredients").formatted(Formatting.BLUE),
+            Component.translatable("smithing_template.mythicmetals.aegis.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.aegis.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.aegis.additions_slot_description"),
             List.of(RegistryHelper.id("item/template/empty_slot_hallowed_sword"), RegistryHelper.id("item/template/empty_slot_palladium_sword")),
             SmithingTemplateItem.getNetheriteUpgradeEmptyAdditionsSlotTextures()
         );
 
         public static final Item CARMOT_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.carmot.applies_to").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.KYBER.rgb())),
-            Text.translatable("smithing_template.mythicmetals.carmot.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.CARMOT.rgb())),
-            Text.translatable("smithing_template.mythicmetals.carmot.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.carmot.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.carmot.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.carmot.applies_to").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.KYBER.rgb())),
+            Component.translatable("smithing_template.mythicmetals.carmot.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.CARMOT.rgb())),
+            Component.translatable("smithing_template.mythicmetals.carmot.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.carmot.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.carmot.additions_slot_description"),
             SmithingTemplateItem.getNetheriteUpgradeEmptyBaseSlotTextures(),
             SmithingTemplateItem.getNetheriteUpgradeEmptyAdditionsSlotTextures()
         );
 
         public static final Item OSMIUM_CHAINMAIL_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.osmium.applies_to").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
-            Text.translatable("smithing_template.mythicmetals.osmium.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.OSMIUM.rgb())),
-            Text.translatable("smithing_template.mythicmetals.osmium.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.osmium.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.osmium.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.osmium.applies_to").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            Component.translatable("smithing_template.mythicmetals.osmium.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.OSMIUM.rgb())),
+            Component.translatable("smithing_template.mythicmetals.osmium.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.osmium.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.osmium.additions_slot_description"),
             ARMOR_ITEMS,
             SmithingTemplateItem.getNetheriteUpgradeEmptyAdditionsSlotTextures()
         );
 
         public static final Item TIDESINGER_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.tidesinger.applies_to").setStyle(UsefulSingletonForColorUtil.MetalColors.AQUA_STYLE),
-            Text.translatable("smithing_template.mythicmetals.tidesinger.ingredients").setStyle(UsefulSingletonForColorUtil.MetalColors.BUBBLE.style()),
-            Text.translatable("smithing_template.mythicmetals.tidesinger.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.tidesinger.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.tidesinger.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.tidesinger.applies_to").setStyle(UsefulSingletonForColorUtil.MetalColors.AQUA_STYLE),
+            Component.translatable("smithing_template.mythicmetals.tidesinger.ingredients").setStyle(UsefulSingletonForColorUtil.MetalColors.BUBBLE.style()),
+            Component.translatable("smithing_template.mythicmetals.tidesinger.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.tidesinger.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.tidesinger.additions_slot_description"),
             SmithingTemplateItem.getNetheriteUpgradeEmptyBaseSlotTextures(),
             List.of(
                 RegistryHelper.id("item/template/empty_slot_brain"),
@@ -188,11 +188,11 @@ public class MythicItems implements SimpleFieldProcessingSubject<ItemSet> {
         );
 
         public static final Item LEGENDARY_BANGLUM_SMITHING_TEMPLATE = new SmithingTemplateItem(
-            Text.translatable("smithing_template.mythicmetals.legendary_banglum.applies_to").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.BANGLUM.rgb())),
-            Text.translatable("smithing_template.mythicmetals.legendary_banglum.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.BANGLUM.rgb())),
-            Text.translatable("smithing_template.mythicmetals.legendary_banglum.title").formatted(Formatting.GRAY),
-            Text.translatable("smithing_template.mythicmetals.legendary_banglum.base_slot_description"),
-            Text.translatable("smithing_template.mythicmetals.legendary_banglum.additions_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.legendary_banglum.applies_to").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.BANGLUM.rgb())),
+            Component.translatable("smithing_template.mythicmetals.legendary_banglum.ingredients").setStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.MetalColors.BANGLUM.rgb())),
+            Component.translatable("smithing_template.mythicmetals.legendary_banglum.title").formatted(Formatting.GRAY),
+            Component.translatable("smithing_template.mythicmetals.legendary_banglum.base_slot_description"),
+            Component.translatable("smithing_template.mythicmetals.legendary_banglum.additions_slot_description"),
             SmithingTemplateItem.getNetheriteUpgradeEmptyBaseSlotTextures(),
             List.of(RegistryHelper.id("item/template/empty_slot_chunk"))
         );

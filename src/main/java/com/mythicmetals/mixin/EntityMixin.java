@@ -8,9 +8,15 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import static com.mythicmetals.item.tools.StormyxShield.STORMYX_SHIELD_DEFLECTOR;
 
+// TODO(Ravel): can not resolve target class Entity
+// TODO(Ravel): can not resolve target class Entity
+// TODO(Ravel): can not resolve target class Entity
 @Mixin(Entity.class)
 public class EntityMixin {
 
+    // TODO(Ravel): no target class
+// TODO(Ravel): no target class
+// TODO(Ravel): no target class
     @ModifyReturnValue(method = "getProjectileDeflection", at = @At("RETURN"))
     private ProjectileDeflection mythicmetals$reflectProjectilesWithStormyxShield(ProjectileDeflection original) {
         var entity = (Entity) (Object) this;

@@ -4,21 +4,21 @@ import com.mythicmetals.entity.RuniteArrowEntity;
 import com.mythicmetals.misc.RegistryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class RuniteArrowEntityRenderer extends ProjectileEntityRenderer<RuniteArrowEntity> {
-    public static final Identifier TEXTURE = RegistryHelper.id("textures/models/runite_arrow.png");
-    public static final Identifier TIPPED_TEXTURE = RegistryHelper.id("textures/models/tipped_runite_arrow.png");
+public class RuniteArrowEntityRenderer extends ArrowRenderer<RuniteArrowEntity> {
+    public static final ResourceLocation TEXTURE = RegistryHelper.id("textures/models/runite_arrow.png");
+    public static final ResourceLocation TIPPED_TEXTURE = RegistryHelper.id("textures/models/tipped_runite_arrow.png");
 
-    public RuniteArrowEntityRenderer(EntityRendererFactory.Context context) {
+    public RuniteArrowEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public Identifier getTexture(RuniteArrowEntity entity) {
+    public ResourceLocation getTexture(RuniteArrowEntity entity) {
         return entity.getColor() > 0 ? TIPPED_TEXTURE : TEXTURE;
     }
 }

@@ -23,48 +23,61 @@ import io.wispforest.owo.itemgroup.OwoItemGroup;
 import io.wispforest.owo.itemgroup.gui.ItemGroupButton;
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.village.VillagerProfession;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.ladysnake.cca.api.v3.component.ComponentKey;
-import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.entity.*;
 
-public class MythicMetals implements ModInitializer, EntityComponentInitializer {
+import java.util.function.Supplier;
+
+public class MythicMetals implements ModInitializer {
     public static Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "mythicmetals";
     public static final int CONFIG_VERSION = 13;
 
-    public static final AbstractMinecartEntity.Type BANGLUM_TNT = Enum.valueOf(AbstractMinecartEntity.Type.class, "BANGLUM_TNT");
-    public static final AbstractMinecartEntity.Type PALLADIUM_MINECART = Enum.valueOf(AbstractMinecartEntity.Type.class, "PALLADIUM_MINECART");
+    public static final AbstractMinecart.Type BANGLUM_TNT = Enum.valueOf(AbstractMinecart.Type.class, "BANGLUM_TNT");
+    public static final AbstractMinecart.Type PALLADIUM_MINECART = Enum.valueOf(AbstractMinecart.Type.class, "PALLADIUM_MINECART");
 
     public static MythicMetalsConfig CONFIG = MythicMetalsConfig.createAndLoad();
 
     public static final OwoItemGroup TABBED_GROUP = OwoItemGroup.builder(RegistryHelper.id("main"), () -> Icon.of(MythicItems.STORMYX.getIngot()))
         .initializer(group -> {
-            group.addTab(Icon.of(MythicItems.ADAMANTITE.getIngot()), "items", TagKey.of(RegistryKeys.ITEM, RegistryHelper.id("item_tab")), false);
-            group.addTab(Icon.of(MythicBlocks.ADAMANTITE.getStorageBlock()), "blocks", TagKey.of(RegistryKeys.ITEM, RegistryHelper.id("blocks")), false);
-            group.addTab(Icon.of(MythicTools.ADAMANTITE.getPickaxe()), "tools", TagKey.of(RegistryKeys.ITEM, RegistryHelper.id("tool_tab")), false);
-            group.addTab(Icon.of(MythicArmor.ADAMANTITE.getChestplate()), "armor", TagKey.of(RegistryKeys.ITEM, RegistryHelper.id("armor_tab")), false);
+            group.addTab(Icon.of(MythicItems.ADAMANTITE.getIngot()), "items", TagKey.create(Registries.ITEM, RegistryHelper.id("item_tab")), false);
+            group.addTab(Icon.of(MythicBlocks.ADAMANTITE.getStorageBlock()), "blocks", TagKey.create(Registries.ITEM, RegistryHelper.id("blocks")), false);
+            group.addTab(Icon.of(MythicTools.ADAMANTITE.getPickaxe()), "tools", TagKey.create(Registries.ITEM, RegistryHelper.id("tool_tab")), false);
+            group.addTab(Icon.of(MythicArmor.ADAMANTITE.getChestplate()), "armor", TagKey.create(Registries.ITEM, RegistryHelper.id("armor_tab")), false);
             group.addButton(ItemGroupButton.github(group, "https://github.com/Noaaan/MythicMetals/issues"));
             group.addButton(ItemGroupButton.curseforge(group, "https://www.curseforge.com/minecraft/mc-mods/mythicmetals"));
             group.addButton(ItemGroupButton.modrinth(group, "https://modrinth.com/mod/mythicmetals"));
             group.addButton(ItemGroupButton.discord(group, "https://discord.gg/69cKvQWScC"));
         })
         .build();
+    private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MOD_ID);
 
-    public static final ComponentKey<CarmotShield> CARMOT_SHIELD = ComponentRegistry.getOrCreate(RegistryHelper.id("carmot_shield"), CarmotShield.class);
-    public static final ComponentKey<CombustionCooldown> COMBUSTION_COOLDOWN = ComponentRegistry.getOrCreate(RegistryHelper.id("combustion_cooldown"), CombustionCooldown.class);
+    public static final Supplier<AttachmentType<CarmotShield>> CARMOT_SHIELD = ATTACHMENT_TYPES.register("carmot_shield", () -> AttachmentType
+            .serializable(iAttachmentHolder ->  iAttachmentHolder instanceof Player player ?  new CarmotShield(player) : null)
+            .sync(new CarmotShield.SyncHandler())
+            .copyOnDeath()
+            .build());
+    public static final Supplier<AttachmentType<CombustionCooldown>> COMBUSTION_COOLDOWN = ATTACHMENT_TYPES.register("combustion_cooldown", () -> AttachmentType
+            .serializable(iAttachmentHolder ->  iAttachmentHolder instanceof LivingEntity livingEntity ?  new CombustionCooldown(livingEntity) : null)
+            .sync(new CombustionCooldown.SyncHandler())
+            //.copyOnDeath()
+            .build());
 
     @Override
     public void onInitialize() {
@@ -102,9 +115,11 @@ public class MythicMetals implements ModInitializer, EntityComponentInitializer 
         FieldRegistrationHandler.processSimple(RegisterCriteria.class, false);
         BlockBreaker.initHammerTime();
         MythicLootOps.init();
+        /*
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.CLERIC, 5, factories -> {
-            factories.add(new TradeOffers.SellItemFactory(MythicItems.Templates.AEGIS_SMITHING_TEMPLATE, 48, 1, 2, 30));
+            factories.add(new VillagerTrades.SellItemFactory(MythicItems.Templates.AEGIS_SMITHING_TEMPLATE, 48, 1, 2, 30));
         });
+         */
         registerDispenserBehaviour();
 
         if (CONFIG.configVersion() < CONFIG_VERSION) {
@@ -142,16 +157,34 @@ public class MythicMetals implements ModInitializer, EntityComponentInitializer 
     }
 
     private void registerDispenserBehaviour() {
-        DispenserBlock.registerBehavior(() -> MythicTools.STAR_PLATINUM_ARROW, new ProjectileDispenserBehavior(MythicTools.STAR_PLATINUM_ARROW));
-        DispenserBlock.registerBehavior(() -> MythicTools.RUNITE_ARROW, new ProjectileDispenserBehavior(MythicTools.RUNITE_ARROW));
-        DispenserBlock.registerBehavior(() -> MythicTools.TIPPED_RUNITE_ARROW, new ProjectileDispenserBehavior(MythicTools.TIPPED_RUNITE_ARROW));
+        DispenserBlock.registerBehavior(() -> MythicTools.STAR_PLATINUM_ARROW, new ProjectileDispenseBehavior(MythicTools.STAR_PLATINUM_ARROW));
+        DispenserBlock.registerBehavior(() -> MythicTools.RUNITE_ARROW, new ProjectileDispenseBehavior(MythicTools.RUNITE_ARROW));
+        DispenserBlock.registerBehavior(() -> MythicTools.TIPPED_RUNITE_ARROW, new ProjectileDispenseBehavior(MythicTools.TIPPED_RUNITE_ARROW));
     }
 
 
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerFor(LivingEntity.class, COMBUSTION_COOLDOWN, CombustionCooldown::new);
-        registry.registerForPlayers(CARMOT_SHIELD, CarmotShield::new, RespawnCopyStrategy.INVENTORY);
+    /*
+    @SubscribeEvent
+    public void registerEntityComponentFactories(RegisterCapabilitiesEvent registry) {
+        for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
+            registry.registerEntity(COMBUSTION_COOLDOWN, entityType, (o, unused) -> new CombustionCooldown(o instanceof LivingEntity le ? le : null));
+        }
+        //registry.re(LivingEntity.class, COMBUSTION_COOLDOWN, CombustionCooldown::new);
+        registry.registerEntity(CARMOT_SHIELD, EntityType.PLAYER, (o, unused) -> new CarmotShield(o));
+        //registry.registerForPlayers(CARMOT_SHIELD, CarmotShield::new, RespawnCopyStrategy.INVENTORY);
+    }
+     */
+
+    @SubscribeEvent
+    public void registerVillagerTrades(VillagerTradesEvent event) {
+        /*
+        TradeOfferHelper.registerVillagerOffers(VillagerProfession.CLERIC, 5, factories -> {
+            factories.add(new VillagerTrades.SellItemFactory(MythicItems.Templates.AEGIS_SMITHING_TEMPLATE, 48, 1, 2, 30));
+        });
+         */
+        if(event.getType() == VillagerProfession.CLERIC){
+            event.getTrades().get(5).add(new VillagerTrades.ItemsForEmeralds(MythicItems.Templates.AEGIS_SMITHING_TEMPLATE, 48, 1, 2, 30));
+        }
     }
 
 }

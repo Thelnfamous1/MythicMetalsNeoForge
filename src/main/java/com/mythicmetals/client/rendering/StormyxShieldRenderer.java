@@ -2,19 +2,19 @@ package com.mythicmetals.client.rendering;
 
 import com.mythicmetals.client.models.RainbowShieldModel;
 import com.mythicmetals.misc.UsefulSingletonForColorUtil;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector3f;
 
 public class StormyxShieldRenderer {
-    private static final Identifier WORLD_BORDER = Identifier.of("textures/misc/forcefield.png");
+    private static final ResourceLocation WORLD_BORDER = ResourceLocation.of("textures/misc/forcefield.png");
 
     /**
      * Renders the model of the Stormyx Rainbow Shield, a fancy localized worldborder
      */
-    public static void renderRainbowShield(MatrixStack matrices, VertexConsumerProvider vcp, int light, AbstractClientPlayerEntity player) {
+    public static void renderRainbowShield(PoseStack matrices, VertexConsumerProvider vcp, int light, AbstractClientPlayer player) {
         matrices.push();
         // Rainbow Handling
         double delta = System.currentTimeMillis() / 45.0;

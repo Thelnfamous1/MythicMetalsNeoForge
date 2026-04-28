@@ -1,11 +1,11 @@
 accessWidener v2 named
 
-accessible class net/minecraft/datafixer/fix/ItemStackComponentizationFix$StackData
+accessible class net/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData
 
-accessible method net/minecraft/entity/effect/StatusEffect <init> (Lnet/minecraft/entity/effect/StatusEffectCategory;I)V
-accessible method net/minecraft/item/SmithingTemplateItem getArmorTrimEmptyBaseSlotTextures ()Ljava/util/List;
+accessible method net/minecraft/world/effect/MobEffect <init> (Lnet/minecraft/world/effect/MobEffectCategory;I)V
+accessible method net/minecraft/world/item/SmithingTemplateItem createTrimmableArmorIconList ()Ljava/util/List;
 
-accessible method net/minecraft/item/SmithingTemplateItem getNetheriteUpgradeEmptyBaseSlotTextures ()Ljava/util/List;
-accessible method net/minecraft/item/SmithingTemplateItem getNetheriteUpgradeEmptyAdditionsSlotTextures ()Ljava/util/List;
+accessible method net/minecraft/world/item/SmithingTemplateItem createNetheriteUpgradeIconList ()Ljava/util/List;
+accessible method net/minecraft/world/item/SmithingTemplateItem createNetheriteUpgradeMaterialList ()Ljava/util/List;
 
-accessible method net/minecraft/block/RailPlacementHelper getNeighborCount ()I
+accessible method net/minecraft/world/level/block/RailState countPotentialConnections ()I

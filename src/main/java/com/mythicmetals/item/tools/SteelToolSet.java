@@ -1,36 +1,39 @@
 package com.mythicmetals.item.tools;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.*;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class SteelToolSet extends ToolSet {
-    public SteelToolSet(ToolMaterial material, int[] damage, float[] speed) {
+    public SteelToolSet(Tier material, int[] damage, float[] speed) {
         super(material, damage, speed);
     }
 
     @Override
-    protected ShovelItem makeShovel(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new SteelShovel(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected ShovelItem makeShovel(Tier material, int damage, float speed, Item.Properties settings) {
+        return new SteelShovel(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     public static class SteelShovel extends ShovelItem {
-        public SteelShovel(ToolMaterial material, Settings settings) {
+        public SteelShovel(Tier material, Properties settings) {
             super(material, settings);
         }
 
         @Override
-        public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
+        public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
 
             // Special Ability - Shovel Snow for free
-            if (!world.isClient() && state.isIn(BlockTags.SNOW)) {
+            if (!world.isClientSide() && state.is(BlockTags.SNOW)) {
                 return true;
             }
 
-            return super.postMine(stack, world, state, pos, miner);
+            return super.mineBlock(stack, world, state, pos, miner);
         }
     }
 }

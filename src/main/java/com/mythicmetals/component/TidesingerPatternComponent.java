@@ -4,11 +4,11 @@ import com.mythicmetals.misc.UsefulSingletonForColorUtil;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.StructEndecBuilder;
 import net.minecraft.item.*;
-import net.minecraft.item.tooltip.TooltipAppender;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Util;
+import net.minecraft.world.item.component.TooltipProvider;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  * @param pattern used for tooltip handling
  * @see TidesingerPatternComponent#TIDESINGER_VARIANTS
  */
-public record TidesingerPatternComponent(String pattern) implements TooltipAppender {
+public record TidesingerPatternComponent(String pattern) implements TooltipProvider {
     /**
      * Map which holds a string used for translation keys, depending on the coral item used
      */
@@ -48,7 +48,7 @@ public record TidesingerPatternComponent(String pattern) implements TooltipAppen
     }
 
     @Override
-    public void appendTooltip(Item.TooltipContext context, Consumer<Text> tooltip, TooltipType type) {
+    public void appendTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
         Style style = switch (this.pattern) {
             case "brain" -> UsefulSingletonForColorUtil.MetalColors.BRAIN.style();
             case "bubble" -> UsefulSingletonForColorUtil.MetalColors.BUBBLE.style();
@@ -62,6 +62,6 @@ public record TidesingerPatternComponent(String pattern) implements TooltipAppen
         if (style.isEmpty()) {
             return;
         }
-        tooltip.accept(Text.translatable("tooltip.tidesinger.coral." + this.pattern).setStyle(style));
+        tooltip.accept(Component.translatable("tooltip.tidesinger.coral." + this.pattern).setStyle(style));
     }
 }

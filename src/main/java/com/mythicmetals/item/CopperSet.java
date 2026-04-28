@@ -2,16 +2,16 @@ package com.mythicmetals.item;
 
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import java.util.function.Consumer;
 
 public class CopperSet {
     private Item nuggetItem = null;
     private Item dustItem = null;
 
-    private static Item.Settings createSettings(Consumer<Item.Settings> settingsProcessor) {
+    private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
         final var settings = new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(0);
         settingsProcessor.accept(settings);
         return settings;
@@ -22,7 +22,7 @@ public class CopperSet {
         });
     }
 
-    public CopperSet(Consumer<Item.Settings> settingsConsumer) {
+    public CopperSet(Consumer<Item.Properties> settingsConsumer) {
         if (MythicMetals.CONFIG.enableNuggets()) {
             this.nuggetItem = makeItem(createSettings(settingsConsumer));
         }
@@ -33,14 +33,14 @@ public class CopperSet {
 
     public void register(String name) {
         if (nuggetItem != null) {
-            Registry.register(Registries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
         }
         if (dustItem != null) {
-            Registry.register(Registries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
+            Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
         }
     }
 
-    protected Item makeItem(Item.Settings settings) {
+    protected Item makeItem(Item.Properties settings) {
         return new Item(settings);
     }
 

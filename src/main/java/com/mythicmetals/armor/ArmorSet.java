@@ -4,10 +4,15 @@ import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.misc.StringUtilsAtHome;
 import net.minecraft.item.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,8 +33,8 @@ public class ArmorSet {
         ArmorItem.Type.BOOTS, 13
     );
 
-    public ArmorItem baseArmorItem(ArmorMaterial material, ArmorItem.Type slot, int durabilityModifier, Consumer<Item.Settings> settingsProcessor) {
-        final var settings = new Item.Settings()
+    public ArmorItem baseArmorItem(ArmorMaterial material, ArmorItem.Type slot, int durabilityModifier, Consumer<Item.Properties> settingsProcessor) {
+        final var settings = new Item.Properties()
             .group(MythicMetals.TABBED_GROUP)
             .tab(3)
             .maxDamage(BASE_DURABILITY.get(slot) * durabilityModifier);
@@ -42,7 +47,7 @@ public class ArmorSet {
         });
     }
 
-    public ArmorSet(ArmorMaterial material, int durabilityModifier, Consumer<Item.Settings> settingsProcessor) {
+    public ArmorSet(ArmorMaterial material, int durabilityModifier, Consumer<Item.Properties> settingsProcessor) {
         this.helmet = baseArmorItem(material, ArmorItem.Type.HELMET, durabilityModifier, settingsProcessor);
         this.chestplate = baseArmorItem(material, ArmorItem.Type.CHESTPLATE, durabilityModifier, settingsProcessor);
         this.leggings = baseArmorItem(material, ArmorItem.Type.LEGGINGS, durabilityModifier, settingsProcessor);
@@ -51,20 +56,20 @@ public class ArmorSet {
     }
 
     public void register(String name) {
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_helmet"), helmet);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_chestplate"), chestplate);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_leggings"), leggings);
-        Registry.register(Registries.ITEM, RegistryHelper.id(name + "_boots"), boots);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_helmet"), helmet);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_chestplate"), chestplate);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_leggings"), leggings);
+        Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_boots"), boots);
     }
 
     public void register(String modid, String name) {
-        Registry.register(Registries.ITEM, Identifier.of(modid, name + "_helmet"), helmet);
-        Registry.register(Registries.ITEM, Identifier.of(modid, name + "_chestplate"), chestplate);
-        Registry.register(Registries.ITEM, Identifier.of(modid, name + "_leggings"), leggings);
-        Registry.register(Registries.ITEM, Identifier.of(modid, name + "_boots"), boots);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modid, name + "_helmet"), helmet);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modid, name + "_chestplate"), chestplate);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modid, name + "_leggings"), leggings);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modid, name + "_boots"), boots);
     }
 
-    protected ArmorItem makeItem(ArmorMaterial material, ArmorItem.Type slot, Item.Settings settings) {
+    protected ArmorItem makeItem(ArmorMaterial material, ArmorItem.Type slot, Item.Properties settings) {
         return new ArmorItem(getEntry(material), slot, settings);
     }
 
@@ -96,8 +101,8 @@ public class ArmorSet {
         return this.getArmorItems().contains(stack.getItem());
     }
 
-    public RegistryEntry<ArmorMaterial> getEntry(ArmorMaterial material) {
-        return Registries.ARMOR_MATERIAL.getEntry(material);
+    public Holder<ArmorMaterial> getEntry(ArmorMaterial material) {
+        return BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(material);
     }
 
     public String getTitlecaseName() {

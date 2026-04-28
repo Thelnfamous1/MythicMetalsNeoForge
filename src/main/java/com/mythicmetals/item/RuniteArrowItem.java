@@ -1,13 +1,13 @@
 package com.mythicmetals.item;
 
 import com.mythicmetals.entity.RuniteArrowEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.item.*;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Position;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class RuniteArrowItem extends ArrowItem {
@@ -17,14 +17,14 @@ public class RuniteArrowItem extends ArrowItem {
     }
 
     @Override
-    public PersistentProjectileEntity createArrow(World world, ItemStack stack, LivingEntity shooter, @Nullable ItemStack shotFrom) {
+    public AbstractArrow createArrow(Level world, ItemStack stack, LivingEntity shooter, @Nullable ItemStack shotFrom) {
         return new RuniteArrowEntity(world, shooter, stack, shotFrom);
     }
 
     @Override
-    public ProjectileEntity createEntity(World world, Position pos, ItemStack stack, Direction direction) {
+    public AbstractArrow createEntity(Level world, Position pos, ItemStack stack, Direction direction) {
         var entity = new RuniteArrowEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack.copyWithCount(1), null);
-        entity.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
+        entity.pickupType = AbstractArrow.Pickup.ALLOWED;
         return entity;
     }
 

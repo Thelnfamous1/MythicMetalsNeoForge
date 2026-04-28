@@ -1,21 +1,25 @@
 package com.mythicmetals.item.tools;
 
-import net.minecraft.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tier;
+
 import java.util.function.Consumer;
 
 public class BanglumToolSet extends ToolSet {
 
     @Override
-    protected PickaxeItem makePickaxe(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new BanglumPick(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected PickaxeItem makePickaxe(Tier material, int damage, float speed, Item.Properties settings) {
+        return new BanglumPick(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
     @Override
-    protected ShovelItem makeShovel(ToolMaterial material, int damage, float speed, Item.Settings settings) {
-        return new BanglumShovel(material, settings.attributeModifiers(createAttributeModifiers(material, damage, speed)));
+    protected ShovelItem makeShovel(Tier material, int damage, float speed, Item.Properties settings) {
+        return new BanglumShovel(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
-    public BanglumToolSet(ToolMaterial material, int[] damage, float[] speed, Consumer<Item.Settings> settingsProcessor) {
+    public BanglumToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
         super(material, damage, speed, settingsProcessor);
     }
 

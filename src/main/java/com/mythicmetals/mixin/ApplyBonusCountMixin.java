@@ -4,28 +4,28 @@ import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.component.UpgradeComponent;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.MythicItems;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.function.ApplyBonusLootFunction;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.core.Holder;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(ApplyBonusLootFunction.class)
-public class ApplyBonusLootFunctionMixin {
+@Mixin(ApplyBonusCount.class)
+public class ApplyBonusCountMixin {
 
     @Shadow
     @Final
-    private RegistryEntry<Enchantment> enchantment;
+    private Holder<Enchantment> enchantment;
 
     @ModifyVariable(method = "process",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/loot/context/LootContext;getRandom()Lnet/minecraft/util/math/random/Random;",
+            target = "Lnet/minecraft/world/level/storage/loot/LootContext;getRandom()Lnet/minecraft/util/RandomSource;",
             shift = At.Shift.BEFORE),
         ordinal = 0
     )
@@ -36,7 +36,7 @@ public class ApplyBonusLootFunctionMixin {
         }
 
         // Return early if there is no item
-        var toolCtxStack = lootCtx.get(LootContextParameters.TOOL);
+        var toolCtxStack = lootCtx.get(LootContextParams.TOOL);
         if (toolCtxStack == null) {
             return level;
         }

@@ -2,16 +2,16 @@ package com.mythicmetals.data;
 
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.config.MythicOreConfigs;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import static com.mythicmetals.data.MythicOreFeatures.*;
 import static com.mythicmetals.data.MythicOreRules.*;
 
 public class MythicOreFeatureProvider {
-    public static void initConfiguredFeatures(Registerable<ConfiguredFeature<?, ?>> registerable) {
+    public static void initConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> registerable) {
         // above 0
         OreFeatureHelper.configuredFeature(registerable, ORE_AQUARIUM, STONE_RULE, MythicBlocks.AQUARIUM.getOre(), MythicOreConfigs.AQUARIUM);
         OreFeatureHelper.configuredFeature(registerable, ORE_BANGLUM, STONE_RULE, MythicBlocks.BANGLUM.getOre(), MythicOreConfigs.BANGLUM);
@@ -43,8 +43,8 @@ public class MythicOreFeatureProvider {
         OreFeatureHelper.configuredFeature(registerable, ORE_END_STARRITE, END_STONE_RULE, MythicBlocks.STARRITE.getOreVariant("end_stone"), MythicOreConfigs.END_STARRITE);
     }
 
-    public static void initPlacedFeatures(Registerable<PlacedFeature> registerable) {
-        var featureLookup = registerable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
+    public static void initPlacedFeatures(BootstrapContext<PlacedFeature> registerable) {
+        var featureLookup = registerable.getRegistryLookup(Registries.CONFIGURED_FEATURE);
         OreFeatureHelper.create(registerable, featureLookup.getOrThrow(ORE_AQUARIUM).registryKey(), AQUARIUM, MythicOreConfigs.AQUARIUM);
         OreFeatureHelper.create(registerable, featureLookup.getOrThrow(ORE_BANGLUM).registryKey(), BANGLUM, MythicOreConfigs.BANGLUM);
         OreFeatureHelper.create(registerable, featureLookup.getOrThrow(ORE_KYBER).registryKey(), KYBER, MythicOreConfigs.KYBER);

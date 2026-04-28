@@ -1,22 +1,22 @@
 package com.mythicmetals.recipe;
 
 import com.mythicmetals.item.tools.MythicTools;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.Level;
 
-public class TippedRuniteArrowRecipe extends SpecialCraftingRecipe {
-    public TippedRuniteArrowRecipe(CraftingRecipeCategory craftingRecipeCategory) {
+public class TippedRuniteArrowRecipe extends CustomRecipe {
+    public TippedRuniteArrowRecipe(CraftingBookCategory craftingRecipeCategory) {
         super(craftingRecipeCategory);
     }
 
-    public boolean matches(CraftingRecipeInput input, World world) {
+    public boolean matches(CraftingInput input, Level world) {
         if (input.getWidth() == 3 && input.getHeight() == 3) {
             for (int i = 0; i < input.getWidth(); ++i) {
                 for (int j = 0; j < input.getHeight(); ++j) {
@@ -41,13 +41,13 @@ public class TippedRuniteArrowRecipe extends SpecialCraftingRecipe {
         }
     }
 
-    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup wrapperLookup) {
+    public ItemStack craft(CraftingInput input, HolderLookup.Provider wrapperLookup) {
         ItemStack itemStack = input.getStackInSlot(1 + input.getWidth());
         if (!itemStack.isOf(Items.LINGERING_POTION)) {
             return ItemStack.EMPTY;
         } else {
             ItemStack itemStack2 = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW, 8);
-            itemStack2.set(DataComponentTypes.POTION_CONTENTS, itemStack.get(DataComponentTypes.POTION_CONTENTS));
+            itemStack2.set(DataComponents.POTION_CONTENTS, itemStack.get(DataComponents.POTION_CONTENTS));
             return itemStack2;
         }
     }

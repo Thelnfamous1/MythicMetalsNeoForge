@@ -1,8 +1,8 @@
 package com.mythicmetals.item.tools;
 
 import net.minecraft.item.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 public class HammerBase extends PickaxeItem {
 
@@ -13,7 +13,7 @@ public class HammerBase extends PickaxeItem {
         this.depth = depth;
     }
 
-    public boolean canBreak(ItemStack stack, BlockView view, BlockPos pos) {
+    public boolean canBreak(ItemStack stack, BlockGetter view, BlockPos pos) {
         return super.isCorrectForDrops(stack, view.getBlockState(pos));
     }
 

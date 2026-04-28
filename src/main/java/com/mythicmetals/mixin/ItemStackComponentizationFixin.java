@@ -1,8 +1,8 @@
 package com.mythicmetals.mixin;
 
 import com.mojang.serialization.Dynamic;
-import net.minecraft.datafixer.fix.ItemStackComponentizationFix;
-import net.minecraft.util.Util;
+import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
+import net.minecraft.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,8 +41,8 @@ public abstract class ItemStackComponentizationFixin {
     );
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    @Inject(method = "fixStack", at = @At("TAIL"))
-    private static void mythicmetals$migrateToMythicDataComponents(ItemStackComponentizationFix.StackData data, Dynamic dynamic, CallbackInfo ci) {
+    @Inject(method = "fixItemStack", at = @At("TAIL"))
+    private static void mythicmetals$migrateToMythicDataComponents(ItemStackComponentizationFix.ItemStackData data, Dynamic dynamic, CallbackInfo ci) {
         if (data.itemMatches(MM_MIDAS)) {
             data.setComponent("mythicmetals:gold_folded", dynamic.emptyMap()
                 .setFieldIfPresent("gold_folded", data.getAndRemove("GoldFolded").result())

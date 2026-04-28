@@ -12,12 +12,12 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCustomDisplay;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.RecipeType;
 import java.util.*;
 
 public class MythicMetalsREIClientPlugin implements REIClientPlugin {
@@ -32,8 +32,8 @@ public class MythicMetalsREIClientPlugin implements REIClientPlugin {
         ReferenceSet<Potion> registeredPotions = new ReferenceOpenHashSet<>();
         EntryRegistry.getInstance().getEntryStacks().filter(entry -> entry.getValueType() == ItemStack.class && entry.<ItemStack>castValue().getItem() == Items.LINGERING_POTION).forEach(entry -> {
             ItemStack itemStack = (ItemStack) entry.getValue();
-            if (itemStack.contains(DataComponentTypes.POTION_CONTENTS)) {
-                var potion = itemStack.get(DataComponentTypes.POTION_CONTENTS).potion().get();
+            if (itemStack.contains(DataComponents.POTION_CONTENTS)) {
+                var potion = itemStack.get(DataComponents.POTION_CONTENTS).potion().get();
                 if (registeredPotions.add(potion.value())) {
                     List<EntryIngredient> input = new ArrayList<>();
                     for (int i = 0; i < 4; i++)
@@ -41,7 +41,7 @@ public class MythicMetalsREIClientPlugin implements REIClientPlugin {
                     input.add(EntryIngredients.of(itemStack));
                     for (int i = 0; i < 4; i++)
                         input.add(arrowStack);
-                    var outputStack = PotionContentsComponent.createStack(MythicTools.TIPPED_RUNITE_ARROW, potion);
+                    var outputStack = PotionContents.createStack(MythicTools.TIPPED_RUNITE_ARROW, potion);
                     outputStack.setCount(8);
                     EntryIngredient output = EntryIngredients.of(outputStack);
                     registry.add(new DefaultCustomDisplay(null, input, Collections.singletonList(output)));

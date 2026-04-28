@@ -4,14 +4,14 @@ import com.mojang.authlib.GameProfile;
 import com.mythicmetals.data.MythicTags;
 import eu.pb4.common.protection.api.CommonProtection;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Explosion;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
@@ -34,14 +34,14 @@ public final class EpicExplosion {
      * @param exploder       Entity which caused the explosion
      * @param cause          PlayerEntity which triggered the explosion, used to check against claim protection
      */
-    public static void explode(ServerWorld world, int x, int y, int z, int radius, Predicate<BlockState> statePredicate,
-                               @Nullable Entity exploder, @Nullable PlayerEntity cause) {
+    public static void explode(ServerLevel world, int x, int y, int z, int radius, Predicate<BlockState> statePredicate,
+                               @Nullable BlockEntity exploder, @Nullable Player cause) {
         int radiusSq = radius * radius;
         var pos = new BlockPos.Mutable();
         Explosion explosion = null;
 
         if (exploder != null) {
-            explosion = new Explosion(world, exploder, x, y, z, radius, false, Explosion.DestructionType.DESTROY_WITH_DECAY);
+            explosion = new Explosion(world, exploder, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
         }
 
         MythicParticleSystem.EXPLOSIVE_EXPLOSION.spawn(world, new Vec3d(x, y, z), (float) radius);
@@ -83,7 +83,7 @@ public final class EpicExplosion {
      * @param radius Water absorption radius
      * @param cause  PlayerEntity which triggered this, used to check against claim protection
      */
-    public static void absorbWater(ServerWorld world, int x, int y, int z, int radius, @Nullable PlayerEntity cause) {
+    public static void absorbWater(ServerLevel world, int x, int y, int z, int radius, @Nullable Player cause) {
         int radiusSq = radius * radius;
         var pos = new BlockPos.Mutable();
 
