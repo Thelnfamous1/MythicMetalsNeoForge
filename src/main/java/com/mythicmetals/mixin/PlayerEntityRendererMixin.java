@@ -11,10 +11,12 @@ import com.mythicmetals.misc.UsefulSingletonForColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,24 +28,24 @@ import static com.mythicmetals.client.rendering.PlayerEnergySwirlFeatureRenderer
 import static com.mythicmetals.misc.UsefulSingletonForColorUtil.MetalColors.SHIELD_BREAK_COLOR;
 
 @Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin {
+public class PlayerEntityRendererMixin {
     /**
      * Renders the Carmot Shield on the players arm
      */
     @Inject(method = "renderHand", at = @At("TAIL"))
-    private void mythicmetals$renderShieldArm(PoseStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayer player, ModelPart arm, ModelPart sleeve, CallbackInfo ci) {
+    private void mythicmetals$renderShieldArm(PoseStack matrices, MultiBufferSource vertexConsumers, int light, AbstractClientPlayer player, ModelPart arm, ModelPart sleeve, CallbackInfo ci) {
         if (player.getData(MythicMetals.CARMOT_SHIELD).shouldRenderShield()) {
             final var client = Minecraft.getInstance();
-            float f = player.age + (client.isPaused() ? 0 : client.getRenderTickCounter().getTickDelta(true));
+            float f = player.tickCount + (client.isPaused() ? 0 : client.getTimer().getGameTimeDeltaPartialTick(true));
 
-            var shield = player.getComponent(MythicMetals.CARMOT_SHIELD);
+            var shield = player.getData(MythicMetals.CARMOT_SHIELD);
 
-            var consumer = vertexConsumers.getBuffer(RenderLayer.getEnergySwirl(SWIRL_TEXTURE, (f * .005f) % 1f, f * .005f % 1f));
+            var consumer = vertexConsumers.getBuffer(RenderType.energySwirl(SWIRL_TEXTURE, (f * .005f) % 1f, f * .005f % 1f));
             matrices.scale(1.0625f, 1.0625f, 1.0625f);
             if (shield.cooldown > CarmotShield.MAX_COOLDOWN - 30) {
-                sleeve.render(matrices, consumer, light, OverlayTexture.DEFAULT_UV, SHIELD_BREAK_COLOR);
+                sleeve.render(matrices, consumer, light, OverlayTexture.NO_OVERLAY, SHIELD_BREAK_COLOR);
             } else // Regular animation
-                sleeve.render(matrices, consumer, light, OverlayTexture.DEFAULT_UV, UsefulSingletonForColorUtil.rainbow());
+                sleeve.render(matrices, consumer, light, OverlayTexture.NO_OVERLAY, UsefulSingletonForColorUtil.rainbow());
         }
     }
 
@@ -52,19 +54,19 @@ public class PlayerRendererMixin {
      */
     @Inject(method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
         at = @At("TAIL"))
-    private void mythicmetals$renderRainbowShield(AbstractClientPlayer player, float f, float g, PoseStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-        var stack = player.getActiveItem();
+    private void mythicmetals$renderRainbowShield(AbstractClientPlayer player, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
+        var stack = player.getUseItem();
         // Only render if the shield is actively being used
         if (stack.getItem().equals(MythicTools.STORMYX_SHIELD)) {
-            matrixStack.push();
+            matrixStack.pushPose();
             StormyxShieldRenderer.renderRainbowShield(matrixStack, vertexConsumerProvider, i, player);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 
     @Inject(method = "getArmPose", at = @At("RETURN"), cancellable = true)
     private static void mythicmetals$mythrilDrillPose(AbstractClientPlayer player, InteractionHand hand, CallbackInfoReturnable<HumanoidModel.ArmPose> cir) {
-        var stack = player.getStackInHand(hand);
+        var stack = player.getItemInHand(hand);
         if (stack.getOrDefault(MythicDataComponents.DRILL, DrillComponent.DEFAULT).hasFuel()) {
             cir.setReturnValue(HumanoidModel.ArmPose.CROSSBOW_CHARGE);
         }

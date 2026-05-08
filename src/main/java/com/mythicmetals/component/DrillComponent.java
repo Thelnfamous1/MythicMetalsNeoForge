@@ -42,18 +42,18 @@ public record DrillComponent(int fuel) implements TooltipProvider {
     }
 
     @Override
-    public void appendTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
 
         // Activation Status
         if (this.hasFuel()) {
-            tooltip.accept(Component.translatable("tooltip.mythril_drill.activated").formatted(ChatFormatting.AQUA));
+            tooltip.accept(Component.translatable("tooltip.mythril_drill.activated").withStyle(ChatFormatting.AQUA));
         }
         if (this.fuel == 0) {
             tooltip.accept(Component.translatable("tooltip.mythril_drill.refuel").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
         // Fuel Gauge
         tooltip.accept(Component.translatable("tooltip.mythril_drill.fuel", this.fuel, MAX_FUEL)
-            .fillStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.getSlightlyDarkerOwoBlueToRedGradient(this.fuel, MAX_FUEL))));
+            .withStyle(Style.EMPTY.withColor(UsefulSingletonForColorUtil.getSlightlyDarkerOwoBlueToRedGradient(this.fuel, MAX_FUEL))));
 
     }
 }

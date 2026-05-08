@@ -43,14 +43,14 @@ public record PrometheumComponent(int durabilityRepaired) {
      */
     public static void tickAutoRepair(ItemStack stack, Level world) {
         if (!stack.isDamaged()) return; // Don't handle auto repair if item is fully repaired
-        if (world.isClient()) return; // Desyncs if done on client
-        if (!stack.contains(MythicDataComponents.PROMETHEUM)) return;
+        if (world.isClientSide()) return; // Desyncs if done on client
+        if (!stack.has(MythicDataComponents.PROMETHEUM)) return;
         var random = world.getRandom();
 
         var component = stack.get(MythicDataComponents.PROMETHEUM);
         assert component != null;
 
-        var dmg = stack.getDamage();
+        var dmg = stack.getDamageValue();
         var rng = random.nextInt(200);
 
         if (rng != 177) return; // Roll for repair, ignore if roll fails. Number is arbitrary
@@ -59,12 +59,12 @@ public record PrometheumComponent(int durabilityRepaired) {
         int damageToRepair = isOvergrown(stack) ? 2 : 1;
 
         // Extra repair speed if bound
-        if (EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
+        if (EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
             damageToRepair += 1;
         }
 
         int newDamage = Mth.clamp(dmg - damageToRepair, 0, Integer.MAX_VALUE);
-        stack.setDamage(newDamage);
+        stack.setDamageValue(newDamage);
         stack.set(MythicDataComponents.PROMETHEUM, component.increase(damageToRepair));
     }
 
@@ -92,7 +92,7 @@ public record PrometheumComponent(int durabilityRepaired) {
         var component = stack.getOrDefault(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT);
         int bonus = base;
         bonus += component.durabilityRepaired() > (OVERGROWN_THRESHOLD * 2) ? 2 : 1;
-        return new EntityAttributeModifier(
+        return new AttributeModifier(
             id,
             bonus,
             AttributeModifier.Operation.ADD_VALUE);
@@ -102,8 +102,8 @@ public record PrometheumComponent(int durabilityRepaired) {
         var component = stack.getOrDefault(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT);
         int bonus = base;
         bonus += component.durabilityRepaired() > (OVERGROWN_THRESHOLD * 2) ? 2 : 1;
-        bonus += EnchantmentHelper.hasAnyEnchantmentsWith(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) ? 1 : 0;
-        return new EntityAttributeModifier(
+        bonus += EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) ? 1 : 0;
+        return new AttributeModifier(
             TOUGHNESS_BONUS_ID,
             bonus,
             AttributeModifier.Operation.ADD_VALUE);

@@ -6,6 +6,7 @@ import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.registry.RegisterSounds;
 import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,47 +20,47 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class CelestiumElytra extends ElytraItem implements FabricElytraItem {
-    public CelestiumElytra(Settings settings) {
+    public CelestiumElytra(Item.Properties settings) {
         super(settings);
     }
 
     @Override
-    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-        return ingredient.isOf(MythicItems.CELESTIUM.getIngot());
+    public boolean isValidRepairItem(ItemStack stack, ItemStack ingredient) {
+        return ingredient.is(MythicItems.CELESTIUM.getIngot());
     }
 
     @Override
     public Holder<SoundEvent> getEquipSound() {
-        return BuiltInRegistries.SOUND_EVENT.getEntry(RegisterSounds.EQUIP_CELESTIUM_ELYTRA);
+        return BuiltInRegistries.SOUND_EVENT.wrapAsHolder(RegisterSounds.EQUIP_CELESTIUM_ELYTRA);
     }
 
     public static boolean isWearing(LivingEntity entity) {
-        var stack = entity.getEquippedStack(EquipmentSlot.CHEST);
-        return stack.isOf(MythicArmor.CELESTIUM_ELYTRA) && isUsable(stack);
+        var stack = entity.getItemBySlot(EquipmentSlot.CHEST);
+        return stack.is(MythicArmor.CELESTIUM_ELYTRA) && isFlyEnabled(stack);
     }
 
     @Override
     public void doVanillaElytraTick(LivingEntity entity, ItemStack chestStack) {
         int nextRoll = entity.getFallFlyingTicks() + 1;
 
-        if (!entity.getWorld().isClient && nextRoll % 10 == 0) {
+        if (!entity.level().isClientSide && nextRoll % 10 == 0) {
             if ((nextRoll / 10) % 4 == 0) {
-                chestStack.damage(1, entity, EquipmentSlot.CHEST);
+                chestStack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
             }
 
-            entity.emitGameEvent(GameEvent.ELYTRA_GLIDE);
+            entity.gameEvent(GameEvent.ELYTRA_GLIDE);
         }
     }
 
     public static ItemAttributeModifiers createDefaultAttributes() {
         var builder = ItemAttributeModifiers.builder();
-        var armor = new EntityAttributeModifier(RegistryHelper.id("celestium_elytra_armor_protection"), 5.0F, AttributeModifier.Operation.ADD_VALUE);
-        var toughness = new EntityAttributeModifier(RegistryHelper.id("celestium_elytra_armor_toughness"), 3.0F, AttributeModifier.Operation.ADD_VALUE);
-        var speed = new EntityAttributeModifier(RegistryHelper.id("celestium_elytra_speed_bonus"), 0.08F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        var rocketSpeedBonus = new EntityAttributeModifier(RegistryHelper.id("celestium_elytra_rocket_speed_bonus"), 0.20F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        builder.add(EntityAttributes.GENERIC_ARMOR, armor, EquipmentSlotGroup.CHEST);
-        builder.add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, toughness, EquipmentSlotGroup.CHEST);
-        builder.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, speed, EquipmentSlotGroup.CHEST);
+        var armor = new AttributeModifier(RegistryHelper.id("celestium_elytra_armor_protection"), 5.0F, AttributeModifier.Operation.ADD_VALUE);
+        var toughness = new AttributeModifier(RegistryHelper.id("celestium_elytra_armor_toughness"), 3.0F, AttributeModifier.Operation.ADD_VALUE);
+        var speed = new AttributeModifier(RegistryHelper.id("celestium_elytra_speed_bonus"), 0.08F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        var rocketSpeedBonus = new AttributeModifier(RegistryHelper.id("celestium_elytra_rocket_speed_bonus"), 0.20F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        builder.add(Attributes.ARMOR, armor, EquipmentSlotGroup.CHEST);
+        builder.add(Attributes.ARMOR_TOUGHNESS, toughness, EquipmentSlotGroup.CHEST);
+        builder.add(Attributes.MOVEMENT_SPEED, speed, EquipmentSlotGroup.CHEST);
         builder.add(MythicEntityAttributes.ELYTRA_ROCKET_SPEED, rocketSpeedBonus, EquipmentSlotGroup.CHEST);
         return builder.build();
     }

@@ -191,11 +191,11 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag type) {
         if (stack.has(MythicDataComponents.DRILL)) {
-            stack.getOrDefault(MythicDataComponents.DRILL, DEFAULT).appendTooltip(context, lines::add, type);
+            stack.getOrDefault(MythicDataComponents.DRILL, DEFAULT).addToTooltip(context, lines::add, type);
         }
         if (stack.has(MythicDataComponents.UPGRADES)) {
             var upgrades = stack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2));
-            upgrades.appendTooltip(context, lines::add, type);
+            upgrades.addToTooltip(context, lines::add, type);
             for (int i = 0; i < upgrades.size(); i++) {
                 var item = upgrades.items().get(i);
                 lines.add(Component.translatable("tooltip.mythril_drill.upgrade_slot", i + 1, Component.translatable("tooltip.mythril_drill.upgrade." + drillUpgrades.get(item))));

@@ -18,7 +18,7 @@ public class RuniteArrowEntityRenderer extends ArrowRenderer<RuniteArrowEntity> 
     }
 
     @Override
-    public ResourceLocation getTexture(RuniteArrowEntity entity) {
+    public ResourceLocation getTextureLocation(RuniteArrowEntity entity) {
         return entity.getColor() > 0 ? TIPPED_TEXTURE : TEXTURE;
     }
 }

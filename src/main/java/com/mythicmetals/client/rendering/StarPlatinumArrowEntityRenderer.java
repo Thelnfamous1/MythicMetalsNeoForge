@@ -17,7 +17,7 @@ public class StarPlatinumArrowEntityRenderer extends ArrowRenderer<StarPlatinumA
     }
 
     @Override
-    public ResourceLocation getTexture(StarPlatinumArrowEntity entity) {
+    public ResourceLocation getTextureLocation(StarPlatinumArrowEntity entity) {
         return TEXTURE;
     }
 }

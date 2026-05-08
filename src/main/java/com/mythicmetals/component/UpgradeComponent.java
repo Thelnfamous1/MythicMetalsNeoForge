@@ -66,7 +66,7 @@ public record UpgradeComponent(List<Item> items, int size) implements TooltipPro
     }
 
     @Override
-    public void appendTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
         if (this.size > 0 && this.isEmpty()) {
             tooltip.accept(Component.translatable("tooltip.upgrade_component.tooltip").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }

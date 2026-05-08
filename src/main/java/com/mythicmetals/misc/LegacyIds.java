@@ -24,10 +24,10 @@ public class LegacyIds {
     private static final ResourceLocation OLD_UNOBTAINIUM_DUST = RegistryHelper.id("unobtainium_dust");
     private static final ResourceLocation OLD_VERMICULITE = RegistryHelper.id("vermiculite_ore");
 
-    private static final ResourceLocation VANILLA_COPPER_ORE = ResourceLocation.of("copper_ore");
-    private static final ResourceLocation VANILLA_COPPER_INGOT = ResourceLocation.of("copper_ingot");
-    private static final ResourceLocation VANILLA_NETHERRACK = ResourceLocation.of("netherrack");
-    private static final ResourceLocation VANILLA_STONE = ResourceLocation.of("stone");
+    private static final ResourceLocation VANILLA_COPPER_ORE = ResourceLocation.parse("copper_ore");
+    private static final ResourceLocation VANILLA_COPPER_INGOT = ResourceLocation.parse("copper_ingot");
+    private static final ResourceLocation VANILLA_NETHERRACK = ResourceLocation.parse("netherrack");
+    private static final ResourceLocation VANILLA_STONE = ResourceLocation.parse("stone");
     private static final ResourceLocation NEW_UNOBTAINIUM = RegistryHelper.id("unobtainium");
     private static final ResourceLocation NEW_PALLADIUM_ORE = RegistryHelper.id("palladium_ore");
     private static final ResourceLocation NEW_PALLADIUM_INGOT = RegistryHelper.id("palladium_ingot");

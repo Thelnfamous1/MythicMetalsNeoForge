@@ -3,7 +3,6 @@ package com.mythicmetals.armor;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.misc.StringUtilsAtHome;
-import net.minecraft.item.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Holder;
@@ -37,7 +36,7 @@ public class ArmorSet {
         final var settings = new Item.Properties()
             .group(MythicMetals.TABBED_GROUP)
             .tab(3)
-            .maxDamage(BASE_DURABILITY.get(slot) * durabilityModifier);
+            .durability(BASE_DURABILITY.get(slot) * durabilityModifier);
         settingsProcessor.accept(settings);
         return this.makeItem(material, slot, settings);
     }

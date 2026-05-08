@@ -6,9 +6,10 @@ import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.misc.*;
 import com.mythicmetals.registry.RegisterSounds;
-import eu.pb4.common.protection.api.CommonProtection;
+//import eu.pb4.common.protection.api.CommonProtection;
 import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.serialization.endec.MinecraftEndecs;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.EntityType;
@@ -34,33 +35,33 @@ public class BanglumNukeEntity extends BanglumTntEntity {
 
     private Block coreBlock = MythicBlocks.BANGLUM_NUKE_CORE;
 
-    public BanglumNukeEntity(EntityType<? extends BanglumNukeEntity> entityType, ServerLevel world) {
+    public BanglumNukeEntity(EntityType<? extends BanglumNukeEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public BanglumNukeEntity(ServerLevel world, double x, double y, double z, @Nullable LivingEntity igniter, Block coreBlock) {
+    public BanglumNukeEntity(Level world, double x, double y, double z, @Nullable LivingEntity igniter, Block coreBlock) {
         this(MythicEntities.BANGLUM_NUKE_ENTITY_TYPE, world);
-        this.setPosition(x, y, z);
+        this.setPos(x, y, z);
         double d = world.random.nextDouble() * (float) (Math.PI * 2);
-        this.setVelocity(-Math.sin(d) * 0.01, 0.2F, -Math.cos(d) * 0.01);
+        this.setDeltaMovement(-Math.sin(d) * 0.01, 0.2F, -Math.cos(d) * 0.01);
         this.setFuse(DEFAULT_FUSE);
-        this.prevX = x;
-        this.prevY = y;
-        this.prevZ = z;
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
         this.causingEntity = igniter;
         this.coreBlock = coreBlock;
     }
 
     @Override
-    protected void readCustomDataFromNbt(CompoundTag nbt) {
-        super.readCustomDataFromNbt(nbt);
+    protected void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
 
         this.coreBlock = nbt.get(CORE_BLOCK_KEY);
     }
 
     @Override
-    protected void writeCustomDataToNbt(CompoundTag nbt) {
-        super.writeCustomDataToNbt(nbt);
+    protected void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
 
         nbt.put(CORE_BLOCK_KEY, coreBlock);
     }
@@ -80,7 +81,7 @@ public class BanglumNukeEntity extends BanglumTntEntity {
 
         if (coreBlock == MythicBlocks.CARMOT_NUKE_CORE) {
             // Carmot core - Do not destroy ores
-            statePredicate = state -> !state.isIn(MythicTags.CARMOT_NUKE_IGNORED);
+            statePredicate = state -> !state.is(MythicTags.CARMOT_NUKE_IGNORED);
         } else if (coreBlock == MythicBlocks.SPONGE_NUKE_CORE) {
             statePredicate = state -> !state.getFluidState().isEmpty();
         } else {
@@ -94,23 +95,23 @@ public class BanglumNukeEntity extends BanglumTntEntity {
         }
 
         ServerPlayer playerCause = causingEntity instanceof ServerPlayer player ? player : null;
-        GameProfile playerCauseProfile = playerCause == null ? CommonProtection.UNKNOWN : playerCause.getGameProfile();
-        EpicExplosion.explode((ServerLevel) getWorld(), (int) this.getX(), (int) this.getY(), (int) this.getZ(), radius, statePredicate, this, playerCause);
-        Explosion explosion = new Explosion(this.getWorld(), playerCause, (int) this.getX(), (int) this.getY(), (int) this.getZ(), radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+        //GameProfile playerCauseProfile = playerCause == null ? CommonProtection.UNKNOWN : playerCause.getGameProfile();
+        EpicExplosion.explode((ServerLevel) level(), (int) this.getX(), (int) this.getY(), (int) this.getZ(), radius, statePredicate, this, playerCause);
+        Explosion explosion = new Explosion(this.level(), playerCause, (int) this.getX(), (int) this.getY(), (int) this.getZ(), radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
 
         int soundRadius = radius * 3;
 
         // FIXME - Find a better way to play the sound to far-away players. Maybe use PositionedSoundInstance and the sound manager?
-        for (Player player : getWorld().getPlayers()) {
-            if (player.squaredDistanceTo(this) > soundRadius * soundRadius) continue;
+        for (Player player : level().players()) {
+            if (player.distanceToSqr(this) > soundRadius * soundRadius) continue;
 
-            player.getWorld().playSound(this, this.getBlockPos(), RegisterSounds.BANGLUM_NUKE_EXPLOSION, SoundSource.BLOCKS, 5.0F, (1.0F + (this.getWorld().random.nextFloat() - this.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
+            player.level().playSound(this, this.blockPosition(), RegisterSounds.BANGLUM_NUKE_EXPLOSION, SoundSource.BLOCKS, 5.0F, (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 0.7F);
         }
 
         // Handle damaging entities near the nuke explosion
-        for (var entity : getWorld().getOtherEntities(this, AABB.of(getPos(), radius * 2, radius * 2, radius * 2))) {
-            if (entity.isImmuneToExplosion(explosion)) continue;
-            if (!CommonProtection.canDamageEntity(getWorld(), entity, playerCauseProfile, playerCause)) continue;
+        for (Entity entity : level().getEntities(this, AABB.ofSize(position(), radius * 2, radius * 2, radius * 2))) {
+            if (entity.ignoreExplosion(explosion)) continue;
+            //if (!CommonProtection.canDamageEntity(level(), entity, playerCauseProfile, playerCause)) continue;
 
             double distanceModifier = baseDamage - entity.distanceTo(this) / (double) radius;
             if (distanceModifier >= 0) {
@@ -123,17 +124,17 @@ public class BanglumNukeEntity extends BanglumTntEntity {
                     y /= dist;
                     z /= dist;
                     var banglumNukeSource = new BanglumNukeSource(
-                        getWorld().getRegistryManager().get(Registries.DAMAGE_TYPE).getEntry(MythicDamageTypes.BANGLUM_NUKE).orElseThrow(),
+                        level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(MythicDamageTypes.BANGLUM_NUKE).orElseThrow(),
                         this,
                         this.getCausingEntity());
-                    entity.damage(banglumNukeSource, Mth.floor((distanceModifier * distanceModifier + distanceModifier) * 7.0 * radius + 1.0));
+                    entity.hurt(banglumNukeSource, Mth.floor((distanceModifier * distanceModifier + distanceModifier) * 7.0 * radius + 1.0));
 
                     double knockback = distanceModifier * 5;
                     if (entity instanceof LivingEntity living) {
-                        knockback = distanceModifier * (5.0 - living.getAttributeValue(Attributes.GENERIC_EXPLOSION_KNOCKBACK_RESISTANCE));
+                        knockback = distanceModifier * (5.0 - living.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
                     }
 
-                    entity.addVelocity(x * knockback, y * knockback, z * knockback);
+                    entity.push(x * knockback, y * knockback, z * knockback);
                 }
             }
         }

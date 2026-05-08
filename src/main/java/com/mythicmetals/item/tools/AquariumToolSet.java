@@ -24,6 +24,6 @@ public class AquariumToolSet extends ToolSet {
     @Override
     public ItemAttributeModifiers.Builder createAttributeBuilder(Tier material, double damage, float speed) {
         return super.createAttributeBuilder(material, damage, speed)
-            .add(Attributes.PLAYER_SUBMERGED_MINING_SPEED, new EntityAttributeModifier(RegistryHelper.id(ABILITY_MODIFIER), 1.0f, ADD_MULTIPLIED_BASE), EquipmentSlotGroup.MAINHAND);
+            .add(Attributes.SUBMERGED_MINING_SPEED, new AttributeModifier(RegistryHelper.id(ABILITY_MODIFIER), 1.0f, ADD_MULTIPLIED_BASE), EquipmentSlotGroup.MAINHAND);
     }
 }

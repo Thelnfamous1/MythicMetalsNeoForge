@@ -17,19 +17,19 @@ public class TippedRuniteArrowRecipe extends CustomRecipe {
     }
 
     public boolean matches(CraftingInput input, Level world) {
-        if (input.getWidth() == 3 && input.getHeight() == 3) {
-            for (int i = 0; i < input.getWidth(); ++i) {
-                for (int j = 0; j < input.getHeight(); ++j) {
-                    ItemStack itemStack = input.getStackInSlot(i + j * input.getWidth());
+        if (input.width() == 3 && input.height() == 3) {
+            for (int i = 0; i < input.width(); ++i) {
+                for (int j = 0; j < input.height(); ++j) {
+                    ItemStack itemStack = input.getItem(i + j * input.width());
                     if (itemStack.isEmpty()) {
                         return false;
                     }
 
                     if (i == 1 && j == 1) {
-                        if (!itemStack.isOf(Items.LINGERING_POTION)) {
+                        if (!itemStack.is(Items.LINGERING_POTION)) {
                             return false;
                         }
-                    } else if (!itemStack.isOf(MythicTools.RUNITE_ARROW)) {
+                    } else if (!itemStack.is(MythicTools.RUNITE_ARROW)) {
                         return false;
                     }
                 }
@@ -41,9 +41,9 @@ public class TippedRuniteArrowRecipe extends CustomRecipe {
         }
     }
 
-    public ItemStack craft(CraftingInput input, HolderLookup.Provider wrapperLookup) {
-        ItemStack itemStack = input.getStackInSlot(1 + input.getWidth());
-        if (!itemStack.isOf(Items.LINGERING_POTION)) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider wrapperLookup) {
+        ItemStack itemStack = input.getItem(1 + input.width());
+        if (!itemStack.is(Items.LINGERING_POTION)) {
             return ItemStack.EMPTY;
         } else {
             ItemStack itemStack2 = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW, 8);
@@ -53,7 +53,7 @@ public class TippedRuniteArrowRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean fits(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 

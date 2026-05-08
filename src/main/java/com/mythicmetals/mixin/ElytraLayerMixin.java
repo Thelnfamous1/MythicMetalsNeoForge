@@ -22,7 +22,7 @@ public abstract class ElytraLayerMixin {
 
     @ModifyExpressionValue(
         method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z")
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/ElytraLayer;shouldRender(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;)Z")
     )
     private boolean mythicmetals$canRenderCelestiumElytra(boolean original, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, LivingEntity entity) {
         return original || CelestiumElytra.isWearing(entity);
@@ -32,8 +32,8 @@ public abstract class ElytraLayerMixin {
         method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V",
         at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
     private ResourceLocation mythicmetals$replaceElytraTexture(ResourceLocation value, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, LivingEntity living) {
-        var stack = living.getEquippedStack(EquipmentSlot.CHEST);
-        if (!stack.isOf(MythicArmor.CELESTIUM_ELYTRA)) {
+        var stack = living.getItemBySlot(EquipmentSlot.CHEST);
+        if (!stack.is(MythicArmor.CELESTIUM_ELYTRA)) {
             return value;
         }
         return RegistryHelper.id("textures/models/celestium_elytra.png");

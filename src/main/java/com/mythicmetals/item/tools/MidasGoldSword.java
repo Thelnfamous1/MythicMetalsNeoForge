@@ -65,7 +65,7 @@ public class MidasGoldSword extends SwordItem {
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> lines, TooltipFlag type) {
         if (stack.has(GOLD_FOLDED)) {
-            stack.get(GOLD_FOLDED).appendTooltip(context, lines::add, type);
+            stack.get(GOLD_FOLDED).addToTooltip(context, lines::add, type);
         }
     }
 

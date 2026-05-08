@@ -34,7 +34,7 @@ public class MythicRecipeProvider extends FabricRecipeProvider {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void generate(RecipeOutput exporter) {
+    public void buildRecipes(RecipeOutput exporter) {
         var itemSets = new HashMap<String, ItemSet>();
         var blockSets = new HashMap<String, BlockSet>();
 
@@ -56,17 +56,17 @@ public class MythicRecipeProvider extends FabricRecipeProvider {
                 var itemSet = itemSets.get(name);
                 boolean requiresBlasting = itemSet.requiresBlasting();
                 var nugget = itemSet.getNugget();
-                ItemLike[] armorItems = new ItemConvertible[0];
+                ItemLike[] armorItems = new ItemLike[0];
                 armorItems = armorSet.getArmorItems().toArray(armorItems);
 
                 if (!requiresBlasting) {
-                    SimpleCookingRecipeBuilder.createSmelting(Ingredient.ofItems(armorItems), RecipeCategory.MISC, nugget, 0.1f, 200)
-                        .criterion("has_material", conditionsFromTag(TagKey.of(Registries.ITEM, RegistryHelper.id("nuggets/" + name))))
-                        .offerTo(nuggetExporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_nugget_from_armor"));
+                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(armorItems), RecipeCategory.MISC, nugget, 0.1f, 200)
+                        .unlockedBy("has_material", has(TagKey.create(Registries.ITEM, RegistryHelper.id("nuggets/" + name))))
+                        .save(nuggetExporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_nugget_from_armor"));
                 }
-                SimpleCookingRecipeBuilder.createBlasting(Ingredient.ofItems(armorItems), RecipeCategory.MISC, nugget, 0.1f, 100)
-                    .criterion("has_material", conditionsFromTag(TagKey.of(Registries.ITEM, RegistryHelper.id("nuggets/" + name))))
-                    .offerTo(nuggetExporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_nugget_from_armor"));
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(armorItems), RecipeCategory.MISC, nugget, 0.1f, 100)
+                    .unlockedBy("has_material", has(TagKey.create(Registries.ITEM, RegistryHelper.id("nuggets/" + name))))
+                    .save(nuggetExporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_nugget_from_armor"));
             }
         });
 
@@ -82,39 +82,39 @@ public class MythicRecipeProvider extends FabricRecipeProvider {
                 var ingot = itemSet.getIngot();
                 var xp = itemSet.getXp();
                 boolean requiresBlasting = itemSet.requiresBlasting();
-                var critera = conditionsFromItemPredicates(ItemPredicate.Builder.create().items(items).build());
+                var critera = inventoryTrigger(ItemPredicate.Builder.item().of(items).build());
 
                 if (!requiresBlasting) {
-                    SimpleCookingRecipeBuilder.createSmelting(Ingredient.ofItems(items), RecipeCategory.MISC, ingot, xp, 200)
-                        .criterion("has_material", critera)
-                        .offerTo(exporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_ores"));
+                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(items), RecipeCategory.MISC, ingot, xp, 200)
+                        .unlockedBy("has_material", critera)
+                        .save(exporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_ores"));
                 }
-                SimpleCookingRecipeBuilder.createBlasting(Ingredient.ofItems(items), RecipeCategory.MISC, ingot, xp, 100)
-                    .criterion("has_material", critera)
-                    .offerTo(exporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_ores"));
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(items), RecipeCategory.MISC, ingot, xp, 100)
+                    .unlockedBy("has_material", critera)
+                    .save(exporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_ores"));
             }
 
             // Smelting Raw Ores into ingots
             if (itemSet.getRawOre() != null) {
                 if (!itemSet.requiresBlasting()) {
-                    SimpleCookingRecipeBuilder.createSmelting(Ingredient.ofItems(itemSet.getRawOre()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 200)
-                        .criterion("has_material", conditionsFromItem(itemSet.getRawOre()))
-                        .offerTo(exporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_raw_ore"));
+                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(itemSet.getRawOre()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 200)
+                        .unlockedBy("has_material", has(itemSet.getRawOre()))
+                        .save(exporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_raw_ore"));
                 }
-                SimpleCookingRecipeBuilder.createBlasting(Ingredient.ofItems(itemSet.getRawOre()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 100)
-                    .criterion("has_material", conditionsFromItem(itemSet.getRawOre()))
-                    .offerTo(exporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_raw_ore"));
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(itemSet.getRawOre()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 100)
+                    .unlockedBy("has_material", has(itemSet.getRawOre()))
+                    .save(exporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_raw_ore"));
             }
             // Smelting dusts into ingots
             if (itemSet.getDust() != null) {
                 if (!itemSet.requiresBlasting()) {
-                    SimpleCookingRecipeBuilder.createSmelting(Ingredient.ofItems(itemSet.getDust()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 200)
-                        .criterion("has_material", conditionsFromTag(TagKey.of(Registries.ITEM, RegistryHelper.id("dusts/" + name))))
-                        .offerTo(dustExporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_dust"));
+                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(itemSet.getDust()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 200)
+                        .unlockedBy("has_material", has(TagKey.create(Registries.ITEM, RegistryHelper.id("dusts/" + name))))
+                        .save(dustExporter, RegistryHelper.id("smelting/" + name.toLowerCase(Locale.ROOT) + "_from_dust"));
                 }
-                SimpleCookingRecipeBuilder.createBlasting(Ingredient.ofItems(itemSet.getDust()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 100)
-                    .criterion("has_material", conditionsFromTag(TagKey.of(Registries.ITEM, RegistryHelper.id("dusts/" + name))))
-                    .offerTo(dustExporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_dust"));
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(itemSet.getDust()), RecipeCategory.MISC, itemSet.getIngot(), itemSet.getXp(), 100)
+                    .unlockedBy("has_material", has(TagKey.create(Registries.ITEM, RegistryHelper.id("dusts/" + name))))
+                    .save(dustExporter, RegistryHelper.id("blasting/" + name.toLowerCase(Locale.ROOT) + "_from_dust"));
             }
         });
 

@@ -12,13 +12,13 @@ public class CombustingStatusEffect extends MobEffect {
     }
 
     @Override
-    public void onEntityRemoval(LivingEntity entity, int amplifier, Entity.RemovalReason reason) {
-        super.onEntityRemoval(entity, amplifier, reason);
+    public void onMobRemoved(LivingEntity entity, int amplifier, Entity.RemovalReason reason) {
+        super.onMobRemoved(entity, amplifier, reason);
         entity.getData(MythicMetals.COMBUSTION_COOLDOWN).setCooldown(500);
     }
 
     @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return duration % 20 == 0;
     }
 }

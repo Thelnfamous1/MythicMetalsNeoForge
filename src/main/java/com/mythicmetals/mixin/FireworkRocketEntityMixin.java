@@ -30,8 +30,8 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
         if (this.attachedToEntity == null) return vec;
         var speedModifier = this.attachedToEntity.getAttributeValue(MythicEntityAttributes.ELYTRA_ROCKET_SPEED);
 
-        if (speedModifier == 0) return vec.multiply(0);
-        return vec.multiply(1 / speedModifier);
+        if (speedModifier == 0) return vec.scale(0);
+        return vec.scale(1 / speedModifier);
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;add(DDD)Lnet/minecraft/world/phys/Vec3;", ordinal = 0))
@@ -39,6 +39,6 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
         if (this.attachedToEntity == null) return velocity;
         var speedModifier = this.attachedToEntity.getAttributeValue(MythicEntityAttributes.ELYTRA_ROCKET_SPEED);
 
-        return velocity.multiply(speedModifier).add(x, y, z);
+        return velocity.scale(speedModifier).add(x, y, z);
     }
 }

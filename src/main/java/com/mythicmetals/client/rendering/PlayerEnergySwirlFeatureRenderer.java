@@ -6,12 +6,14 @@ import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.misc.UsefulSingletonForColorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.PlayerModel;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.mythicmetals.misc.UsefulSingletonForColorUtil.MetalColors.SHIELD_BREAK_COLOR;
@@ -26,27 +28,27 @@ public class PlayerEnergySwirlFeatureRenderer extends RenderLayer<AbstractClient
             RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> context,
             EntityModelSet loader) {
         super(context);
-        this.swirlModel = new PlayerEntityModel<>(loader.getModelPart(MythicModelHandler.CARMOT_SWIRL), false);
+        this.swirlModel = new PlayerModel<>(loader.bakeLayer(MythicModelHandler.CARMOT_SWIRL), false);
     }
 
     @Override
-    public void render(PoseStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayer entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+    public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, AbstractClientPlayer entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         if (entity.getData(MythicMetals.CARMOT_SHIELD).shouldRenderShield()) {
             var shield = entity.getData(MythicMetals.CARMOT_SHIELD);
-            float f = entity.age + tickDelta;
+            float f = entity.tickCount + tickDelta;
 
-            this.swirlModel.animateModel(entity, limbAngle, limbDistance, tickDelta);
-            this.getContextModel().copyStateTo(this.swirlModel);
-            this.getContextModel().copyBipedStateTo(this.swirlModel);
+            this.swirlModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
+            this.getParentModel().copyPropertiesTo(this.swirlModel);
+            this.getParentModel().copyPropertiesTo(this.swirlModel);
 
-            var consumer = vertexConsumers.getBuffer(RenderLayer.getEnergySwirl(SWIRL_TEXTURE, (f * .005f) % 1f, f * .005f % 1f));
-            this.swirlModel.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+            var consumer = vertexConsumers.getBuffer(RenderType.energySwirl(SWIRL_TEXTURE, (f * .005f) % 1f, f * .005f % 1f));
+            this.swirlModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
             // Break animation
             if (shield.cooldown > CarmotShield.MAX_COOLDOWN - 30) {
                 matrices.scale(1.125f, 1.0625f, 1.125f);
-                this.swirlModel.render(matrices, consumer, light, OverlayTexture.DEFAULT_UV, SHIELD_BREAK_COLOR);
+                this.swirlModel.renderToBuffer(matrices, consumer, light, OverlayTexture.NO_OVERLAY, SHIELD_BREAK_COLOR);
             } else // Regular animation
-                this.swirlModel.render(matrices, consumer, light, OverlayTexture.DEFAULT_UV, UsefulSingletonForColorUtil.rainbow());
+                this.swirlModel.renderToBuffer(matrices, consumer, light, OverlayTexture.NO_OVERLAY, UsefulSingletonForColorUtil.rainbow());
         }
     }
 }

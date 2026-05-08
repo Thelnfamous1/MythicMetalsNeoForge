@@ -17,16 +17,16 @@ public class DefaultedRegistryMixin {
 
     // TODO(Ravel): target method get with the signature not found
 // TODO(Ravel): target method get with the signature not found
-    @ModifyVariable(at = @At("HEAD"), method = "get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;", ordinal = 0, argsOnly = true)
+    @ModifyVariable(at = @At("HEAD"), method = "get", ordinal = 0, argsOnly = true)
     ResourceLocation fixMissingFromRegistry(@Nullable ResourceLocation id) {
         if (id != null) {
             // Various MOD_ID renames across mod versions, including Mythic Metals Decorations
             if (id.getNamespace().equals("mm_decorations"))
-                return ResourceLocation.of("mythicmetals_decorations", id.getPath());
+                return ResourceLocation.fromNamespaceAndPath("mythicmetals_decorations", id.getPath());
             if (id.getNamespace().equals("mythicaddons") && !id.getPath().contains("aegis"))
-                return ResourceLocation.of("mythicmetals_decorations", id.getPath());
+                return ResourceLocation.fromNamespaceAndPath("mythicmetals_decorations", id.getPath());
             if (id.getNamespace().equals("mythicaddons") && id.getPath().contains("aegis"))
-                return ResourceLocation.of(MythicMetals.MOD_ID, id.getPath());
+                return ResourceLocation.fromNamespaceAndPath(MythicMetals.MOD_ID, id.getPath());
             if (LegacyIds.getLegacyIds().containsKey(id)) return LegacyIds.getLegacyIds().get(id);
 
         }

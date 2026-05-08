@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -85,19 +84,19 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
         .rarity(Rarity.UNCOMMON)
         .group(MythicMetals.TABBED_GROUP)
         .tab(2)
-        .attributeModifiers(SwordItem.createAttributes(MythicToolMaterials.AEGIS_RED, 5, -3.0f)));
+        .attributes(SwordItem.createAttributes(MythicToolMaterials.AEGIS_RED, 5, -3.0f)));
 
     public static final Item WHITE_AEGIS_SWORD = new SwordItem(MythicToolMaterials.AEGIS_WHITE, new Item.Properties()
         .fireResistant()
         .rarity(Rarity.UNCOMMON)
         .group(MythicMetals.TABBED_GROUP).tab(2)
-        .attributeModifiers(ToolSet.createAttributeModifiers(MythicToolMaterials.AEGIS_WHITE, 4, 1.4f))
+        .attributes(ToolSet.createAttributeModifiers(MythicToolMaterials.AEGIS_WHITE, 4, 1.4f))
     );
 
     public static final Item CARMOT_BELL = new CarmotBellItem(new Item.Properties()
         .group(MythicMetals.TABBED_GROUP).tab(2)
         .rarity(Rarity.UNCOMMON)
-        .maxDamage(400)
+        .durability(400)
     );
 
     public static final Item CARMOT_STAFF = new CarmotStaffItem(MythicToolMaterials.CARMOT_STAFF,
@@ -107,23 +106,23 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
 
     public static final Item ORICHALCUM_HAMMER = new HammerBase(MythicToolMaterials.ORICHALCUM, new Item.Properties()
         .group(MythicMetals.TABBED_GROUP).tab(2)
-        .attributeModifiers(DiggerItem.createAttributes(MythicToolMaterials.ORICHALCUM, 6, -4.0f + 0.8f)),
+        .attributes(DiggerItem.createAttributes(MythicToolMaterials.ORICHALCUM, 6, -4.0f + 0.8f)),
         1
     );
 
     public static final Item MIDAS_GOLD_SWORD = new MidasGoldSword(MythicToolMaterials.MIDAS_GOLD,
         new Item.Properties()
             .group(MythicMetals.TABBED_GROUP).tab(2)
-            .attributeModifiers(SwordItem.createAttributes(MythicToolMaterials.MIDAS_GOLD, 3, -4.0f + 1.6f))
+            .attributes(SwordItem.createAttributes(MythicToolMaterials.MIDAS_GOLD, 3, -4.0f + 1.6f))
             .component(MythicDataComponents.GOLD_FOLDED, GoldFoldedComponent.of(0))
     );
 
     public static final Item GILDED_MIDAS_GOLD_SWORD = new MidasGoldSword(MythicToolMaterials.GILDED_MIDAS_GOLD,
         new Item.Properties()
-            .fireproof()
+            .fireResistant()
             .rarity(Rarity.UNCOMMON)
             .group(MythicMetals.TABBED_GROUP).tab(2)
-            .attributeModifiers(SwordItem.createAttributes(MythicToolMaterials.GILDED_MIDAS_GOLD, 3, -4.0f + 1.6f))
+            .attributes(SwordItem.createAttributes(MythicToolMaterials.GILDED_MIDAS_GOLD, 3, -4.0f + 1.6f))
             .component(MythicDataComponents.GOLD_FOLDED, GoldFoldedComponent.of(0))
     );
 
@@ -133,7 +132,7 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
             .rarity(Rarity.UNCOMMON)
             .group(MythicMetals.TABBED_GROUP)
             .tab(2)
-            .attributeModifiers(SwordItem.createAttributes(MythicToolMaterials.ROYAL_MIDAS_GOLD, 3, -4.0f + 1.6f))
+            .attributes(SwordItem.createAttributes(MythicToolMaterials.ROYAL_MIDAS_GOLD, 3, -4.0f + 1.6f))
             .component(MythicDataComponents.GOLD_FOLDED, GoldFoldedComponent.of(0, true))
     );
 
@@ -144,7 +143,7 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
             for (Potion potion : BuiltInRegistries.POTION) {
                 var stack = PotionContents.createItemStack(item, RegistryHelper.getEntry(potion));
                 if (!potion.getEffects().isEmpty()) {
-                    stacks.add(stack);
+                    stacks.accept(stack);
                 }
             }
         })
@@ -154,14 +153,14 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
     public static final Item STAR_PLATINUM_ARROW = new StarPlatinumArrowItem(new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(2));
     public static final Item STORMYX_SHIELD = new StormyxShield(new Item.Properties()
         .group(MythicMetals.TABBED_GROUP).tab(2)
-        .maxDamage(1680)
+        .durability(1680)
         .rarity(Rarity.UNCOMMON)
-        .attributeModifiers(StormyxShield.createStormyxShieldAttributes())
+        .attributes(StormyxShield.createStormyxShieldAttributes())
     );
     public static final Item MYTHRIL_DRILL = new MythrilDrill(MythicToolMaterials.MYTHRIL_DRILL, new Item.Properties()
         .group(MythicMetals.TABBED_GROUP).tab(2)
         .rarity(Rarity.UNCOMMON)
-        .attributeModifiers(createAttributeModifiers(3, 1.5f))
+        .attributes(createAttributeModifiers(3, 1.5f))
         .component(MythicDataComponents.DRILL, new DrillComponent(0))
         .component(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2))
     );
@@ -212,18 +211,18 @@ public class MythicTools implements SimpleFieldProcessingSubject<ToolSet> {
             @Override
             public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
                 if (entity.getType() == EntityType.FROG && FabricLoader.getInstance().isModLoaded("delightful-froge")) {
-                    ((Frog) entity).setVariant(BuiltInRegistries.FROG_VARIANT.get(ResourceLocation.fromNamespaceAndPath("delightful", "froge")).orElseThrow());
+                    ((Frog) entity).setVariant(BuiltInRegistries.FROG_VARIANT.getHolder(ResourceLocation.fromNamespaceAndPath("delightful", "froge")).orElseThrow());
                     return InteractionResult.SUCCESS;
                 }
                 return super.interactLivingEntity(stack, user, entity, hand);
             }
         }
 
-        public static final Item FROGE = new Froger(new Item.Properties().rarity(Rarity.EPIC).fireResistant().equipmentSlot((entity, stack) -> EquipmentSlot.HEAD));
+        public static final Item FROGE = new Froger(new Item.Properties().rarity(Rarity.EPIC).fireResistant()/*.equipmentSlot((entity, stack) -> EquipmentSlot.HEAD)*/);
         public static final Item DOGE = new Item(new Item.Properties()
             .rarity(Rarity.EPIC).fireResistant()
-            .equipmentSlot((entity, stack) -> EquipmentSlot.HEAD)
-            .maxCount(1)
+                /*.equipmentSlot((entity, stack) -> EquipmentSlot.HEAD)*/
+            .stacksTo(1)
             .jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, RegistryHelper.id("dog4"))));
     }
 }

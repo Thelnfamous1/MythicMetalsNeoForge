@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 
 public class MythicRecipeSerializers {
 
-    public static final RecipeSerializer<TippedRuniteArrowRecipe> TIPPED_RUNITE_ARROW_RECIPE = new SpecialRecipeSerializer<>(TippedRuniteArrowRecipe::new);
+    public static final RecipeSerializer<TippedRuniteArrowRecipe> TIPPED_RUNITE_ARROW_RECIPE = new SimpleCraftingRecipeSerializer<>(TippedRuniteArrowRecipe::new);
     public static final RecipeSerializer<MidasFoldingRecipe> MIDAS_FOLDING_RECIPE = new MidasFoldingRecipe.Serializer();
     public static final RecipeSerializer<TidesingerCoralRecipe> TIDESINGER_CORAL_RECIPE = new TidesingerCoralRecipe.Serializer(TidesingerCoralRecipe.Serializer.ENDEC);
     public static final RecipeSerializer<UpgradeSmithingRecipe> UPGRADE_SMITHING_RECIPE_SERIALIZER = new UpgradeSmithingRecipe.Serializer(UpgradeSmithingRecipe.Serializer.ENDEC);

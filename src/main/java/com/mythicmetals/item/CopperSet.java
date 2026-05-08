@@ -12,7 +12,7 @@ public class CopperSet {
     private Item dustItem = null;
 
     private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
-        final var settings = new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(0);
+        final var settings = new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(0);
         settingsProcessor.accept(settings);
         return settings;
     }

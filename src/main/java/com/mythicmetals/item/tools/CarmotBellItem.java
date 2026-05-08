@@ -4,14 +4,20 @@ import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.misc.CarmotBellDamageSource;
 import com.mythicmetals.misc.MythicParticleSystem;
 import com.mythicmetals.registry.RegisterSounds;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.*;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.Level;
 import java.util.List;
@@ -20,47 +26,47 @@ public class CarmotBellItem extends BlockItem {
 
     public static final double RANGE = 6.0;
 
-    public CarmotBellItem(Settings settings) {
+    public CarmotBellItem(Item.Properties settings) {
         super(MythicBlocks.CARMOT_BELL_BLOCK, settings);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(Level world, Player user, Hand hand) {
-        var stack = user.getStackInHand(hand);
-        var entities = world.getOtherEntities(user, AABB.of(user.getPos(), RANGE * 2, RANGE, RANGE * 2));
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        var stack = user.getItemInHand(hand);
+        var entities = world.getEntities(user, AABB.ofSize(user.position(), RANGE * 2, RANGE, RANGE * 2));
         entities.forEach(entity -> {
             if (entity instanceof LivingEntity livingEntity) {
-                if (livingEntity.getType().isIn(EntityTypeTags.UNDEAD)) {
+                if (livingEntity.getType().is(EntityTypeTags.UNDEAD)) {
                     var damageSource = CarmotBellDamageSource.of(world, user);
-                    entity.damage(damageSource, Math.max(10.0f, livingEntity.getHealth() * 0.1f));
-                    MythicParticleSystem.HEALING_DAMAGE.spawn(world, livingEntity.getPos());
+                    entity.hurt(damageSource, Math.max(10.0f, livingEntity.getHealth() * 0.1f));
+                    MythicParticleSystem.HEALING_DAMAGE.spawn(world, livingEntity.position());
                 } else {
                     livingEntity.heal(Math.max(10.0f, livingEntity.getMaxHealth() * 0.1f));
-                    MythicParticleSystem.HEALING_HEARTS.spawn(world, livingEntity.getPos());
+                    MythicParticleSystem.HEALING_HEARTS.spawn(world, livingEntity.position());
                 }
-                stack.damage(1, user, Player.getSlotForHand(hand));
+                stack.hurtAndBreak(1, user, Player.getSlotForHand(hand));
             }
         });
         user.heal(Math.max(10.0f, user.getMaxHealth() * 0.1f));
-        stack.damage(1, user, Player.getSlotForHand(hand));
-        MythicParticleSystem.HEALING_AREA.spawn(world, user.getPos(), RANGE);
-        MythicParticleSystem.HEALING_HEARTS.spawn(world, user.getPos());
-        user.getItemCooldownManager().set(this, 480);
-        world.playSound(user, user.getBlockPos(), RegisterSounds.CARMOT_BELL_RING, SoundSource.PLAYERS);
-        return TypedActionResult.success(stack);
+        stack.hurtAndBreak(1, user, Player.getSlotForHand(hand));
+        MythicParticleSystem.HEALING_AREA.spawn(world, user.position(), RANGE);
+        MythicParticleSystem.HEALING_HEARTS.spawn(world, user.position());
+        user.getCooldowns().addCooldown(this, 480);
+        world.playSound(user, user.blockPosition(), RegisterSounds.CARMOT_BELL_RING, SoundSource.PLAYERS);
+        return InteractionResultHolder.success(stack);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        if (context.getPlayer() != null && context.getPlayer().isSneaking()) {
-            return super.useOnBlock(context);
+    public InteractionResult useOn(UseOnContext context) {
+        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
+            return super.useOn(context);
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
-        super.appendTooltip(stack, context, tooltip, type);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
+        super.appendHoverText(stack, context, tooltip, type);
         tooltip.add(Component.translatable("tooltip.carmot_bell.info1"));
         tooltip.add(Component.translatable("tooltip.carmot_bell.info2"));
     }

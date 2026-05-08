@@ -43,9 +43,9 @@ public class MidasFoldingDisplay extends DefaultSmithingDisplay {
     @Override
     public List<EntryIngredient> getInputEntries() {
         if (this.base != null && this.addition != null && outputStack != null) {
-            var inputStack = Arrays.stream(this.base.getMatchingStacks()).findFirst().orElseGet(() -> new ItemStack(Items.AIR)).copy();
+            var inputStack = Arrays.stream(this.base.getItems()).findFirst().orElseGet(() -> new ItemStack(Items.AIR)).copy();
             // Handle folding recipes, which usually follow the pattern of "input + gold block = output"
-            if (inputStack.isOf(outputStack.getItem())) {
+            if (inputStack.is(outputStack.getItem())) {
                 if (MidasGoldSword.Type.isOfMidas(inputStack, ROYAL)) {
                     inputStack.set(GOLD_FOLDED, GoldFoldedComponent.of(640, true));
                 } else if (MidasGoldSword.Type.isOfMidas(inputStack, GILDED)) {
@@ -86,7 +86,7 @@ public class MidasFoldingDisplay extends DefaultSmithingDisplay {
     public List<EntryIngredient> getOutputEntries() {
         if (this.base != null && this.addition != null && this.outputStack != null) {
             // Handle folding recipes, which usually follow the pattern of "input + gold block = output"
-            var inputStack = Arrays.stream(this.base.getMatchingStacks()).findFirst().orElseGet(() -> new ItemStack(Items.AIR)).copy();
+            var inputStack = Arrays.stream(this.base.getItems()).findFirst().orElseGet(() -> new ItemStack(Items.AIR)).copy();
             if (outputStack.getItem().equals(inputStack.getItem())) {
 
                 if (MidasGoldSword.Type.isOfMidas(outputStack, ROYAL)) {

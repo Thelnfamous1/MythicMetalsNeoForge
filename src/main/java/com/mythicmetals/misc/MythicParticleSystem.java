@@ -23,8 +23,8 @@ public class MythicParticleSystem {
 
     public static final ParticleSystem<Void> CARMOT_TRAIL = CONTROLLER.register(Void.class, (world, pos, data) -> {
         ClientParticles.setParticleCount(1);
-        ClientParticles.setVelocity(new Vec3d(0, 0.1F, 0));
-        ClientParticles.spawn(ParticleTypes.END_ROD, world, new Vec3d(pos.x, pos.y, pos.z), 1.0D);
+        ClientParticles.setVelocity(new Vec3(0, 0.1F, 0));
+        ClientParticles.spawn(ParticleTypes.END_ROD, world, new Vec3(pos.x, pos.y, pos.z), 1.0D);
     });
 
     public static final ParticleSystem<Void> COPPER_SPARK = CONTROLLER.register(Void.class, (world, pos, data) -> {
@@ -72,7 +72,7 @@ public class MythicParticleSystem {
         ClientParticles.reset();
         ClientParticles.setParticleCount(5);
 
-        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.HEART, world, BlockPos.ofFloored(pos), new Vec3d(0, 1.25, 0), 2.0F);
+        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.HEART, world, BlockPos.containing(pos), new Vec3(0, 1.25, 0), 2.0F);
 
     });
 
@@ -80,7 +80,7 @@ public class MythicParticleSystem {
         ClientParticles.reset();
         ClientParticles.setParticleCount(5);
 
-        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.ENCHANTED_HIT, world, BlockPos.ofFloored(pos), new Vec3d(0, 1.25, 0), 2.0F);
+        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.ENCHANTED_HIT, world, BlockPos.containing(pos), new Vec3(0, 1.25, 0), 2.0F);
 
     });
 
@@ -99,7 +99,7 @@ public class MythicParticleSystem {
         ClientParticles.reset();
         ClientParticles.persist();
         ClientParticles.setParticleCount(1);
-        ClientParticles.setVelocity(new Vec3d(r.nextInt(32) / 16.0f, 0, 0));
+        ClientParticles.setVelocity(new Vec3(r.nextInt(32) / 16.0f, 0, 0));
         ClientParticles.spawn(ParticleTypes.NOTE, world, pos, 0);
         ClientParticles.reset();
     });
@@ -111,7 +111,7 @@ public class MythicParticleSystem {
         ClientParticles.persist();
         ClientParticles.setParticleCount(1);
         for (int i = 0; i < COUNT; i++) {
-            ClientParticles.setVelocity(new Vec3d(r.nextInt(32) / 16.0f, 0, 0));
+            ClientParticles.setVelocity(new Vec3(r.nextInt(32) / 16.0f, 0, 0));
             double xOffset = r.nextDouble(-1.0, 1.0);
             double yOffset = r.nextDouble(-0.5, 2.0);
             double zOffset = r.nextDouble(-1.0, 1.0);
@@ -123,14 +123,14 @@ public class MythicParticleSystem {
         ClientParticles.reset();
         ClientParticles.persist();
         ClientParticles.setParticleCount(4);
-        ClientParticles.spawnCenteredOnBlock(ParticleTypes.NAUTILUS, world, BlockPos.ofFloored(pos.add(0, 1.0, 0)), 2.0);
+        ClientParticles.spawnCenteredOnBlock(ParticleTypes.NAUTILUS, world, BlockPos.containing(pos.add(0, 1.0, 0)), 2.0);
     });
 
     public static final ParticleSystem<Void> RESONATOR_POWER_PARTICLES = CONTROLLER.register(Void.class, (world, pos, data) -> {
         ClientParticles.reset();
         ClientParticles.persist();
         ClientParticles.setParticleCount(4);
-        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.NAUTILUS, world, BlockPos.ofFloored(pos), new Vec3d(0, 1.25, 0), 2.0F);
+        ClientParticles.spawnWithOffsetFromBlock(ParticleTypes.NAUTILUS, world, BlockPos.containing(pos), new Vec3(0, 1.25, 0), 2.0F);
     });
 
     public static final ParticleSystem<Float> EXPLOSIVE_EXPLOSION = CONTROLLER.register(Float.class, (world, pos, power) -> {

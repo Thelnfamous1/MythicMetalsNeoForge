@@ -22,7 +22,7 @@ public abstract class ProjectileWeaponItemMixin {
     private void mythicmetals$modifyArrowsForRunite(Args args, ServerLevel world, LivingEntity shooter, InteractionHand hand, ItemStack stack, List<ItemStack> projectiles, float speed, float divergence, boolean critical, @Nullable LivingEntity target) {
         boolean shouldModify = false;
         for (var arrow : projectiles) {
-            if (arrow.isOf(MythicTools.RUNITE_ARROW) || arrow.isOf(MythicTools.TIPPED_RUNITE_ARROW)) {
+            if (arrow.is(MythicTools.RUNITE_ARROW) || arrow.is(MythicTools.TIPPED_RUNITE_ARROW)) {
                 shouldModify = true;
                 break;
             }

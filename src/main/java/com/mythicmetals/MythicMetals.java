@@ -5,6 +5,7 @@ import com.mythicmetals.armor.*;
 import com.mythicmetals.block.BanglumNukeHandler;
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.block.entity.RegisterBlockEntityTypes;
+import com.mythicmetals.client.MythicMetalsClient;
 import com.mythicmetals.command.MythicCommands;
 import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.conditions.MythicResourceConditions;
@@ -34,7 +35,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -44,6 +50,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
+@Mod(MythicMetals.MOD_ID)
 public class MythicMetals implements ModInitializer {
     public static Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "mythicmetals";
@@ -78,6 +85,13 @@ public class MythicMetals implements ModInitializer {
             .sync(new CombustionCooldown.SyncHandler())
             //.copyOnDeath()
             .build());
+
+    public MythicMetals(IEventBus modEventBus, ModContainer modContainer) {
+        this.onInitialize();
+        if(FMLEnvironment.dist == Dist.CLIENT){
+            new MythicMetalsClient().onInitializeClient();
+        }
+    }
 
     @Override
     public void onInitialize() {

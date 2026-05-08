@@ -46,8 +46,8 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
      */
     @ModifyReturnValue(method = "hasRecipeError", at = @At("RETURN"))
     private boolean mythicmetals$complainAboutShortUpgradeRecipes(boolean original) {
-        if (this.handler.getSlot(1).getStack().getItem().equals(MythicTools.MYTHRIL_DRILL)) {
-            return this.handler.getSlot(1).hasStack() && this.handler.getSlot(2).hasStack() && !this.handler.getSlot(3).hasStack();
+        if (this.menu.getSlot(1).getItem().getItem().equals(MythicTools.MYTHRIL_DRILL)) {
+            return this.menu.getSlot(1).hasItem() && this.menu.getSlot(2).hasItem() && !this.menu.getSlot(3).hasItem();
         }
         return original;
     }

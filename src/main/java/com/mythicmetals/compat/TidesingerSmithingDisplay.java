@@ -47,8 +47,8 @@ public class TidesingerSmithingDisplay extends DefaultSmithingDisplay {
     @Override
     public List<EntryIngredient> getOutputEntries() {
         if (this.base != null && this.addition != null && this.outputStack != null) {
-            var additionStack = Arrays.stream(this.addition.getMatchingStacks()).findFirst().orElse(ItemStack.EMPTY).copy();
-            if (additionStack.isIn(MythicTags.TIDESINGER_CORAL)) {
+            var additionStack = Arrays.stream(this.addition.getItems()).findFirst().orElse(ItemStack.EMPTY).copy();
+            if (additionStack.is(MythicTags.TIDESINGER_CORAL)) {
                 outputStack.set(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.fromItem(additionStack.getItem()));
                 return List.of(EntryIngredients.of(outputStack));
             }

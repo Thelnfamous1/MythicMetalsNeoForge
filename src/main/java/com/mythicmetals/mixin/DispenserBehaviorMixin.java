@@ -16,13 +16,13 @@ public class DispenserBehaviorMixin {
 // TODO(Ravel): target method dispenseSilently with the signature not found
 // TODO(Ravel): target method dispenseSilently with the signature not found
 // TODO(Ravel): target method dispenseSilently with the signature not found
-    @Inject(method = "dispenseSilently(Lnet/minecraft/util/math/BlockPointer;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
     private void pleaseDoNotCommitWarCrimes(BlockSource pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
         if (!BanglumNukeHandler.tryLightBigTntWithDispenser(pointer)) return;
 
-        stack.damage(1, pointer.world(), null, null);
+        stack.hurtAndBreak(1, pointer.level(), null, null);
 
-        cir.setReturnValue(stack.getDamage() > stack.getMaxDamage() ? ItemStack.EMPTY : stack);
+        cir.setReturnValue(stack.getDamageValue() > stack.getMaxDamage() ? ItemStack.EMPTY : stack);
 
     }
 

@@ -3,7 +3,6 @@
 // TODO(Ravel): Failed to fully resolve file: null cannot be cast to non-null type com.intellij.psi.PsiClass
 package com.mythicmetals.recipe;
 
-import com.mythicmetals.MythicMetals;
 import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.component.UpgradeComponent;
 import io.wispforest.endec.StructEndec;
@@ -11,32 +10,34 @@ import io.wispforest.endec.impl.StructEndecBuilder;
 import io.wispforest.owo.serialization.CodecUtils;
 import io.wispforest.owo.serialization.EndecRecipeSerializer;
 import io.wispforest.owo.serialization.endec.MinecraftEndecs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.*;
-import net.minecraft.recipe.input.SmithingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
+import net.minecraft.world.level.Level;
 
 public record UpgradeSmithingRecipe(Ingredient base, Ingredient addition, ItemStack result) implements SmithingRecipe {
 
     @Override
-    public boolean testTemplate(ItemStack stack) {
+    public boolean isTemplateIngredient(ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean testBase(ItemStack stack) {
+    public boolean isBaseIngredient(ItemStack stack) {
         return this.base.test(stack);
     }
 
     @Override
-    public boolean testAddition(ItemStack stack) {
+    public boolean isAdditionIngredient(ItemStack stack) {
         return this.addition.test(stack);
     }
 
     @Override
-    public boolean matches(SmithingRecipeInput input, World world) {
+    public boolean matches(SmithingRecipeInput input, Level world) {
         boolean validRecipe = this.base.test(input.base()) && this.addition.test(input.addition());
         var addition = input.addition().getItem();
         var upgrades = input.base().get(MythicDataComponents.UPGRADES);
@@ -48,7 +49,7 @@ public record UpgradeSmithingRecipe(Ingredient base, Ingredient addition, ItemSt
     }
 
     @Override
-    public ItemStack craft(SmithingRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack assemble(SmithingRecipeInput input, HolderLookup.Provider lookup) {
         var stack = input.base().copy();
 
         // Apply drill upgrade
@@ -57,7 +58,7 @@ public record UpgradeSmithingRecipe(Ingredient base, Ingredient addition, ItemSt
     }
 
     @Override
-    public ItemStack getResult(RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack getResultItem(HolderLookup.Provider lookup) {
         return this.result;
     }
 
@@ -69,8 +70,8 @@ public record UpgradeSmithingRecipe(Ingredient base, Ingredient addition, ItemSt
     public static class Serializer extends EndecRecipeSerializer<UpgradeSmithingRecipe> {
 
         public static final StructEndec<UpgradeSmithingRecipe> ENDEC = StructEndecBuilder.of(
-            CodecUtils.toEndec(Ingredient.ALLOW_EMPTY_CODEC).fieldOf("base", recipe -> recipe.base),
-            CodecUtils.toEndec(Ingredient.ALLOW_EMPTY_CODEC).fieldOf("addition", recipe -> recipe.addition),
+            CodecUtils.toEndec(Ingredient.CODEC).fieldOf("base", recipe -> recipe.base),
+            CodecUtils.toEndec(Ingredient.CODEC).fieldOf("addition", recipe -> recipe.addition),
             MinecraftEndecs.ITEM_STACK.fieldOf("result", recipe -> recipe.result),
             UpgradeSmithingRecipe::new
         );

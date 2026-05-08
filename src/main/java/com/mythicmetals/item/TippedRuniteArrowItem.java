@@ -18,25 +18,25 @@ public class TippedRuniteArrowItem extends RuniteArrowItem {
     }
 
     @Override
-    public ItemStack getDefaultStack() {
+    public ItemStack getDefaultInstance() {
         var stack = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW);
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContentsComponent(Potions.POISON));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.POISON));
         return stack;
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag type) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag type) {
         PotionContents potionContentsComponent = stack.get(DataComponents.POTION_CONTENTS);
         if (potionContentsComponent != null) {
-            potionContentsComponent.buildTooltip(tooltip::add, 0.125F, context.getUpdateTickRate());
+            potionContentsComponent.addPotionTooltip(tooltip::add, 0.125F, context.tickRate());
         }
     }
 
     @Override
-    public String getTranslationKey(ItemStack stack) {
-        return Potion.finishTranslationKey(
-            stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.DEFAULT).potion(),
-            this.getTranslationKey() + ".effect."
+    public String getDescriptionId(ItemStack stack) {
+        return Potion.getName(
+            stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion(),
+            this.getDescriptionId() + ".effect."
         );
     }
 }

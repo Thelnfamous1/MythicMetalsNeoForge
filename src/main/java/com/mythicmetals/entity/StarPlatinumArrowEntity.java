@@ -32,41 +32,41 @@ public class StarPlatinumArrowEntity extends AbstractArrow {
     }
 
     @Override
-    protected ItemStack asItemStack() {
+    protected ItemStack getPickupItem() {
         return STAR_PLAT_STACK;
     }
 
     @Override
-    protected ItemStack getDefaultItemStack() {
+    protected ItemStack getDefaultPickupItem() {
         return STAR_PLAT_STACK;
     }
 
     @Override
-    protected void onEntityHit(EntityHitResult entityHitResult) {
-        super.onEntityHit(entityHitResult);
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
     }
 
     @Override
-    protected void onHit(LivingEntity target) {
-        super.onHit(target);
+    protected void doPostHurtEffects(LivingEntity target) {
+        super.doPostHurtEffects(target);
         var source = new DamageSource(
-            this.getWorld().getRegistryManager().get(Registries.DAMAGE_TYPE).getEntry(MythicDamageTypes.STAR_PLATINUM_ARROW).orElseThrow(),
+            this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(MythicDamageTypes.STAR_PLATINUM_ARROW).orElseThrow(),
             this,
             getOwner());
-        if (target.getType().isIn(EntityTypeTags.UNDEAD)) {
-            target.addStatusEffect(new StatusEffectInstance(MobEffects.INSTANT_HEALTH, 1, 3));
+        if (target.getType().is(EntityTypeTags.UNDEAD)) {
+            target.addEffect(new MobEffectInstance(MobEffects.HEAL, 1, 3));
         } else {
-            target.damage(source, 24);
+            target.hurt(source, 24);
         }
     }
 
     @Override
-    public void writeCustomDataToNbt(CompoundTag nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
     }
 
     @Override
-    public void readCustomDataFromNbt(CompoundTag nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
     }
 }

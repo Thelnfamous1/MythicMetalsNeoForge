@@ -20,29 +20,29 @@ public class EnchantmentHelperMixin {
     @Inject(method = "getDamageProtection", at = @At("TAIL"), cancellable = true)
     private static void mythicmetals$damageReduction(ServerLevel world, LivingEntity user, DamageSource source, CallbackInfoReturnable<Float> cir) {
         // Make sure that there is any gear to check
-        if (!user.getArmorItems().iterator().hasNext()) return;
+        if (!user.getArmorSlots().iterator().hasNext()) return;
 
         var amount = cir.getReturnValue();
         int change = 0;
 
-        for (var gear : user.getArmorItems()) {
-            if (Abilities.BLAST_PROTECTION.getItems().contains(gear.getItem()) && source.isIn(DamageTypeTags.IS_EXPLOSION)) {
+        for (var gear : user.getArmorSlots()) {
+            if (Abilities.BLAST_PROTECTION.getItems().contains(gear.getItem()) && source.is(DamageTypeTags.IS_EXPLOSION)) {
                 change += Abilities.BLAST_PROTECTION.getLevel() * 2;
             }
 
-            if (Abilities.BLAST_PADDING.getItems().contains(gear.getItem()) && source.isIn(DamageTypeTags.IS_EXPLOSION)) {
+            if (Abilities.BLAST_PADDING.getItems().contains(gear.getItem()) && source.is(DamageTypeTags.IS_EXPLOSION)) {
                 change += Abilities.BLAST_PADDING.getLevel() * 2;
             }
 
-            if (Abilities.PROJECTILE_PROTECTION.getItems().contains(gear.getItem()) && source.isIn(DamageTypeTags.IS_PROJECTILE)) {
+            if (Abilities.PROJECTILE_PROTECTION.getItems().contains(gear.getItem()) && source.is(DamageTypeTags.IS_PROJECTILE)) {
                 change += Abilities.PROJECTILE_PROTECTION.getLevel() * 2;
             }
 
-            if (Abilities.FEATHER_FALLING.getItems().contains(gear.getItem()) && source.isIn(DamageTypeTags.IS_FALL)) {
+            if (Abilities.FEATHER_FALLING.getItems().contains(gear.getItem()) && source.is(DamageTypeTags.IS_FALL)) {
                 change += Abilities.FEATHER_FALLING.getLevel() * 3;
             }
 
-            if (Abilities.FIRE_PROTECTION.getItems().contains(gear.getItem()) && source.isIn(DamageTypeTags.IS_FIRE)) {
+            if (Abilities.FIRE_PROTECTION.getItems().contains(gear.getItem()) && source.is(DamageTypeTags.IS_FIRE)) {
                 change += Abilities.FIRE_PROTECTION.getLevel() * 2;
             }
         }
@@ -55,7 +55,7 @@ public class EnchantmentHelperMixin {
     private static void mythicmetals$increaseDamage(ServerLevel world, ItemStack stack, Entity target, DamageSource damageSource, float baseDamage, CallbackInfoReturnable<Float> cir) {
         var amount = cir.getReturnValue();
         int change = 0;
-        if (Abilities.SMITE.getItems().contains(stack.getItem()) && target.getType() != null && target.getType().isIn(EntityTypeTags.UNDEAD)) {
+        if (Abilities.SMITE.getItems().contains(stack.getItem()) && target.getType() != null && target.getType().is(EntityTypeTags.UNDEAD)) {
             change += (int) (Abilities.SMITE.getLevel() * 2.5f);
         }
         if (change != 0) {

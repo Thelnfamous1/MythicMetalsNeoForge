@@ -2,7 +2,7 @@ package com.mythicmetals.misc;
 
 import com.mojang.authlib.GameProfile;
 import com.mythicmetals.item.tools.HammerBase;
-import eu.pb4.common.protection.api.CommonProtection;
+//import eu.pb4.common.protection.api.CommonProtection;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -21,30 +21,30 @@ import org.jetbrains.annotations.Nullable;
 public class BlockBreaker {
 
     public static boolean isProtected(Level world, BlockPos blockPos, GameProfile profile, @Nullable Player player) {
-        return !CommonProtection.canBreakBlock(world, blockPos, profile, player);
+        return false; //!CommonProtection.canBreakBlock(world, blockPos, profile, player);
     }
 
     public static boolean isProtected(Level world, BlockPos blockPos, Explosion explosion, GameProfile profile, @Nullable Player player) {
-        return !CommonProtection.canExplodeBlock(world, blockPos, explosion, profile, player);
+        return false; //!CommonProtection.canExplodeBlock(world, blockPos, explosion, profile, player);
     }
 
     public static Iterable<BlockPos> findBlocks(UseOnContext context, int depth) {
 
         Iterable<BlockPos> iterator;
 
-        var facing = context.getSide().getOpposite();
-        var pos = context.getBlockPos();
-        var pos2 = context.getBlockPos().offset(facing, depth);
+        var facing = context.getClickedFace().getOpposite();
+        var pos = context.getClickedPos();
+        var pos2 = context.getClickedPos().relative(facing, depth);
 
         if (facing.equals(Direction.DOWN) || facing.equals(Direction.UP)) {
-            iterator = BlockPos.iterate(
-                pos.east().offset(Direction.NORTH),
-                pos2.west().offset(Direction.SOUTH)
+            iterator = BlockPos.betweenClosed(
+                pos.east().relative(Direction.NORTH),
+                pos2.west().relative(Direction.SOUTH)
             );
         } else {
-            iterator = BlockPos.iterate(
-                pos.down().offset(facing.rotateCounterclockwise(Direction.Axis.Y)),
-                pos2.up().offset(facing.rotateClockwise(Direction.Axis.Y))
+            iterator = BlockPos.betweenClosed(
+                pos.below().relative(facing.getCounterClockWise(Direction.Axis.Y)),
+                pos2.above().relative(facing.getClockWise(Direction.Axis.Y))
             );
         }
 
@@ -55,17 +55,17 @@ public class BlockBreaker {
     public static Iterable<BlockPos> findBlocks(Direction facing, BlockPos pos, int depth) {
         Iterable<BlockPos> iterator;
 
-        var pos2 = pos.offset(facing, depth);
+        var pos2 = pos.relative(facing, depth);
 
         if (facing.equals(Direction.DOWN) || facing.equals(Direction.UP)) {
-            iterator = BlockPos.iterate(
-                pos.east().offset(Direction.NORTH),
-                pos2.west().offset(Direction.SOUTH)
+            iterator = BlockPos.betweenClosed(
+                pos.east().relative(Direction.NORTH),
+                pos2.west().relative(Direction.SOUTH)
             );
         } else {
-            iterator = BlockPos.iterate(
-                pos.down().offset(facing.rotateCounterclockwise(Direction.Axis.Y)),
-                pos2.up().offset(facing.rotateClockwise(Direction.Axis.Y))
+            iterator = BlockPos.betweenClosed(
+                pos.below().relative(facing.getCounterClockWise(Direction.Axis.Y)),
+                pos2.above().relative(facing.getClockWise(Direction.Axis.Y))
             );
         }
 
@@ -73,18 +73,18 @@ public class BlockBreaker {
     }
 
     public static double getReachDistance(Player playerEntity) {
-        return playerEntity.getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
+        return playerEntity.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
     }
 
     public static void initHammerTime() {
         // Original Block Pos is always the center block of where the hammer hits
         PlayerBlockBreakEvents.BEFORE.register((world, player, originalBlockPos, state, blockEntity) -> {
-            var stack = player.getMainHandStack();
+            var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof HammerBase hammer)) {
                 return true; // don't do this for non-hammers
             }
-            if (!hammer.isCorrectForDrops(stack, state)) {
+            if (!hammer.isCorrectToolForDrops(stack, state)) {
                 return true; // don't break anything extra if you are not mining rocks or stones
             }
             if (isProtected(world, originalBlockPos, player.getGameProfile(), player)) {
@@ -92,9 +92,9 @@ public class BlockBreaker {
             }
             var reach = BlockBreaker.getReachDistance(player);
 
-            BlockHitResult blockHitResult = (BlockHitResult) player.raycast(reach, 1, false);
+            BlockHitResult blockHitResult = (BlockHitResult) player.pick(reach, 1, false);
 
-            var facing = blockHitResult.getSide().getOpposite();
+            var facing = blockHitResult.getDirection().getOpposite();
             var blocks = BlockBreaker.findBlocks(facing, originalBlockPos, hammer.getDepth());
 
             boolean hasMined = false;
@@ -105,18 +105,18 @@ public class BlockBreaker {
                 }
                 if (isProtected(world, pos, player.getGameProfile(), player)) continue;
                 if (hammer.canBreak(stack, world, pos) && !player.isCreative()) {
-                    // Call Block.onBreak here, to allow interactions when a player breaks blocks
+                    // Call Block.playerWillDestroy here, to allow interactions when a player breaks blocks
                     // Note that the center block still calls onBreak twice
-                    world.getBlockState(pos).getBlock().onBreak(world, pos, state, player);
+                    world.getBlockState(pos).getBlock().playerWillDestroy(world, pos, state, player);
                     BlockEntity breakEntity = world.getBlockState(pos).getBlock() instanceof EntityBlock ? world.getBlockEntity(pos) : null;
-                    Block.dropStacks(world.getBlockState(pos), world, originalBlockPos, breakEntity, player, stack);
-                    world.breakBlock(pos, false, player);
+                    Block.dropResources(world.getBlockState(pos), world, originalBlockPos, breakEntity, player, stack);
+                    world.destroyBlock(pos, false, player);
                     hasMined = true;
                 } else if (player.isCreative()) {
-                    world.breakBlock(pos, false, null);
+                    world.destroyBlock(pos, false, null);
                 }
             }
-            if (hasMined) stack.damage(2, player, EquipmentSlot.MAINHAND);
+            if (hasMined) stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
 
             return true;
         });
@@ -129,14 +129,14 @@ public class BlockBreaker {
 
         // Create an iterator around the blocks that are about to be broken
         var hammeredBlocks = BlockBreaker.findBlocks(
-            blockHitResult.getSide().getOpposite(), blockHitResult.getBlockPos(), hammer.getDepth());
+            blockHitResult.getDirection().getOpposite(), blockHitResult.getBlockPos(), hammer.getDepth());
 
         for (BlockPos pos : hammeredBlocks) {
-            var state = player.getWorld().getBlockState(pos);
+            var state = player.level().getBlockState(pos);
             // Ignore any blocks that are not minable
-            if (!state.isAir() && hammer.isCorrectForDrops(hammer.getDefaultStack(), state)) {
+            if (!state.isAir() && hammer.isCorrectToolForDrops(hammer.getDefaultInstance(), state)) {
                 // Set the current delta to the lowest value in the block iterator
-                var delta = player.getBlockBreakingSpeed(state) / 30 / state.getHardness(player.getWorld(), pos);
+                var delta = player.getDestroySpeed(state) / 30 / state.getDestroySpeed(player.level(), pos);
                 if (hardestDelta > delta) {
                     hardestDelta = delta;
                 }

@@ -2,9 +2,13 @@ package com.mythicmetals.entity;
 
 import com.mythicmetals.item.tools.MythicTools;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.entity.*;
-import net.minecraft.entity.data.*;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 // [VanillaCopy]
 public class RuniteArrowEntity extends AbstractArrow {
-    private static final TrackedData<Integer> COLOR = DataTracker.registerData(RuniteArrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(RuniteArrowEntity.class, EntityDataSerializers.INT);
     public static final ItemStack RUNITE_ARROW_STACK = new ItemStack(MythicTools.RUNITE_ARROW);
 
     public RuniteArrowEntity(EntityType<RuniteArrowEntity> type, Level world) {
@@ -38,33 +42,33 @@ public class RuniteArrowEntity extends AbstractArrow {
     }
 
     private PotionContents getPotionContents() {
-        return this.getItemStack().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.DEFAULT);
+        return this.getDefaultPickupItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
     }
 
     protected void initColor() {
         PotionContents potionContentsComponent = this.getPotionContents();
-        this.dataTracker.set(COLOR, potionContentsComponent.equals(PotionContents.DEFAULT) ? -1 : potionContentsComponent.getColor());
+        this.entityData.set(COLOR, potionContentsComponent.equals(PotionContents.EMPTY) ? -1 : potionContentsComponent.getColor());
     }
 
     @Override
-    protected ItemStack getDefaultItemStack() {
+    protected ItemStack getDefaultPickupItem() {
         return RUNITE_ARROW_STACK;
     }
 
     @Override
-    protected void onHit(LivingEntity target) {
-        super.onHit(target);
-        AbstractArrow entity = this.getEffectCause();
+    protected void doPostHurtEffects(LivingEntity target) {
+        super.doPostHurtEffects(target);
+        Entity entity = this.getEffectSource();
         PotionContents potionContentsComponent = this.getPotionContents();
         if (potionContentsComponent.potion().isPresent()) {
             for (var statusEffectInstance : potionContentsComponent.potion().get().value().getEffects()) {
-                target.addStatusEffect(
-                    new StatusEffectInstance(
-                        statusEffectInstance.getEffectType(),
+                target.addEffect(
+                    new MobEffectInstance(
+                        statusEffectInstance.getEffect(),
                         Math.max(statusEffectInstance.mapDuration(i -> i / 8), 1),
                         statusEffectInstance.getAmplifier(),
                         statusEffectInstance.isAmbient(),
-                        statusEffectInstance.shouldShowParticles()
+                        statusEffectInstance.isVisible()
                     ),
                     entity
                 );
@@ -72,24 +76,24 @@ public class RuniteArrowEntity extends AbstractArrow {
         }
 
         for (MobEffectInstance statusEffectInstance : potionContentsComponent.customEffects()) {
-            target.addStatusEffect(statusEffectInstance, entity);
+            target.addEffect(statusEffectInstance, entity);
         }
     }
 
     public int getColor() {
-        return this.dataTracker.get(COLOR);
+        return this.entityData.get(COLOR);
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
-        builder.add(COLOR, -1);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(COLOR, -1);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.getWorld().isClient) {
+        if (this.level().isClientSide) {
             if (this.inGround) {
                 if (this.inGroundTime % 5 == 0) {
                     this.spawnParticles(1);
@@ -97,9 +101,9 @@ public class RuniteArrowEntity extends AbstractArrow {
             } else {
                 this.spawnParticles(2);
             }
-        } else if (this.inGround && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.DEFAULT) && this.inGroundTime >= 600) {
-            this.getWorld().sendEntityStatus(this, (byte) 0);
-            this.setStack(RUNITE_ARROW_STACK);
+        } else if (this.inGround && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.EMPTY) && this.inGroundTime >= 600) {
+            this.level().broadcastEntityEvent(this, (byte) 0);
+            this.setPickupItemStack(RUNITE_ARROW_STACK);
         }
     }
 
@@ -107,9 +111,9 @@ public class RuniteArrowEntity extends AbstractArrow {
         int i = this.getColor();
         if (i != -1 && amount > 0) {
             for (int j = 0; j < amount; ++j) {
-                this.getWorld()
+                this.level()
                     .addParticle(
-                        ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, i), this.getParticleX(0.5), this.getRandomBodyY(), this.getParticleZ(0.5), 0.0, 0.0, 0.0
+                        ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, i), this.getRandomX(0.5), this.getRandomY(), this.getRandomZ(0.5), 0.0, 0.0, 0.0
                     );
             }
         }

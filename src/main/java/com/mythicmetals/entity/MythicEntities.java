@@ -23,37 +23,37 @@ public class MythicEntities {
     }
 
     static {
-        BANGLUM_TNT_MINECART_ENTITY_TYPE = EntityType.Builder.<BanglumTntMinecartEntity>create(
+        BANGLUM_TNT_MINECART_ENTITY_TYPE = EntityType.Builder.<BanglumTntMinecartEntity>of(
                 BanglumTntMinecartEntity::new, MobCategory.MISC)
-            .dimensions(0.98f, 0.7f)
-            .maxTrackingRange(8)
-            .build();
+            .sized(0.98f, 0.7f)
+            .clientTrackingRange(8)
+            .build(RegistryHelper.id("banglum_tnt_minecart").toString());
 
-        PALLADIUM_MINECART_ENTITY_TYPE = EntityType.Builder.<PalladiumMinecartEntity>create(
+        PALLADIUM_MINECART_ENTITY_TYPE = EntityType.Builder.<PalladiumMinecartEntity>of(
                 PalladiumMinecartEntity::new, MobCategory.MISC)
-            .dimensions(0.98f, 0.7f)
-            .maxTrackingRange(8)
-            .makeFireImmune()
-            .build();
+            .sized(0.98f, 0.7f)
+            .clientTrackingRange(8)
+            .fireImmune()
+            .build(RegistryHelper.id("palladium_minecart").toString());
 
-        BANGLUM_TNT_ENTITY_TYPE = EntityType.Builder.<BanglumTntEntity>create(
-            BanglumTntEntity::new, MobCategory.MISC).dimensions(1f, 1f).build();
+        BANGLUM_TNT_ENTITY_TYPE = EntityType.Builder.<BanglumTntEntity>of(
+            BanglumTntEntity::new, MobCategory.MISC).sized(1f, 1f).build(RegistryHelper.id("banglum_tnt").toString());
 
-        BANGLUM_NUKE_ENTITY_TYPE = EntityType.Builder.<BanglumNukeEntity>create(
-            BanglumNukeEntity::new, MobCategory.MISC).dimensions(3f, 3f).build();
+        BANGLUM_NUKE_ENTITY_TYPE = EntityType.Builder.<BanglumNukeEntity>of(
+            BanglumNukeEntity::new, MobCategory.MISC).sized(3f, 3f).build(RegistryHelper.id("banglum_nuke").toString());
 
-        STAR_PLATINUM_ARROW_ENTITY_TYPE = EntityType.Builder.<StarPlatinumArrowEntity>create(
+        STAR_PLATINUM_ARROW_ENTITY_TYPE = EntityType.Builder.<StarPlatinumArrowEntity>of(
                 StarPlatinumArrowEntity::new, MobCategory.MISC)
-            .dimensions(.5f, .5f)
-            .maxTrackingRange(4)
-            .trackingTickInterval(20)
-            .build();
+            .sized(.5f, .5f)
+            .clientTrackingRange(4)
+            .updateInterval(20)
+            .build(RegistryHelper.id("star_platinum_arrow").toString());
 
-        RUNITE_ARROW_ENTITY_TYPE = EntityType.Builder.<RuniteArrowEntity>create(
+        RUNITE_ARROW_ENTITY_TYPE = EntityType.Builder.<RuniteArrowEntity>of(
                 RuniteArrowEntity::new, MobCategory.MISC)
-            .dimensions(0.5F, 0.5F)
-            .maxTrackingRange(4)
-            .trackingTickInterval(20)
-            .build();
+            .sized(0.5F, 0.5F)
+            .clientTrackingRange(4)
+            .updateInterval(20)
+            .build(RegistryHelper.id("runite_arrow").toString());
     }
 }

@@ -17,13 +17,13 @@ public class BanglumTntMinecartEntityRenderer extends MinecartRenderer<BanglumTn
 
     public BanglumTntMinecartEntityRenderer(EntityRendererProvider.Context context) {
         super(context, MythicModelHandler.BANGLUM_TNT_MINECART);
-        this.tntBlockRenderManager = context.getBlockRenderManager();
+        this.tntBlockRenderManager = context.getBlockRenderDispatcher();
     }
 
     protected void renderBlock(
-            TntMinecartEntity tntMinecartEntity, float f, BlockState blockState, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i
+            MinecartTNT tntMinecartEntity, float f, BlockState blockState, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i
     ) {
-        int j = tntMinecartEntity.getFuseTicks();
+        int j = tntMinecartEntity.getFuse();
         if (j > -1 && (float) j - f + 1.0F < 10.0F) {
             float g = 1.0F - ((float) j - f + 1.0F) / 10.0F;
             g = Mth.clamp(g, 0.0F, 1.0F);
@@ -47,11 +47,11 @@ public class BanglumTntMinecartEntityRenderer extends MinecartRenderer<BanglumTn
     ) {
         int i;
         if (drawFlash) {
-            i = OverlayTexture.packUv(OverlayTexture.getU(1.0F), 10);
+            i = OverlayTexture.pack(OverlayTexture.u(1.0F), 10);
         } else {
-            i = OverlayTexture.DEFAULT_UV;
+            i = OverlayTexture.NO_OVERLAY;
         }
 
-        blockRenderManager.renderBlockAsEntity(state, matrices, vertexConsumers, light, i);
+        blockRenderManager.renderSingleBlock(state, matrices, vertexConsumers, light, i);
     }
 }

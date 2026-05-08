@@ -21,7 +21,7 @@ public class StarriteOreBlock extends DropExperienceBlock {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        ClientParticles.spawnCenteredOnBlock(new DustParticleEffect(new Vector3f(UsefulSingletonForColorUtil.MetalColors.STARRITE.hsv()), 1F), world, pos, 2.0D);
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        ClientParticles.spawnCenteredOnBlock(new DustParticleOptions(new Vector3f(UsefulSingletonForColorUtil.MetalColors.STARRITE.hsv()), 1F), world, pos, 2.0D);
     }
 }

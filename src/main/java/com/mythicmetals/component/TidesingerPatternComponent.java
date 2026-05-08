@@ -3,7 +3,9 @@ package com.mythicmetals.component;
 import com.mythicmetals.misc.UsefulSingletonForColorUtil;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.StructEndecBuilder;
-import net.minecraft.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Style;
@@ -48,7 +50,7 @@ public record TidesingerPatternComponent(String pattern) implements TooltipProvi
     }
 
     @Override
-    public void appendTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
         Style style = switch (this.pattern) {
             case "brain" -> UsefulSingletonForColorUtil.MetalColors.BRAIN.style();
             case "bubble" -> UsefulSingletonForColorUtil.MetalColors.BUBBLE.style();

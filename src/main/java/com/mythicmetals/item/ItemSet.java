@@ -19,7 +19,7 @@ public class ItemSet {
     private final float xp;
 
     private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
-        final var settings = new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(0);
+        final var settings = new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(0);
         settingsProcessor.accept(settings);
         return settings;
     }
@@ -76,7 +76,7 @@ public class ItemSet {
         if (nuggetItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
             // Conditionally add nuggets to nuggets tag
-            TagInjector.inject(BuiltInRegistries.ITEM, ResourceLocation.of("c", "nuggets"), nuggetItem);
+            TagInjector.inject(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets"), nuggetItem);
         }
         if (dustItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);

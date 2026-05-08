@@ -15,20 +15,20 @@ public class EnchantedMidasBlockEntityRenderer implements BlockEntityRenderer<En
     private final BlockRenderDispatcher blockRenderManager;
 
     public EnchantedMidasBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        blockRenderManager = ctx.getRenderManager();
+        blockRenderManager = ctx.getBlockRenderDispatcher();
     }
 
     @Override
     public void render(EnchantedMidasGoldBlockEntity midasBlockEntity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
-        matrices.push();
-        blockRenderManager.renderBlock(
-            MythicBlocks.MIDAS_GOLD.getStorageBlock().getDefaultState(),
-            midasBlockEntity.getPos(),
-            midasBlockEntity.getWorld(),
+        matrices.pushPose();
+        blockRenderManager.renderBatched(
+            MythicBlocks.MIDAS_GOLD.getStorageBlock().defaultBlockState(),
+            midasBlockEntity.getBlockPos(),
+            midasBlockEntity.getLevel(),
             matrices,
-            ItemRenderer.getItemGlintConsumer(vertexConsumers, RenderType.getCutoutMipped(), true, true),
+            ItemRenderer.getFoilBuffer(vertexConsumers, RenderType.cutoutMipped(), true, true),
             true,
             RandomSource.create());
-        matrices.pop();
+        matrices.popPose();
     }
 }

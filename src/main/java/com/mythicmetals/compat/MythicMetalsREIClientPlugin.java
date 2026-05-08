@@ -32,7 +32,7 @@ public class MythicMetalsREIClientPlugin implements REIClientPlugin {
         ReferenceSet<Potion> registeredPotions = new ReferenceOpenHashSet<>();
         EntryRegistry.getInstance().getEntryStacks().filter(entry -> entry.getValueType() == ItemStack.class && entry.<ItemStack>castValue().getItem() == Items.LINGERING_POTION).forEach(entry -> {
             ItemStack itemStack = (ItemStack) entry.getValue();
-            if (itemStack.contains(DataComponents.POTION_CONTENTS)) {
+            if (itemStack.has(DataComponents.POTION_CONTENTS)) {
                 var potion = itemStack.get(DataComponents.POTION_CONTENTS).potion().get();
                 if (registeredPotions.add(potion.value())) {
                     List<EntryIngredient> input = new ArrayList<>();
@@ -41,7 +41,7 @@ public class MythicMetalsREIClientPlugin implements REIClientPlugin {
                     input.add(EntryIngredients.of(itemStack));
                     for (int i = 0; i < 4; i++)
                         input.add(arrowStack);
-                    var outputStack = PotionContents.createStack(MythicTools.TIPPED_RUNITE_ARROW, potion);
+                    var outputStack = PotionContents.createItemStack(MythicTools.TIPPED_RUNITE_ARROW, potion);
                     outputStack.setCount(8);
                     EntryIngredient output = EntryIngredients.of(outputStack);
                     registry.add(new DefaultCustomDisplay(null, input, Collections.singletonList(output)));

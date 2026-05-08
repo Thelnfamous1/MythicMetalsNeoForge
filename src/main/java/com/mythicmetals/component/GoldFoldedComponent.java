@@ -29,7 +29,7 @@ public record GoldFoldedComponent(int goldFolded, boolean isRoyal, boolean showT
     }
 
     @Override
-    public void appendTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
+    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag type) {
         if (!showTooltip) return;
 
         int level = MidasGoldSword.calculateSwordLevel(this.goldFolded);
@@ -43,7 +43,7 @@ public record GoldFoldedComponent(int goldFolded, boolean isRoyal, boolean showT
         }
 
         // Spout fun facts and lore while leveling up the sword
-        tooltip.accept(Component.translatable("tooltip.midas_gold.level." + level).formatted(ChatFormatting.GOLD));
+        tooltip.accept(Component.translatable("tooltip.midas_gold.level." + level).withStyle(ChatFormatting.GOLD));
         if (this.goldFolded == 0) {
             return;
         }
@@ -52,10 +52,10 @@ public record GoldFoldedComponent(int goldFolded, boolean isRoyal, boolean showT
         if (this.goldFolded >= 1280) {
             if (this.goldFolded == 10000) {
                 // e.g. **⭐10000 FOLDS - MAXED⭐**
-                tooltip.accept(Component.translatable("tooltip.midas_gold.maxed", this.goldFolded).formatted(ChatFormatting.GOLD, ChatFormatting.BOLD));
+                tooltip.accept(Component.translatable("tooltip.midas_gold.maxed", this.goldFolded).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
             } else {
                 // e.g. Folds: 2500
-                tooltip.accept(Component.translatable("tooltip.midas_gold.fold_counter", this.goldFolded).formatted(ChatFormatting.GOLD));
+                tooltip.accept(Component.translatable("tooltip.midas_gold.fold_counter", this.goldFolded).withStyle(ChatFormatting.GOLD));
             }
             if (this.isRoyal) {
                 tooltip.accept(Component.translatable("tooltip.midas_gold.is_royal").setStyle(UsefulSingletonForColorUtil.MetalColors.GOLD_STYLE));
@@ -66,13 +66,13 @@ public record GoldFoldedComponent(int goldFolded, boolean isRoyal, boolean showT
         // Handle the cap format
         if (this.isRoyal()) {
             // e.g. 63/1280
-            tooltip.accept(Component.literal(this.goldFolded + " / " + 1280).formatted(ChatFormatting.GOLD));
+            tooltip.accept(Component.literal(this.goldFolded + " / " + 1280).withStyle(ChatFormatting.GOLD));
         } else if (goldFolded() >= 321) {
             // e.g. 63/640
-            tooltip.accept(Component.literal(this.goldFolded + " / " + 640).formatted(ChatFormatting.GOLD));
+            tooltip.accept(Component.literal(this.goldFolded + " / " + 640).withStyle(ChatFormatting.GOLD));
         } else {
             // e.g. 63/128
-            tooltip.accept(Component.literal(this.goldFolded + " / " + (64 + level * 64)).formatted(ChatFormatting.GOLD));
+            tooltip.accept(Component.literal(this.goldFolded + " / " + (64 + level * 64)).withStyle(ChatFormatting.GOLD));
         }
 
         // If this isn't done here, the ability text won't show up due to return guard

@@ -22,7 +22,7 @@ public class ApplyBonusCountMixin {
     @Final
     private Holder<Enchantment> enchantment;
 
-    @ModifyVariable(method = "process",
+    @ModifyVariable(method = "run",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/level/storage/loot/LootContext;getRandom()Lnet/minecraft/util/RandomSource;",
@@ -31,17 +31,17 @@ public class ApplyBonusCountMixin {
     )
     private int mythicmetals$increaseFortune(int level, ItemStack drop, LootContext lootCtx) {
         // Only increase drops from Fortune
-        if (!this.enchantment.matches((enchantmentRegistryKey) -> enchantmentRegistryKey.equals(Enchantments.FORTUNE))) {
+        if (!this.enchantment.is((enchantmentRegistryKey) -> enchantmentRegistryKey.equals(Enchantments.FORTUNE))) {
             return level;
         }
 
         // Return early if there is no item
-        var toolCtxStack = lootCtx.get(LootContextParams.TOOL);
+        var toolCtxStack = lootCtx.getParam(LootContextParams.TOOL);
         if (toolCtxStack == null) {
             return level;
         }
 
-        if (toolCtxStack.isIn(MythicTags.BONUS_FORTUNE)) {
+        if (toolCtxStack.is(MythicTags.BONUS_FORTUNE)) {
             return level + 1;
         }
 

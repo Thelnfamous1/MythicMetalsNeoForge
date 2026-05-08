@@ -12,6 +12,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Component;
@@ -25,11 +26,11 @@ public class TidesingerArmor extends HallowedArmor {
     private HumanoidModel<LivingEntity> model;
     public final Type type;
 
-    public TidesingerArmor(Type type, Settings settings) {
+    public TidesingerArmor(Type type, Item.Properties settings) {
         this(MythicArmorMaterials.TIDESINGER, type, settings);
     }
 
-    public TidesingerArmor(ArmorMaterial material, Type slot, Settings settings) {
+    public TidesingerArmor(ArmorMaterial material, Type slot, Item.Properties settings) {
         super(material, slot, settings.component(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.empty()));
         this.type = slot;
     }
@@ -37,7 +38,7 @@ public class TidesingerArmor extends HallowedArmor {
     @Environment(EnvType.CLIENT)
     public HumanoidModel<LivingEntity> getArmorModel() {
         if (model == null) {
-            model = provideArmorModelForSlot(type.getEquipmentSlot());
+            model = provideArmorModelForSlot(type.getSlot());
         }
         return model;
     }
@@ -45,8 +46,8 @@ public class TidesingerArmor extends HallowedArmor {
     @Environment(EnvType.CLIENT)
     @Override
     protected HumanoidModel<LivingEntity> provideArmorModelForSlot(EquipmentSlot slot) {
-        var models = Minecraft.getInstance().getEntityModelLoader();
-        var root = models.getModelPart(MythicModelHandler.TIDESINGER);
+        var models = Minecraft.getInstance().getEntityModels();
+        var root = models.bakeLayer(MythicModelHandler.TIDESINGER);
         return new TidesingerBipedModel(root, slot);
     }
 
@@ -67,9 +68,9 @@ public class TidesingerArmor extends HallowedArmor {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag type) {
-        if (stack.contains(MythicDataComponents.TIDESINGER)) {
-            stack.get(MythicDataComponents.TIDESINGER).appendTooltip(context, lines::add, type);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag type) {
+        if (stack.has(MythicDataComponents.TIDESINGER)) {
+            stack.get(MythicDataComponents.TIDESINGER).addToTooltip(context, lines::add, type);
         }
     }
 }

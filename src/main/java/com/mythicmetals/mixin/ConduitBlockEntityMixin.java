@@ -35,10 +35,10 @@ public class ConduitBlockEntityMixin {
     }
 
     @Inject(method = "applyEffects", at = @At("TAIL"))
-    private static void mythicmetals$invokeNearbySentries(ServerLevel world, BlockPos pos, List<BlockPos> activatingBlocks, CallbackInfo ci) {
-        if (world.isClient) return;
+    private static void mythicmetals$invokeNearbySentries(Level world, BlockPos pos, List<BlockPos> activatingBlocks, CallbackInfo ci) {
+        if (world.isClientSide) return;
         int radius = activatingBlocks.size() / 7 * 16;
-        ((ServerLevel)world).getPointOfInterestStorage()
+        ((ServerLevel)world).getPoiManager()
             .getInSquare(type -> type.value() == RegisterPointOfInterests.CONDUIT_POWERED_BLOCK, pos, radius, PoiManager.Occupancy.ANY)
             .forEach(pointOfInterest -> {
                 var blockEntity = world.getBlockEntity(pointOfInterest.getPos());

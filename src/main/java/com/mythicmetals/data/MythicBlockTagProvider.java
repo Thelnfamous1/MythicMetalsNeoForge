@@ -17,7 +17,7 @@ public class MythicBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    protected void configure(HolderLookup.Provider arg) {
+    protected void addTags(HolderLookup.Provider arg) {
         ReflectionUtils.iterateAccessibleStaticFields(MythicBlocks.class, BlockSet.class, (blockSet, name, field) -> {
             var modOreTag = MythicMetalsData.createModBlockTag("ores");
             var commonOreTag = ConventionalBlockTags.ORES;
@@ -26,30 +26,30 @@ public class MythicBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 var string = "ores/" + name;
                 var modTag = MythicMetalsData.createModBlockTag(string);
                 var commonTag = MythicMetalsData.createCommonBlockTag(string);
-                var tagBuilder = getOrCreateTagBuilder(modTag).add(blockSet.getOre());
-                getOrCreateTagBuilder(commonTag).addTag(modTag);
+                var tagBuilder = tag(modTag).add(blockSet.getOre());
+                tag(commonTag).addTag(modTag);
 
                 if (!blockSet.getOreVariants().isEmpty()) {
                     blockSet.getOreVariants().forEach(tagBuilder::add);
                 }
-                getOrCreateTagBuilder(modOreTag).addTag(modTag);
-                getOrCreateTagBuilder(commonOreTag).addTag(modTag);
+                tag(modOreTag).addTag(modTag);
+                tag(commonOreTag).addTag(modTag);
             }
 
             if (blockSet.getOreStorageBlock() != null) {
                 var string = "storage_blocks/raw_" + name;
                 var modTag = MythicMetalsData.createModBlockTag(string);
                 var commonTag = MythicMetalsData.createCommonBlockTag(string);
-                getOrCreateTagBuilder(modTag).add(blockSet.getOreStorageBlock());
-                getOrCreateTagBuilder(commonTag).addTag(modTag);
+                tag(modTag).add(blockSet.getOreStorageBlock());
+                tag(commonTag).addTag(modTag);
             }
 
             if (blockSet.getStorageBlock() != null) {
                 var string = "storage_blocks/" + name;
                 var modTag = MythicMetalsData.createModBlockTag(string);
                 var commonTag = MythicMetalsData.createCommonBlockTag(string);
-                getOrCreateTagBuilder(modTag).add(blockSet.getStorageBlock());
-                getOrCreateTagBuilder(commonTag).addTag(modTag);
+                tag(modTag).add(blockSet.getStorageBlock());
+                tag(commonTag).addTag(modTag);
             }
         });
     }

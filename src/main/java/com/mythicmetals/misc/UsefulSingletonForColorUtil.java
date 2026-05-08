@@ -29,7 +29,7 @@ public class UsefulSingletonForColorUtil {
      */
     public static int potionColor(ItemStack stack, int tintIndex) {
         if (tintIndex == 1) {
-            var component = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.DEFAULT);
+            var component = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
             if (component == null) {
                 return -1;
             }
@@ -38,7 +38,7 @@ public class UsefulSingletonForColorUtil {
             }
 
             if (component.hasEffects()) {
-                return PotionContents.getColor(component.getEffects());
+                return PotionContents.getColor(component.getAllEffects());
             }
         }
         return -1;

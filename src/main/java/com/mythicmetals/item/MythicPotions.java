@@ -11,6 +11,6 @@ public class MythicPotions {
     public static void init() {}
 
     static {
-        Holder<Potion> STRONG_LUCK = RegistryHelper.potion("strong_luck", new StatusEffectInstance(MobEffects.LUCK, 6000, 1));
+        Holder<Potion> STRONG_LUCK = RegistryHelper.potion("strong_luck", new MobEffectInstance(MobEffects.LUCK, 6000, 1));
     }
 }

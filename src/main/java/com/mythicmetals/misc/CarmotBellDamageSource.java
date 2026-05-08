@@ -16,14 +16,14 @@ public class CarmotBellDamageSource extends DamageSource {
     }
 
     @Override
-    public Component getDeathMessage(LivingEntity killed) {
-        if (this.getAttacker() != null) {
-            return Component.translatable("death.attack.carmot_bell.player", killed.getDisplayName(), this.getAttacker().getDisplayName());
+    public Component getLocalizedDeathMessage(LivingEntity killed) {
+        if (this.getEntity() != null) {
+            return Component.translatable("death.attack.carmot_bell.player", killed.getDisplayName(), this.getEntity().getDisplayName());
         }
         return Component.translatable("death.attack.carmot_bell", killed.getDisplayName());
     }
 
     public static CarmotBellDamageSource of(Level world, @Nullable LivingEntity attacker) {
-        return new CarmotBellDamageSource(world.getRegistryManager().get(Registries.DAMAGE_TYPE).getEntry(MythicDamageTypes.CARMOT_BELL).orElseThrow(), null, attacker);
+        return new CarmotBellDamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(MythicDamageTypes.CARMOT_BELL).orElseThrow(), null, attacker);
     }
 }

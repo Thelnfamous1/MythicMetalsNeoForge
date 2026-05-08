@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = CampfireBlock.class, priority = 1100)
 public class CampfireBlockMixin {
 
-    @Inject(method = "onEntityCollision", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void stompMarshmellows(BlockState state, Level world, BlockPos pos, Entity entity, CallbackInfo ci) {
-        if (!entity.isLiving()) return;
-        for (ItemStack armorItems : ((LivingEntity) entity).getArmorItems()) {
+        if (!entity.isAlive()) return;
+        for (ItemStack armorItems : ((LivingEntity) entity).getArmorSlots()) {
             if (armorItems.getItem().equals(MythicArmor.PALLADIUM.getBoots())) {
                 ci.cancel();
                 return;

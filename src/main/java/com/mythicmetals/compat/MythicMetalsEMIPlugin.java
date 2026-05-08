@@ -6,14 +6,16 @@ import com.mythicmetals.recipe.MidasFoldingRecipe;
 import com.mythicmetals.recipe.TidesingerCoralRecipe;
 import dev.emi.emi.api.*;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.recipe.*;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 
 @EmiEntrypoint
 public class MythicMetalsEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        for (RecipeEntry<SmithingRecipe> recipe : registry.getRecipeManager().listAllOfType(RecipeType.SMITHING)) {
+        for (RecipeHolder<SmithingRecipe> recipe : registry.getRecipeManager().getAllRecipesFor(RecipeType.SMITHING)) {
             if (recipe.value() instanceof MidasFoldingRecipe foldingRecipe) {
                 registry.addRecipe(new MidasFoldingEMIRecipe(foldingRecipe));
             }

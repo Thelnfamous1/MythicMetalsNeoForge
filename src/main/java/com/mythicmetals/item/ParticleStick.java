@@ -12,7 +12,7 @@ public class ParticleStick<T> extends Item {
     private final ParticleSystem<T> particle;
     private final T extraData;
 
-    public ParticleStick(Settings settings, ParticleSystem<T> particle) {
+    public ParticleStick(Item.Properties settings, ParticleSystem<T> particle) {
         super(settings);
         this.particle = particle;
         this.extraData = null;
@@ -20,11 +20,11 @@ public class ParticleStick<T> extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-        var stack = user.getStackInHand(hand);
+        var stack = user.getItemInHand(hand);
         if (this.extraData != null) {
-            particle.spawn(world, user.getPos(), extraData);
+            particle.spawn(world, user.position(), extraData);
         } else {
-            particle.spawn(world, user.getPos());
+            particle.spawn(world, user.position());
         }
         return InteractionResultHolder.pass(stack);
     }

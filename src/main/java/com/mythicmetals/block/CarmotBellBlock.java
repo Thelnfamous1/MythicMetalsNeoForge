@@ -48,7 +48,7 @@ public class CarmotBellBlock extends BaseEntityBlock {
 
         if (be instanceof CarmotBellBlockEntity bell) {
             if (bell.canBeUsed()) {
-                bell.markUsed();
+                bell.setChanged();
                 heal(world, be.getBlockPos().getCenter(), player);
                 world.playLocalSound(pos, RegisterSounds.CARMOT_BELL_DING, SoundSource.BLOCKS, 1.0f, 1.0f, true);
             } else {

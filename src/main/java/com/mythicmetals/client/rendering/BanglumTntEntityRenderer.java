@@ -4,7 +4,9 @@ import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.entity.BanglumTntEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.render.entity.*;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
@@ -15,14 +17,14 @@ import com.mojang.math.Axis;
 public class BanglumTntEntityRenderer extends EntityRenderer<BanglumTntEntity> {
     private final BlockRenderDispatcher blockRenderManager;
 
-    public BanglumTntEntityRenderer(EntityRendererFactory.Context context) {
+    public BanglumTntEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.5f;
-        blockRenderManager = context.getBlockRenderManager();
+        blockRenderManager = context.getBlockRenderDispatcher();
     }
 
     public void render(BanglumTntEntity banglumTnt, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.0, 0.5, 0.0);
         int j = banglumTnt.getFuse();
         if ((float) j - g + 1.0F < 10.0F) {
@@ -34,17 +36,17 @@ public class BanglumTntEntityRenderer extends EntityRenderer<BanglumTntEntity> {
             matrixStack.scale(k, k, k);
         }
 
-        matrixStack.multiply(Axis.POSITIVE_Y.rotationDegrees(-90.0F));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         matrixStack.translate(-0.5, -0.5, 0.5);
-        matrixStack.multiply(Axis.POSITIVE_Y.rotationDegrees(90.0F));
-        TntMinecartEntityRenderer.renderFlashingBlock(blockRenderManager, MythicBlocks.BANGLUM_TNT_BLOCK.getDefaultState(), matrixStack, vertexConsumerProvider, i, j / 5 % 2 == 0);
-        matrixStack.pop();
+        matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderManager, MythicBlocks.BANGLUM_TNT_BLOCK.defaultBlockState(), matrixStack, vertexConsumerProvider, i, j / 5 % 2 == 0);
+        matrixStack.popPose();
         super.render(banglumTnt, f, g, matrixStack, vertexConsumerProvider, i);
     }
 
     @Override
-    public ResourceLocation getTexture(BanglumTntEntity entity) {
-        return TextureAtlas.BLOCK_ATLAS_TEXTURE;
+    public ResourceLocation getTextureLocation(BanglumTntEntity entity) {
+        return TextureAtlas.LOCATION_BLOCKS;
 
     }
 

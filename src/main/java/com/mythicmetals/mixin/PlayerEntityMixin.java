@@ -4,13 +4,14 @@ import com.mythicmetals.MythicMetals;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.tools.HammerBase;
 import com.mythicmetals.misc.IsAttackCritical;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.level.Level;
@@ -36,41 +37,41 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IsAttack
 // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract PlayerInventory getInventory();
+    public abstract Inventory getInventory();
 
     // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract Iterable<ItemStack> getArmorItems();
+    public abstract Iterable<ItemStack> getArmorSlots();
 
     // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
     @Shadow
-    public abstract void incrementStat(Stat<?> stat);
+    public abstract void awardStat(Stat<?> stat);
 
     // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
 // TODO(Ravel): Could not determine a single target
     @Shadow
     @Final
-    private ItemCooldownManager itemCooldownManager;
+    private ItemCooldowns cooldowns;
 
     // TODO(Ravel): no target class
 // TODO(Ravel): no target class
 // TODO(Ravel): no target class
-    @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
     private void slowBreak(BlockState blockState, CallbackInfoReturnable<Float> cir) {
-        var mainHandStack = getInventory().getMainHandStack();
+        var mainHandStack = getInventory().getSelected();
         float speedMod = 1.0f;
 
         // Don't do any special handling if you are not holding a tool
         if (mainHandStack.isEmpty()) return;
 
         // Slow down mining MM ores if you are using an item without a high enough mining level
-        if (blockState.isIn(MythicTags.MYTHIC_ORES) && !mainHandStack.isSuitableFor(blockState)) {
-            if (mainHandStack.hasEnchantments() && mainHandStack.getEnchantments().getEnchantments().iterator().next().equals(Enchantments.EFFICIENCY)) {
+        if (blockState.is(MythicTags.MYTHIC_ORES) && !mainHandStack.isCorrectToolForDrops(blockState)) {
+            if (mainHandStack.isEnchanted() && mainHandStack.getEnchantments().keySet().iterator().next().equals(Enchantments.EFFICIENCY)) {
                 speedMod *= 0.01f;
             } else {
                 speedMod *= 0.3f;
@@ -102,9 +103,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IsAttack
 // TODO(Ravel): no target class
 // TODO(Ravel): no target class
     @ModifyVariable(
-        method = "applyDamage",
+        method = "actuallyHurt",
         at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/player/Player;applyArmorToDamage(Lnet/minecraft/world/damagesource/DamageSource;F)F",
+            target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F",
             shift = At.Shift.BY, by = -2),
         ordinal = 0,
         argsOnly = true)

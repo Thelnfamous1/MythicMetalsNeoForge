@@ -27,7 +27,7 @@
     "ItemStackComponentizationFixin",
     "LivingEntityMixin",
     "MagmaBlockMixin",
-    "PiglinAiMixin",
+    "PiglinBrainMixin",
     "PlayerEntityMixin",
     "PowderSnowBlockMixin",
     "ProjectileWeaponItemMixin",
@@ -38,7 +38,7 @@
     "ElytraLayerMixin",
     "ModelLayersAccessor",
     "ItemRendererMixin",
-    "PlayerRendererMixin",
+    "PlayerEntityRendererMixin",
     "SmithingScreenMixin",
     "ClientLanguageMixin",
     "LevelRendererInvoker"
@@ -48,6 +48,6 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
   "plugin": "com.mythicmetals.mixin.MythicMetalsMixinPlugin"
 }

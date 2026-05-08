@@ -34,9 +34,9 @@ public class MidasFoldingEMIRecipe implements EmiRecipe {
         var outputStack = recipe.result();
 
         if (this.base != null && this.addition != null && outputStack != null) {
-            var inputStack = Arrays.stream(this.base.getMatchingStacks()).findFirst().orElse(ItemStack.EMPTY).copy();
+            var inputStack = Arrays.stream(this.base.getItems()).findFirst().orElse(ItemStack.EMPTY).copy();
             // Handle folding recipes, which usually follow the pattern of "input + gold block = output"
-            if (outputStack.isOf(inputStack.getItem())) {
+            if (outputStack.is(inputStack.getItem())) {
                 if (MidasGoldSword.Type.isOfMidas(inputStack, ROYAL)) {
                     inputStack.set(MythicDataComponents.GOLD_FOLDED, GoldFoldedComponent.of(640, true));
                 } else if (MidasGoldSword.Type.isOfMidas(inputStack, GILDED)) {

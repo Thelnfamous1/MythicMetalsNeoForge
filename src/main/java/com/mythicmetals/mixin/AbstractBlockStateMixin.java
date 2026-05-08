@@ -19,12 +19,12 @@ public class AbstractBlockStateMixin {
 
     @Inject(at = @At("RETURN"), method = "getDestroyProgress", cancellable = true)
     private void mythicmetals$slowBreaking(Player player, BlockGetter blockView, BlockPos originalBlockPos, CallbackInfoReturnable<Float> cir) {
-        if (player.getMainHandStack().getItem() instanceof HammerBase hammer) {
+        if (player.getMainHandItem().getItem() instanceof HammerBase hammer) {
             var oldDelta = cir.getReturnValue();
             // Raycast to get a block hit result, which contains the side of the targeted block
-            BlockHitResult blockHitResult = blockView.raycast(
-                new RaycastContext(player.getPos(),
-                    Vec3.of(originalBlockPos),
+            BlockHitResult blockHitResult = blockView.clip(
+                new ClipContext(player.position(),
+                    Vec3.atLowerCornerOf(originalBlockPos),
                     ClipContext.Block.OUTLINE,
                     ClipContext.Fluid.NONE,
                     player));

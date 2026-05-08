@@ -14,10 +14,10 @@ public class BanglumNukeSource extends DamageSource {
     }
 
     @Override
-    public Component getDeathMessage(LivingEntity killed) {
-        if (this.getAttacker() != null) {
-            return Component.translatable("death.attack.banglum_nuke.player", killed.getDisplayName(), this.getAttacker().getDisplayName());
+    public Component getLocalizedDeathMessage(LivingEntity killed) {
+        if (this.getEntity() != null) {
+            return Component.translatable("death.attack.banglum_nuke.player", killed.getDisplayName(), this.getEntity().getDisplayName());
         }
-        return super.getDeathMessage(killed);
+        return super.getLocalizedDeathMessage(killed);
     }
 }

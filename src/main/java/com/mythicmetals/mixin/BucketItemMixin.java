@@ -2,6 +2,7 @@ package com.mythicmetals.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mythicmetals.block.Lavaloggable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
@@ -32,14 +33,14 @@ public abstract class BucketItemMixin {
         return original;
     }
 
-    @Inject(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isLiquid()Z"), cancellable = true)
-    private void mythicmetals$fillLavalog(Player player, Level world, BlockPos pos, BlockHitResult hitResult, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "emptyContents(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/BlockHitResult;Lnet/minecraft/world/item/ItemStack;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;liquid()Z"), cancellable = true)
+    private void mythicmetals$fillLavalog(Player player, Level world, BlockPos pos, BlockHitResult hitResult, ItemStack container, CallbackInfoReturnable<Boolean> cir) {
         var state = world.getBlockState(pos);
         if (this.content.equals(Fluids.LAVA) && state.getBlock() instanceof Lavaloggable lavaloggable) {
             // TODO - Vanilla behavior here is to eat the fluid if you log the same block twice
             // Try and explore whether you can prevent placing lava in the same block twice
             // Lava is mildly more inconvenient to source, after all
-            lavaloggable.tryFillWithFluid(world, pos, state, Fluids.LAVA.getStill(false));
+            lavaloggable.placeLiquid(world, pos, state, Fluids.LAVA.getSource(false));
             this.playEmptySound(player, world, pos);
             cir.setReturnValue(true);
         }

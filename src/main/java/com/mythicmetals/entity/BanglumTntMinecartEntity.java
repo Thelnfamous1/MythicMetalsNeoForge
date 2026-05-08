@@ -3,6 +3,7 @@ package com.mythicmetals.entity;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.item.tools.MythicTools;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntityType;
@@ -26,32 +27,32 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
 
     public BanglumTntMinecartEntity(Level world, double x, double y, double z) {
         this(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE, world);
-        this.setPosition(x, y, z);
-        this.prevX = x;
-        this.prevY = y;
-        this.prevZ = z;
+        this.setPos(x, y, z);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @Override
-    public BlockState getDefaultContainedBlock() {
-        return MythicBlocks.BANGLUM_TNT_BLOCK.getDefaultState();
+    public BlockState getDefaultDisplayBlockState() {
+        return MythicBlocks.BANGLUM_TNT_BLOCK.defaultBlockState();
     }
 
     @Override
-    protected Item asItem() {
+    protected Item getDropItem() {
         return MythicTools.BANGLUM_TNT_MINECART;
     }
 
     // [VanillaCopy], but increases the power cap to 8
     @Override
     protected void explode(@Nullable DamageSource damageSource, double power) {
-        if (!this.getWorld().isClient) {
+        if (!this.level().isClientSide) {
             double d = Math.sqrt(power);
             if (d > MAX_POWER) {
                 d = MAX_POWER;
             }
 
-            this.getWorld().createExplosion(this, damageSource, null, this.getX(), this.getY(), this.getZ(), (float) (4.0 + this.random.nextDouble() * 1.5 * d), false, Level.ExplosionInteraction.TNT);
+            this.level().explode(this, damageSource, null, this.getX(), this.getY(), this.getZ(), (float) (4.0 + this.random.nextDouble() * 1.5 * d), false, Level.ExplosionInteraction.TNT);
             this.discard();
         }
     }
@@ -61,13 +62,13 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
         super.tick();
         if (this.fuseTicks > 0) {
             --this.fuseTicks;
-            this.getWorld().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5, this.getZ(), 0.0, 0.0, 0.0);
+            this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5, this.getZ(), 0.0, 0.0, 0.0);
         } else if (this.fuseTicks == 0) {
-            this.explode(this.getVelocity().horizontalLengthSquared());
+            this.explode(this.getDeltaMovement().horizontalDistanceSqr());
         }
 
         if (this.horizontalCollision) {
-            double d = this.getVelocity().horizontalLengthSquared();
+            double d = this.getDeltaMovement().horizontalDistanceSqr();
             if (d >= 0.01F) {
                 this.explode(d);
             }
@@ -75,27 +76,27 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
     }
 
     @Override
-    public void onActivatorRail(int x, int y, int z, boolean powered) {
+    public void activateMinecart(int x, int y, int z, boolean powered) {
         if (powered && this.fuseTicks < 0) {
-            this.prime();
+            this.primeFuse();
         }
     }
 
     @Override
-    public void killAndDropSelf(DamageSource damageSource) {
-        double d = this.getVelocity().horizontalLengthSquared();
-        if (!damageSource.isIn(DamageTypeTags.IS_FIRE) && !damageSource.isIn(DamageTypeTags.IS_EXPLOSION) && !(d >= 0.01F)) {
-            super.killAndDropSelf(damageSource);
+    public void destroy(DamageSource damageSource) {
+        double d = this.getDeltaMovement().horizontalDistanceSqr();
+        if (!damageSource.is(DamageTypeTags.IS_FIRE) && !damageSource.is(DamageTypeTags.IS_EXPLOSION) && !(d >= 0.01F)) {
+            super.destroy(damageSource);
         } else {
             if (this.fuseTicks < 0) {
-                this.prime();
+                this.primeFuse();
                 this.fuseTicks = this.random.nextInt(20) + this.random.nextInt(20);
             }
         }
     }
 
     @Override
-    public int getFuseTicks() {
+    public int getFuse() {
         return this.fuseTicks;
     }
 
@@ -105,18 +106,18 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
     }
 
     @Override
-    public void prime() {
+    public void primeFuse() {
         this.fuseTicks = 120;
-        if (!this.getWorld().isClient) {
-            this.getWorld().sendEntityStatus(this, EntityEvent.SET_SHEEP_EAT_GRASS_TIMER_OR_PRIME_TNT_MINECART);
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, EntityEvent.EAT_GRASS);
             if (!this.isSilent()) {
-                this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 0.8F);
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 0.8F);
             }
         }
     }
 
     @Override
-    public EntityType getMinecartType() {
+    public AbstractMinecart.Type getMinecartType() {
         return MythicMetals.BANGLUM_TNT;
     }
 }

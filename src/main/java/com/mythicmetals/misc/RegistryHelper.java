@@ -3,6 +3,12 @@ package com.mythicmetals.misc;
 import com.mojang.serialization.MapCodec;
 import com.mythicmetals.MythicMetals;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -11,11 +17,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.item.*;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.registry.*;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
@@ -30,22 +34,22 @@ import java.util.function.UnaryOperator;
 public class RegistryHelper {
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.of(MythicMetals.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MythicMetals.MOD_ID, path);
     }
 
     public static void item(String path, Item item) {
-        Registry.register(Registries.ITEM, id(path), item);
+        Registry.register(BuiltInRegistries.ITEM, id(path), item);
     }
 
     public static void block(String path, Block block) {
-        Registry.register(Registries.BLOCK, id(path), block);
-        Registry.register(Registries.ITEM, id(path), new BlockItem(block, new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(1)));
+        Registry.register(BuiltInRegistries.BLOCK, id(path), block);
+        Registry.register(BuiltInRegistries.ITEM, id(path), new BlockItem(block, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1)));
     }
 
     public static void block(String path, Block block, boolean fireproof) {
         if (fireproof) {
-            Registry.register(Registries.BLOCK, id(path), block);
-            Registry.register(Registries.ITEM, id(path), new BlockItem(block, new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(1).fireproof()));
+            Registry.register(BuiltInRegistries.BLOCK, id(path), block);
+            Registry.register(BuiltInRegistries.ITEM, id(path), new BlockItem(block, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).fireResistant()));
         } else {
             block(path, block);
         }
@@ -53,68 +57,68 @@ public class RegistryHelper {
 
     public static void block(String path, Block block, boolean fireproof, boolean uncommon) {
         if (uncommon) {
-            Registry.register(Registries.BLOCK, id(path), block);
-            Registry.register(Registries.ITEM, id(path), new BlockItem(block, new Item.Settings().group(MythicMetals.TABBED_GROUP).tab(1).rarity(Rarity.UNCOMMON)));
+            Registry.register(BuiltInRegistries.BLOCK, id(path), block);
+            Registry.register(BuiltInRegistries.ITEM, id(path), new BlockItem(block, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).rarity(Rarity.UNCOMMON)));
         } else {
             block(path, block, fireproof);
         }
     }
 
     public static void block(String path, Block block, OwoItemGroup group) {
-        Registry.register(Registries.BLOCK, id(path), block);
-        Registry.register(Registries.ITEM, id(path), new BlockItem(block, new Item.Settings().group(group)));
+        Registry.register(BuiltInRegistries.BLOCK, id(path), block);
+        Registry.register(BuiltInRegistries.ITEM, id(path), new BlockItem(block, new Item.Properties().group(group)));
     }
 
     public static void block(String path, Block block, OwoItemGroup group, boolean fireproof) {
         if (fireproof) {
-            Registry.register(Registries.BLOCK, id(path), block);
-            Registry.register(Registries.ITEM, id(path), new BlockItem(block, new Item.Settings().group(group).fireproof()));
+            Registry.register(BuiltInRegistries.BLOCK, id(path), block);
+            Registry.register(BuiltInRegistries.ITEM, id(path), new BlockItem(block, new Item.Properties().group(group).fireResistant()));
         } else {
             block(path, block, group);
         }
     }
 
     public static void blockOnly(String path, Block block) {
-        Registry.register(Registries.BLOCK, id(path), block);
+        Registry.register(BuiltInRegistries.BLOCK, id(path), block);
     }
 
-    public static void entityType(String path, BlockEntityType<?> type) {
-        Registry.register(Registries.ENTITY_TYPE, RegistryHelper.id(path), type);
+    public static void entityType(String path, EntityType<?> type) {
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, RegistryHelper.id(path), type);
     }
 
-    public static RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey(String path) {
-        return RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, RegistryHelper.id(path));
+    public static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey(String path) {
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, RegistryHelper.id(path));
     }
 
     public static LootItemConditionType lootConditionType(String path, MapCodec<? extends LootItemCondition> lootCodec) {
-        return Registry.register(Registries.LOOT_CONDITION_TYPE, RegistryHelper.id(path), new LootConditionType(lootCodec));
+        return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, RegistryHelper.id(path), new LootItemConditionType(lootCodec));
     }
 
     public static void blockEntity(String path, BlockEntityType<?> type) {
-        Registry.register(Registries.BLOCK_ENTITY_TYPE, RegistryHelper.id(path), type);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, RegistryHelper.id(path), type);
     }
 
     public static Holder<Attribute> entityAttribute(String path, Attribute attribute) {
-        return Registry.registerReference(Registries.ATTRIBUTE, id(path), attribute);
+        return Registry.registerForHolder(BuiltInRegistries.ATTRIBUTE, id(path), attribute);
     }
 
     public static Holder<MobEffect> getEntry(MobEffect effect) {
-        return Registries.STATUS_EFFECT.getEntry(effect);
+        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
     }
 
     public static Holder<ArmorMaterial> getEntry(ArmorMaterial material) {
-        return Registries.ARMOR_MATERIAL.getEntry(material);
+        return BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(material);
     }
 
     public static Holder<Potion> getEntry(Potion potion) {
-        return Registries.POTION.getEntry(potion);
+        return BuiltInRegistries.POTION.wrapAsHolder(potion);
     }
 
     public static <T> DataComponentType<T> dataComponentType(String path, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
-        return Registry.register(Registries.DATA_COMPONENT_TYPE, id(path), builderOperator.apply(DataComponentType.builder()).build());
+        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id(path), builderOperator.apply(DataComponentType.builder()).build());
     }
 
     public static Holder<Potion> potion(String name, MobEffectInstance statusEffectInstance) {
-        return Registry.registerReference(Registries.POTION, id(name), new Potion(statusEffectInstance));
+        return Registry.registerForHolder(BuiltInRegistries.POTION, id(name), new Potion(statusEffectInstance));
     }
 }

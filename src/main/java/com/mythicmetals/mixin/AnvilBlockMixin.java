@@ -12,7 +12,7 @@ public class AnvilBlockMixin {
 
     @ModifyReturnValue(method = "damage", at = @At("TAIL"))
     private static BlockState mythicmetals$cancelAnvilDamage(BlockState original, BlockState initial) {
-        if (initial.isIn(MythicTags.ANVILS)) {
+        if (initial.is(MythicTags.ANVILS)) {
             return initial;
         }
         return original;

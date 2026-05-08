@@ -18,14 +18,14 @@ public class SimpleCriteria extends SimpleCriterionTrigger<SimpleCriteria.Condit
     }
 
     @Override
-    public Codec<Conditions> getConditionsCodec() {
+    public Codec<Conditions> codec() {
         return Conditions.CODEC;
     }
 
     public record Conditions(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            EntityPredicate.LOOT_CONTEXT_PREDICATE_CODEC.optionalFieldOf("player").forGetter(Conditions::player)
+            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Conditions::player)
         ).apply(instance, Conditions::new));
     }
 }

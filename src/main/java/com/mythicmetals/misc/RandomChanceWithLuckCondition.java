@@ -25,8 +25,8 @@ public record RandomChanceWithLuckCondition(float chance) implements LootItemCon
     }
 
     public boolean test(LootContext lootContext) {
-        if (lootContext.get(LootContextParams.THIS_ENTITY) instanceof LivingEntity entity && entity.getAttributes().hasAttribute(Attributes.GENERIC_LUCK)) {
-            double luckModifier = chance * (entity.getAttributeValue(Attributes.GENERIC_LUCK) / 10);
+        if (lootContext.getParam(LootContextParams.THIS_ENTITY) instanceof LivingEntity entity && entity.getAttributes().hasAttribute(Attributes.LUCK)) {
+            double luckModifier = chance * (entity.getAttributeValue(Attributes.LUCK) / 10);
             return lootContext.getRandom().nextFloat() < this.chance + luckModifier;
         }
         return lootContext.getRandom().nextFloat() < this.chance;

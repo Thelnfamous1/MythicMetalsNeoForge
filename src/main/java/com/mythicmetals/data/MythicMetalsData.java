@@ -26,23 +26,23 @@ public class MythicMetalsData implements DataGeneratorEntrypoint {
 
     @Override
     public void buildRegistry(RegistrySetBuilder registryBuilder) {
-        registryBuilder.addRegistry(Registries.CONFIGURED_FEATURE, MythicOreFeatureProvider::initConfiguredFeatures);
-        registryBuilder.addRegistry(Registries.PLACED_FEATURE, MythicOreFeatureProvider::initPlacedFeatures);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, MythicOreFeatureProvider::initConfiguredFeatures);
+        registryBuilder.add(Registries.PLACED_FEATURE, MythicOreFeatureProvider::initPlacedFeatures);
     }
 
     public static TagKey<Item> createCommonItemTag(String path) {
-        return TagKey.of(Registries.ITEM, ResourceLocation.of("c", path));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 
     public static TagKey<Item> createModItemTag(String path) {
-        return TagKey.of(Registries.ITEM, RegistryHelper.id(path));
+        return TagKey.create(Registries.ITEM, RegistryHelper.id(path));
     }
 
     public static TagKey<Block> createCommonBlockTag(String path) {
-        return TagKey.of(Registries.BLOCK, ResourceLocation.of("c", path));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 
     public static TagKey<Block> createModBlockTag(String path) {
-        return TagKey.of(Registries.BLOCK, RegistryHelper.id(path));
+        return TagKey.create(Registries.BLOCK, RegistryHelper.id(path));
     }
 }

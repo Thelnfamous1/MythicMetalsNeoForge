@@ -13,6 +13,6 @@ public class ShieldUsePredicate implements ClampedItemPropertyFunction {
 
     @Override
     public float unclampedCall(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        return entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F;
+        return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
     }
 }

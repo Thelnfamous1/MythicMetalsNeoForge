@@ -26,16 +26,16 @@ public class BonusLevelTableConditionMixin {
         at = @At(value = "LOAD")
     )
     private int mythicmetals$increaseFortune(int level, LootContext lootCtx) {
-        var toolCtxStack = lootCtx.get(LootContextParams.TOOL);
+        var toolCtxStack = lootCtx.getParam(LootContextParams.TOOL);
         if (toolCtxStack == null) {
             return level;
         }
 
-        if (!this.enchantment.matches((enchantmentRegistryKey) -> enchantmentRegistryKey.equals(Enchantments.FORTUNE))) {
+        if (!this.enchantment.is((enchantmentRegistryKey) -> enchantmentRegistryKey.equals(Enchantments.FORTUNE))) {
             return level;
         }
 
-        if ((toolCtxStack.isIn(MythicTags.BONUS_FORTUNE))) {
+        if ((toolCtxStack.is(MythicTags.BONUS_FORTUNE))) {
             return level + 1;
         }
 

@@ -3,8 +3,6 @@ package com.mythicmetals.block;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.registry.RegisterSounds;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
 import net.minecraft.world.item.*;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
@@ -159,7 +157,7 @@ public class MythicBlocks {
         .sound(SoundType.METAL)
     );
 
-    public static final Item PALLADIUM_RAIL_ITEM = new BlockItem(PALLADIUM_RAIL, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).fireproof()) {
+    public static final Item PALLADIUM_RAIL_ITEM = new BlockItem(PALLADIUM_RAIL, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).fireResistant()) {
         @Override
         public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
             super.appendHoverText(stack, context, tooltip, type);

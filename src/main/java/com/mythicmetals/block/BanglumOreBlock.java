@@ -6,7 +6,6 @@ import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.MythicItems;
 import io.wispforest.owo.particles.ClientParticles;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
-import net.minecraft.block.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,39 +24,39 @@ public class BanglumOreBlock extends DropExperienceBlock {
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         int rng = random.nextInt(130);
-        if (rng < 2 && world.getDimension().ultrawarm()) {
+        if (rng < 2 && world.dimensionType().ultraWarm()) {
             ClientParticles.setParticleCount(12);
             ClientParticles.spawnCenteredOnBlock(ParticleTypes.LARGE_SMOKE, world, pos, 4.5D);
         } else if (rng == 69) {
             ClientParticles.setParticleCount(6);
             ClientParticles.spawnCenteredOnBlock(ParticleTypes.LARGE_SMOKE, world, pos, 3.5D);
         }
-        super.randomDisplayTick(state, world, pos, random);
+        super.animateTick(state, world, pos, random);
     }
 
     /**
      * Occasionally, or in some cases often, explode when mined
      */
     @Override
-    public BlockState onBreak(Level world, BlockPos pos, BlockState state, Player player) {
-        int chance = world.getDimension().ultrawarm() ? 35 : 7;
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        int chance = world.dimensionType().ultraWarm() ? 35 : 7;
         RandomSource random = RandomSource.create();
-        var stack = player.getMainHandStack();
+        var stack = player.getMainHandItem();
         var upgrades = stack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2));
 
         // This living ore is allergic to Efficiency and Fortune, but is defused by Silk Touch
-        if (stack.hasEnchantments()) {
-            var enchantments = EnchantmentHelper.getEnchantments(stack);
-            for (var enchantment : enchantments.getEnchantments()) {
-                if (enchantment.isIn(MythicTags.SILK_TOUCH_LIKE)) {
+        if (stack.isEnchanted()) {
+            var enchantments = EnchantmentHelper.getEnchantmentsForCrafting(stack);
+            for (var enchantment : enchantments.keySet()) {
+                if (enchantment.is(MythicTags.SILK_TOUCH_LIKE)) {
                     chance -= 45;
                 }
-                if (enchantment.isIn(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)) {
+                if (enchantment.is(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)) {
                     chance += enchantments.getLevel(enchantment) * 7;
                 }
-                if (enchantment.isIn(MythicTags.INCREASES_MINING_SPEED)) {
+                if (enchantment.is(MythicTags.INCREASES_MINING_SPEED)) {
                     chance += enchantments.getLevel(enchantment) * 5;
                 }
             }
@@ -78,19 +77,19 @@ public class BanglumOreBlock extends DropExperienceBlock {
 
         // Roll the dice
         if (random.nextInt(100) <= chance && !player.isCreative()) {
-            if (!world.isClient) {
+            if (!world.isClientSide) {
                 world.removeBlock(pos, false);
                 explode(world, pos);
             }
         }
-        return super.onBreak(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     private void explode(Level world, BlockPos pos) {
-        if (world.getDimension().ultrawarm()) {
-            world.createExplosion(null, pos.getX(), pos.getY() + 0.6, pos.getZ(), 3.2F, Level.ExplosionInteraction.BLOCK);
+        if (world.dimensionType().ultraWarm()) {
+            world.explode(null, pos.getX(), pos.getY() + 0.6, pos.getZ(), 3.2F, Level.ExplosionInteraction.BLOCK);
         } else {
-            world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 0.3F, Level.ExplosionInteraction.BLOCK);
+            world.explode(null, pos.getX(), pos.getY(), pos.getZ(), 0.3F, Level.ExplosionInteraction.BLOCK);
         }
     }
 }

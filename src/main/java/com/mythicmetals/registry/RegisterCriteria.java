@@ -14,7 +14,7 @@ public class RegisterCriteria implements SimpleFieldProcessingSubject<CriterionT
 
     @Override
     public void processField(CriterionTrigger<?> value, String name, Field field) {
-        Criteria.register(MythicMetals.MOD_ID + ":" + name, value);
+        CriteriaTriggers.register(MythicMetals.MOD_ID + ":" + name, value);
     }
 
     @Override
