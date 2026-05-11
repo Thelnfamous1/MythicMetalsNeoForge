@@ -27,7 +27,7 @@ public class CarmotBellItem extends BlockItem {
     public static final double RANGE = 6.0;
 
     public CarmotBellItem(Item.Properties settings) {
-        super(MythicBlocks.CARMOT_BELL_BLOCK, settings);
+        super(MythicBlocks.CARMOT_BELL_BLOCK.get(), settings);
     }
 
     @Override

@@ -6,44 +6,47 @@ import io.wispforest.owo.serialization.CodecUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 
+import java.util.function.Supplier;
+
 public class MythicDataComponents {
-    public static final DataComponentType<GoldFoldedComponent> GOLD_FOLDED = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<GoldFoldedComponent>> GOLD_FOLDED = RegistryHelper.dataComponentType(
         "gold_folded", builder -> builder
             .persistent(CodecUtils.toCodec(GoldFoldedComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(GoldFoldedComponent.ENDEC))
     );
     @Deprecated(forRemoval = true, since = "0.23.0")
-    public static final DataComponentType<Boolean> LOCKED = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<Boolean>> LOCKED = RegistryHelper.dataComponentType(
         "locked", builder -> builder
             .persistent(Codec.BOOL)
             .networkSynchronized(ByteBufCodecs.BOOL)
     );
-    public static final DataComponentType<Boolean> WAS_USED = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<Boolean>> WAS_USED = RegistryHelper.dataComponentType(
         "was_used", builder ->
             builder.persistent(Codec.BOOL)
                 .networkSynchronized(ByteBufCodecs.BOOL)
     );
-    public static final DataComponentType<CarmotStaffComponent> CARMOT_STAFF_BLOCK = RegistryHelper.dataComponentType(
+    @SuppressWarnings("removal")
+    public static final Supplier<DataComponentType<CarmotStaffComponent>> CARMOT_STAFF_BLOCK = RegistryHelper.dataComponentType(
         "carmot_staff_block", builder -> builder
             .persistent(CodecUtils.toCodec(CarmotStaffComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(CarmotStaffComponent.ENDEC))
     );
-    public static final DataComponentType<TidesingerPatternComponent> TIDESINGER = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<TidesingerPatternComponent>> TIDESINGER = RegistryHelper.dataComponentType(
         "tidesinger", builder -> builder
             .persistent(CodecUtils.toCodec(TidesingerPatternComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(TidesingerPatternComponent.ENDEC))
     );
-    public static final DataComponentType<DrillComponent> DRILL = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<DrillComponent>> DRILL = RegistryHelper.dataComponentType(
         "drill", builder -> builder
             .persistent(CodecUtils.toCodec(DrillComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(DrillComponent.ENDEC))
     );
-    public static final DataComponentType<UpgradeComponent> UPGRADES = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<UpgradeComponent>> UPGRADES = RegistryHelper.dataComponentType(
         "upgrades", builder -> builder
             .persistent(CodecUtils.toCodec(UpgradeComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(UpgradeComponent.ENDEC))
     );
-    public static final DataComponentType<PrometheumComponent> PROMETHEUM = RegistryHelper.dataComponentType(
+    public static final Supplier<DataComponentType<PrometheumComponent>> PROMETHEUM = RegistryHelper.dataComponentType(
         "prometheum", builder -> builder
             .persistent(CodecUtils.toCodec(PrometheumComponent.ENDEC))
             .networkSynchronized(CodecUtils.toPacketCodec(PrometheumComponent.ENDEC))

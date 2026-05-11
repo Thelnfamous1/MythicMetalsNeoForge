@@ -199,8 +199,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void mythicmetals$handleCombustion(CombustionCooldown component) {
-        var entry = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT);
-        if (this.isOnFire() && this.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT)) && component.isCombustible()) {
+        var entry = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT.get());
+        if (this.isOnFire() && this.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT.get())) && component.isCombustible()) {
             var effect = this.getEffect(entry);
             if (effect != null) {
                 int level = effect.getAmplifier();
@@ -219,7 +219,7 @@ public abstract class LivingEntityMixin extends Entity {
                     });
                 }
 
-                this.addEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.COMBUSTION), multiplier.get() + 40, Math.max(Mth.floor(level / 2.0f), 0), false, true));
+                this.addEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.COMBUSTION.get()), multiplier.get() + 40, Math.max(Mth.floor(level / 2.0f), 0), false, true));
 
                 this.igniteForTicks((duration * multiplier.get()) + 40);
                 component.setCooldown(1800);
@@ -290,7 +290,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void mythicmetals$palladiumParticles() {
-        var heatEntry = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT);
+        var heatEntry = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.HEAT.get());
         if (this.hasEffect(heatEntry)) {
             var status = this.getEffect(heatEntry);
             if (status == null || status.getAmplifier() < 3) return;
@@ -301,7 +301,7 @@ public abstract class LivingEntityMixin extends Entity {
             }
         }
 
-        if (this.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.COMBUSTION))) {
+        if (this.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MythicStatusEffects.COMBUSTION.get()))) {
             Vec3 velocity = this.getDeltaMovement();
             if (velocity.length() >= 0.1 && r.nextInt(6) < 1) {
                 MythicParticleSystem.OVERENGINEERED_PALLADIUM_PARTICLE.spawn(level(), this.position().add(0, 0.25, 0));

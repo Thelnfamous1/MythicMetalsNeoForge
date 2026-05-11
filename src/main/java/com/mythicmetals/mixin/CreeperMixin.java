@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(Creeper.class)
 public class CreeperMixin {
 
-    @ModifyVariable(method = "spawnLingeringCloud", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;spawnEntity(Lnet/minecraft/world/entity/Entity;)Z"))
+    @ModifyVariable(method = "spawnLingeringCloud", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private AreaEffectCloud mythicmetals$assignDataToCloud(AreaEffectCloud cloud) {
         ((WasSpawnedFromCreeper) cloud).mythicmetals$setSpawnedFromCreeper(true);
         return cloud;

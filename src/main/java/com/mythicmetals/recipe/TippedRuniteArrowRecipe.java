@@ -59,6 +59,6 @@ public class TippedRuniteArrowRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MythicRecipeSerializers.TIPPED_RUNITE_ARROW_RECIPE;
+        return MythicRecipeSerializers.TIPPED_RUNITE_ARROW_RECIPE.get();
     }
 }

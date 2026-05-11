@@ -40,6 +40,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -87,9 +89,14 @@ public class MythicMetals implements ModInitializer {
             .build());
 
     public MythicMetals(IEventBus modEventBus, ModContainer modContainer) {
-        this.onInitialize();
+        RegistryHelper.register(modEventBus);
+        modEventBus.addListener((FMLCommonSetupEvent event) -> {
+            this.onInitialize();
+        });
         if(FMLEnvironment.dist == Dist.CLIENT){
-            new MythicMetalsClient().onInitializeClient();
+            modEventBus.addListener((FMLClientSetupEvent event) -> {
+                new MythicMetalsClient().onInitializeClient();
+            });
         }
     }
 

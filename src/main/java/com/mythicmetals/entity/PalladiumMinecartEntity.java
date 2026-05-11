@@ -13,7 +13,7 @@ public class PalladiumMinecartEntity extends Minecart {
     }
 
     public PalladiumMinecartEntity(Level world, double x, double y, double z) {
-        this(MythicEntities.PALLADIUM_MINECART_ENTITY_TYPE, world);
+        this(MythicEntities.PALLADIUM_MINECART_ENTITY_TYPE.get(), world);
         this.setPos(x, y, z);
         this.xo = x;
         this.yo = y;

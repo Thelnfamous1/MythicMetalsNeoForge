@@ -39,7 +39,7 @@ public class BanglumTntEntityRenderer extends EntityRenderer<BanglumTntEntity> {
         matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         matrixStack.translate(-0.5, -0.5, 0.5);
         matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderManager, MythicBlocks.BANGLUM_TNT_BLOCK.defaultBlockState(), matrixStack, vertexConsumerProvider, i, j / 5 % 2 == 0);
+        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderManager, MythicBlocks.BANGLUM_TNT_BLOCK.get().defaultBlockState(), matrixStack, vertexConsumerProvider, i, j / 5 % 2 == 0);
         matrixStack.popPose();
         super.render(banglumTnt, f, g, matrixStack, vertexConsumerProvider, i);
     }

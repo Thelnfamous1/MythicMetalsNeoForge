@@ -67,12 +67,12 @@ public class MythicMetalsClient implements ClientModInitializer {
 
         LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.register(player -> !CelestiumElytra.isWearing(player));
 
-        EntityRendererRegistry.register(MythicEntities.PALLADIUM_MINECART_ENTITY_TYPE, PalladiumMinecartRenderer::new);
-        EntityRendererRegistry.register(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE, BanglumTntMinecartEntityRenderer::new);
-        EntityRendererRegistry.register(MythicEntities.BANGLUM_TNT_ENTITY_TYPE, BanglumTntEntityRenderer::new);
-        EntityRendererRegistry.register(MythicEntities.BANGLUM_NUKE_ENTITY_TYPE, BanglumNukeEntityRenderer::new);
-        EntityRendererRegistry.register(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE, StarPlatinumArrowEntityRenderer::new);
-        EntityRendererRegistry.register(MythicEntities.RUNITE_ARROW_ENTITY_TYPE, RuniteArrowEntityRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.PALLADIUM_MINECART_ENTITY_TYPE.get(), PalladiumMinecartRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE.get(), BanglumTntMinecartEntityRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.BANGLUM_TNT_ENTITY_TYPE.get(), BanglumTntEntityRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.BANGLUM_NUKE_ENTITY_TYPE.get(), BanglumNukeEntityRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE.get(), StarPlatinumArrowEntityRenderer::new);
+        EntityRendererRegistry.register(MythicEntities.RUNITE_ARROW_ENTITY_TYPE.get(), RuniteArrowEntityRenderer::new);
 
         BlockEntityRenderers.register(RegisterBlockEntityTypes.ENCHANTED_MIDAS_GOLD_BLOCK, EnchantedMidasBlockEntityRenderer::new);
 
@@ -81,9 +81,9 @@ public class MythicMetalsClient implements ClientModInitializer {
         CarmotShieldHudHandler.init();
         ClientTickEvents.END_CLIENT_TICK.register(client -> CarmotShieldHudHandler.tick());
 
-        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.CARMOT_BELL_BLOCK, RenderType.cutoutMipped());
-        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.PALLADIUM_RAIL, RenderType.cutoutMipped());
-        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.AQUARIUM_GLASS, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.CARMOT_BELL_BLOCK.get(), RenderType.cutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.PALLADIUM_RAIL.get(), RenderType.cutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(MythicBlocks.AQUARIUM_GLASS.get(), RenderType.translucent());
 
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), MythicBlocks.KYBER.getStorageBlock());
 

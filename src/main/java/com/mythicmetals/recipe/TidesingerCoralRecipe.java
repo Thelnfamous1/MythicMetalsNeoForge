@@ -56,7 +56,7 @@ public record TidesingerCoralRecipe(Ingredient base, Ingredient addition, Ingred
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MythicRecipeSerializers.TIDESINGER_CORAL_RECIPE;
+        return MythicRecipeSerializers.TIDESINGER_CORAL_RECIPE.get();
     }
 
     public static class Serializer extends EndecRecipeSerializer<TidesingerCoralRecipe> {

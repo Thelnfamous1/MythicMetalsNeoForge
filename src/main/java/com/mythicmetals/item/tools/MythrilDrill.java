@@ -44,7 +44,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
     public static Map<Item, String> drillUpgrades = Util.make(new HashMap<>(), map -> {
         map.put(MythicItems.Mats.AQUARIUM_PEARL, "aquarium");
         map.put(MythicItems.Mats.CARMOT_STONE, "carmot");
-        map.put(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM, "midas_gold");
+        map.put(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM.get(), "midas_gold");
         map.put(MythicItems.Mats.PROMETHEUM_BOUQUET, "prometheum");
         map.put(MythicItems.Mats.STORMYX_SHELL, "stormyx");
         map.put(Items.AIR, "empty");
@@ -225,7 +225,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
         var attributes = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
         assert attributes != null;
         var upgrades = stack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2));
-        if (upgrades.hasUpgrade(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM)) {
+        if (upgrades.hasUpgrade(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM.get())) {
             var modifier = new AttributeModifier(
                 RegistryHelper.id("mythril_drill_luck_bonus"),
                 2.0,

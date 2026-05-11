@@ -13,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.*;
 
@@ -36,9 +38,19 @@ public class MythicBlocks {
         .createDefaultSet(4F, IRON_MINING_LEVEL, 4.5F, IRON_MINING_LEVEL)
         .createAnvil(IRON_MINING_LEVEL)
         .finish();
-    public static final Block AQUARIUM_GLASS = new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_STAINED_GLASS));
-    public static final AquariumResonatorBlock AQUARIUM_RESONATOR = new AquariumResonatorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CONDUIT));
+    public static final DeferredBlock<Block> AQUARIUM_GLASS =
+            RegistryHelper.block(
+                    "aquarium_glass",
+                    () -> new TransparentBlock(
+                            BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_STAINED_GLASS)
+                    )
+            );
 
+    public static final DeferredBlock<AquariumResonatorBlock> AQUARIUM_RESONATOR =
+            RegistryHelper.block(
+                    "aquarium_resonator",
+                    () -> new AquariumResonatorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CONDUIT)
+            ));
     public static final BlockSet BANGLUM = BlockSet.Builder.begin("banglum", false)
         .strength(5.0F, 5.5F)
         .createBanglumOre(IRON_MINING_LEVEL)
@@ -49,8 +61,20 @@ public class MythicBlocks {
         .createBanglumOreVariant("nether", IRON_MINING_LEVEL)
         .finish();
 
-    public static final BanglumTntBlock BANGLUM_TNT_BLOCK = new BanglumTntBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TNT));
-    public static final Block BANGLUM_NUKE_CORE = new Block(BlockBehaviour.Properties.ofFullCopy(BANGLUM.getStorageBlock()));
+    public static final DeferredBlock<BanglumTntBlock> BANGLUM_TNT_BLOCK =
+            RegistryHelper.block(
+                    "banglum_tnt",
+                    () -> new BanglumTntBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TNT))
+            );
+    public static final DeferredBlock<Block> BANGLUM_NUKE_CORE =
+            RegistryHelper.block(
+                    "banglum_nuke_core",
+                    () -> new Block(
+                            BlockBehaviour.Properties.ofFullCopy(
+                                    BANGLUM.getStorageBlock()
+                            )
+                    )
+            );
 
     public static final BlockSet BRONZE = BlockSet.Builder.begin("bronze", false)
         .createAnvilSet(5, IRON_MINING_LEVEL).finish();
@@ -60,11 +84,18 @@ public class MythicBlocks {
         .strength(6.5F, 12).sounds(SoundType.DEEPSLATE)
         .createOreVariant("deepslate", DIAMOND_MINING_LEVEL)
         .finish();
-    public static final Block CARMOT_BELL_BLOCK = new CarmotBellBlock(BlockBehaviour.Properties.of()
-        .noOcclusion()
-        .strength(0.5f, 4.0f));
+    public static final DeferredBlock<Block> CARMOT_BELL_BLOCK =
+            RegistryHelper.blockOnly(
+                    "carmot_bell",
+                    () -> new CarmotBellBlock(BlockBehaviour.Properties.of()
+                            .noOcclusion()
+                            .strength(0.5f, 4.0f))
+            );
 
-    public static final Block CARMOT_NUKE_CORE = new Block(BlockBehaviour.Properties.ofFullCopy(BANGLUM_NUKE_CORE));
+    public static final DeferredBlock<Block> CARMOT_NUKE_CORE = RegistryHelper.block(
+            "carmot_nuke_core",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(BANGLUM_NUKE_CORE.get()))
+    );
 
     public static final BlockSet CELESTIUM = BlockSet.Builder.begin("celestium", false)
         .createAnvilSet(10F, 15F, MYTHIC_MINING_LEVEL).finish();
@@ -114,13 +145,32 @@ public class MythicBlocks {
         .createAnvil(IRON_MINING_LEVEL)
         .finish();
 
-    public static final Block ENCHANTED_MIDAS_GOLD_BLOCK = new EnchantedMidasGoldBlock(BlockBehaviour.Properties.ofFullCopy(MIDAS_GOLD.getStorageBlock()));
-    public static final Item ENCHANTED_MIDAS_GOLD_BLOCK_ITEM = new BlockItem(ENCHANTED_MIDAS_GOLD_BLOCK, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).rarity(Rarity.UNCOMMON)) {
-        @Override
-        public boolean isFoil(ItemStack stack) {
-            return true;
-        }
-    };
+    public static final DeferredBlock<Block> ENCHANTED_MIDAS_GOLD_BLOCK =
+            RegistryHelper.blockOnly(
+                    "enchanted_midas_gold_block",
+                    () -> new EnchantedMidasGoldBlock(
+                            BlockBehaviour.Properties.ofFullCopy(
+                                    MIDAS_GOLD.getStorageBlock()
+                            )
+                    )
+            );
+
+    public static final DeferredItem<Item> ENCHANTED_MIDAS_GOLD_BLOCK_ITEM =
+            RegistryHelper.item(
+                    "enchanted_midas_gold_block",
+                    () -> new BlockItem(
+                            ENCHANTED_MIDAS_GOLD_BLOCK.get(),
+                            new Item.Properties()
+                                    .group(MythicMetals.TABBED_GROUP)
+                                    .tab(1)
+                                    .rarity(Rarity.UNCOMMON)
+                    ) {
+                        @Override
+                        public boolean isFoil(ItemStack stack) {
+                            return true;
+                        }
+                    }
+            );
 
     public static final BlockSet MYTHRIL = BlockSet.Builder.begin("mythril", false)
         .createDefaultSet(5F, DIAMOND_MINING_LEVEL, DIAMOND_MINING_LEVEL)
@@ -150,20 +200,40 @@ public class MythicBlocks {
         .createAnvil(DIAMOND_MINING_LEVEL)
         .finish();
 
-    public static final Block PALLADIUM_RAIL = new PalladiumRailBlock(BlockBehaviour.Properties.of()
-        .noCollission()
-        .lightLevel(blockState -> blockState.getValue(PalladiumRailBlock.LAVALOGGED) ? 15 : 0)
-        .strength(2.5f, 7.0f)
-        .sound(SoundType.METAL)
+    public static final DeferredBlock<PalladiumRailBlock> PALLADIUM_RAIL =
+            RegistryHelper.blockOnly(
+                    "palladium_rail",
+                    () -> new PalladiumRailBlock(
+                            BlockBehaviour.Properties.of()
+                                    .noCollission()
+                                    .lightLevel(state ->
+                                            state.getValue(PalladiumRailBlock.LAVALOGGED) ? 15 : 0
+                                    )
+                                    .strength(2.5f, 7.0f)
+                                    .sound(SoundType.METAL)
+                    )
+            );
+    public static final DeferredItem<Item> PALLADIUM_RAIL_ITEM = RegistryHelper.item(
+            "palladium_rail",
+            () -> new BlockItem(
+                    PALLADIUM_RAIL.get(),
+                    new Item.Properties()
+                            .group(MythicMetals.TABBED_GROUP)
+                            .tab(1)
+                            .fireResistant()
+            ) {
+                @Override
+                public void appendHoverText(
+                        ItemStack stack,
+                        TooltipContext context,
+                        List<Component> tooltip,
+                        TooltipFlag type
+                ) {
+                    super.appendHoverText(stack, context, tooltip, type);
+                    tooltip.add(Component.translatable("tooltip.palladium_rail.info"));
+                }
+            }
     );
-
-    public static final Item PALLADIUM_RAIL_ITEM = new BlockItem(PALLADIUM_RAIL, new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(1).fireResistant()) {
-        @Override
-        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
-            super.appendHoverText(stack, context, tooltip, type);
-            tooltip.add(Component.translatable("tooltip.palladium_rail.info"));
-        }
-    };
 
     public static final BlockSet PLATINUM = BlockSet.Builder.begin("platinum", false)
         .createDefaultSet(3.5F, IRON_MINING_LEVEL, IRON_MINING_LEVEL).finish();
@@ -179,7 +249,11 @@ public class MythicBlocks {
         .createAnvil(IRON_MINING_LEVEL)
         .finish();
 
-    public static final Block QUADRILLUM_NUKE_CORE = new Block(BlockBehaviour.Properties.ofFullCopy(QUADRILLUM.getStorageBlock()));
+    public static final DeferredBlock<Block> QUADRILLUM_NUKE_CORE =
+            RegistryHelper.block(
+                    "quadrillum_nuke_core",
+                    () -> new Block(BlockBehaviour.Properties.ofFullCopy(QUADRILLUM.getStorageBlock()))
+            );
 
     public static final BlockSet RUNITE = BlockSet.Builder.begin("runite", false)
         .createDefaultSet(8.0F, IRON_MINING_LEVEL, IRON_MINING_LEVEL)
@@ -199,10 +273,14 @@ public class MythicBlocks {
         .sounds(SoundType.STONE).createStarriteOreVariant("end_stone", NETHERITE_MINING_LEVEL, UniformInt.of(3, 6))
         .createAmethystStorageBlock(NETHERITE_MINING_LEVEL)
         .finish();
-    public static final Block SPONGE_NUKE_CORE = new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SPONGE));
+    public static final DeferredBlock<Block> SPONGE_NUKE_CORE =
+            RegistryHelper.block(
+            "sponge_nuke_core",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SPONGE))
+            );
 
     public static final BlockSet STEEL = BlockSet.Builder.begin("steel", false)
-        .createCustomStorageBlock(new BlockWithFacing(BlockSet.Builder.blockSettings(5.0f, 5.0f, SoundType.METAL)), IRON_MINING_LEVEL)
+        .createCustomStorageBlock(() -> new BlockWithFacing(BlockSet.Builder.blockSettings(5.0f, 5.0f, SoundType.METAL)), IRON_MINING_LEVEL)
         .createAnvil(IRON_MINING_LEVEL).finish();
 
     public static final BlockSet STORMYX = BlockSet.Builder.begin("stormyx", false)
@@ -230,6 +308,7 @@ public class MythicBlocks {
 
     public static void init() {
         BlockSet.Builder.register();
+        /*
         RegistryHelper.block("aquarium_glass", AQUARIUM_GLASS);
         RegistryHelper.block("aquarium_resonator", AQUARIUM_RESONATOR);
         RegistryHelper.block("banglum_tnt", BANGLUM_TNT_BLOCK);
@@ -244,6 +323,7 @@ public class MythicBlocks {
         RegistryHelper.item("palladium_rail", PALLADIUM_RAIL_ITEM);
         RegistryHelper.block("quadrillum_nuke_core", QUADRILLUM_NUKE_CORE);
         RegistryHelper.block("sponge_nuke_core", SPONGE_NUKE_CORE);
+         */
     }
 
 }

@@ -33,14 +33,14 @@ public class BanglumNukeEntity extends BanglumTntEntity {
     private static final int DEFAULT_FUSE = 200;
     private static final KeyedEndec<Block> CORE_BLOCK_KEY = MinecraftEndecs.ofRegistry(BuiltInRegistries.BLOCK).keyed("core_block", MythicBlocks.BANGLUM_NUKE_CORE);
 
-    private Block coreBlock = MythicBlocks.BANGLUM_NUKE_CORE;
+    private Block coreBlock = MythicBlocks.BANGLUM_NUKE_CORE.get();
 
     public BanglumNukeEntity(EntityType<? extends BanglumNukeEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     public BanglumNukeEntity(Level world, double x, double y, double z, @Nullable LivingEntity igniter, Block coreBlock) {
-        this(MythicEntities.BANGLUM_NUKE_ENTITY_TYPE, world);
+        this(MythicEntities.BANGLUM_NUKE_ENTITY_TYPE.get(), world);
         this.setPos(x, y, z);
         double d = world.random.nextDouble() * (float) (Math.PI * 2);
         this.setDeltaMovement(-Math.sin(d) * 0.01, 0.2F, -Math.cos(d) * 0.01);
@@ -79,17 +79,17 @@ public class BanglumNukeEntity extends BanglumTntEntity {
         // Decides what blocks are ignored by the nuke
         Predicate<BlockState> statePredicate;
 
-        if (coreBlock == MythicBlocks.CARMOT_NUKE_CORE) {
+        if (coreBlock == MythicBlocks.CARMOT_NUKE_CORE.get()) {
             // Carmot core - Do not destroy ores
             statePredicate = state -> !state.is(MythicTags.CARMOT_NUKE_IGNORED);
-        } else if (coreBlock == MythicBlocks.SPONGE_NUKE_CORE) {
+        } else if (coreBlock == MythicBlocks.SPONGE_NUKE_CORE.get()) {
             statePredicate = state -> !state.getFluidState().isEmpty();
         } else {
             statePredicate = ignored -> true;
         }
 
         // Quadrillum core - Double damage, half range
-        if (coreBlock == MythicBlocks.QUADRILLUM_NUKE_CORE) {
+        if (coreBlock == MythicBlocks.QUADRILLUM_NUKE_CORE.get()) {
             radius = (radius * 2) / 3;
             baseDamage = 2;
         }

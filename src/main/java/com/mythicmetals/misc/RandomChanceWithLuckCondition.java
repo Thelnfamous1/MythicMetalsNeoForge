@@ -21,7 +21,7 @@ public record RandomChanceWithLuckCondition(float chance) implements LootItemCon
 
     @Override
     public LootItemConditionType getType() {
-        return RegisterLootConditions.RANDOM_CHANCE_WITH_LUCK;
+        return RegisterLootConditions.RANDOM_CHANCE_WITH_LUCK.get();
     }
 
     public boolean test(LootContext lootContext) {

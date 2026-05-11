@@ -11,13 +11,13 @@ import java.lang.reflect.Field;
 public class RegisterBlockEntityTypes implements BlockEntityRegistryContainer {
 
     public static final BlockEntityType<AquariumResonatorBlockEntity> AQUARIUM_RESONATOR =
-            BlockEntityType.Builder.of(AquariumResonatorBlockEntity::new, MythicBlocks.AQUARIUM_RESONATOR).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("aquarium_resonator").toString()));
+            BlockEntityType.Builder.of(AquariumResonatorBlockEntity::new, MythicBlocks.AQUARIUM_RESONATOR.get()).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("aquarium_resonator").toString()));
 
     public static final BlockEntityType<EnchantedMidasGoldBlockEntity> ENCHANTED_MIDAS_GOLD_BLOCK =
-        BlockEntityType.Builder.of(EnchantedMidasGoldBlockEntity::new, MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("enchanted_midas_gold_block").toString()));
+        BlockEntityType.Builder.of(EnchantedMidasGoldBlockEntity::new, MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK.get()).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("enchanted_midas_gold_block").toString()));
 
     public static final BlockEntityType<CarmotBellBlockEntity> CARMOT_BELL_BLOCK =
-        BlockEntityType.Builder.of(CarmotBellBlockEntity::new, MythicBlocks.CARMOT_BELL_BLOCK).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("carmot_bell").toString()));
+        BlockEntityType.Builder.of(CarmotBellBlockEntity::new, MythicBlocks.CARMOT_BELL_BLOCK.get()).build(Util.fetchChoiceType(References.BLOCK_ENTITY, RegistryHelper.id("carmot_bell").toString()));
 
     @Override
     public boolean shouldProcessField(BlockEntityType<?> value, String identifier, Field field) {

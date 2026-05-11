@@ -25,7 +25,7 @@ public class BanglumTntEntity extends Entity {
     }
 
     public BanglumTntEntity(Level world, double x, double y, double z, @Nullable LivingEntity igniter) {
-        this(MythicEntities.BANGLUM_TNT_ENTITY_TYPE, world);
+        this(MythicEntities.BANGLUM_TNT_ENTITY_TYPE.get(), world);
         this.setPos(x, y, z);
         double d = world.random.nextDouble() * (float) (Math.PI * 2);
         this.setDeltaMovement(-Math.sin(d) * 0.01, 0.2F, -Math.cos(d) * 0.01);

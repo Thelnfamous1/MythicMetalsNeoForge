@@ -87,7 +87,7 @@ public record MidasFoldingRecipe(Ingredient template, Ingredient base, Ingredien
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MythicRecipeSerializers.MIDAS_FOLDING_RECIPE;
+        return MythicRecipeSerializers.MIDAS_FOLDING_RECIPE.get();
     }
 
     @Override

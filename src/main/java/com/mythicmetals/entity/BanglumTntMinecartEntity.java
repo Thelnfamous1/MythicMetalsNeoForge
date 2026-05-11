@@ -26,7 +26,7 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
     }
 
     public BanglumTntMinecartEntity(Level world, double x, double y, double z) {
-        this(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE, world);
+        this(MythicEntities.BANGLUM_TNT_MINECART_ENTITY_TYPE.get(), world);
         this.setPos(x, y, z);
         this.xo = x;
         this.yo = y;
@@ -35,7 +35,7 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MythicBlocks.BANGLUM_TNT_BLOCK.defaultBlockState();
+        return MythicBlocks.BANGLUM_TNT_BLOCK.get().defaultBlockState();
     }
 
     @Override

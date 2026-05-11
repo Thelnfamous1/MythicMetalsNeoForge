@@ -106,7 +106,7 @@ public class PalladiumToolSet extends ToolSet {
     }
 
     public static void applyHeatToTarget(LivingEntity target, LivingEntity attacker) {
-        var effect = RegistryHelper.getEntry(MythicStatusEffects.HEAT);
+        var effect = RegistryHelper.getEntry(MythicStatusEffects.HEAT.get());
         if (!target.hasEffect(effect)) {
             target.addEffect(new MobEffectInstance(effect, 100), attacker);
         } else {

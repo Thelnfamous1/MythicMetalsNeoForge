@@ -2,13 +2,15 @@ package com.mythicmetals.registry;
 
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.misc.RegistryHelper;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.HashSet;
 
 public class RegisterPointOfInterests {
-    public static final PoiType CONDUIT_POWERED_BLOCK = PointOfInterestHelper.register(
-        RegistryHelper.id("conduit_powered_block"), 0, 1,
-        MythicBlocks.AQUARIUM_RESONATOR
+    public static final DeferredHolder<PoiType, PoiType> CONDUIT_POWERED_BLOCK = RegistryHelper.poiType("conduit_powered_block",
+            () -> new PoiType(new HashSet<>(MythicBlocks.AQUARIUM_RESONATOR.get().getStateDefinition().getPossibleStates()), 0, 1
+                    )
     );
 
     public static void init() {

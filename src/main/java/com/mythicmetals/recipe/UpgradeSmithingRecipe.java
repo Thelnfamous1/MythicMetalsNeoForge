@@ -64,7 +64,7 @@ public record UpgradeSmithingRecipe(Ingredient base, Ingredient addition, ItemSt
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MythicRecipeSerializers.UPGRADE_SMITHING_RECIPE_SERIALIZER;
+        return MythicRecipeSerializers.UPGRADE_SMITHING_RECIPE_SERIALIZER.get();
     }
 
     public static class Serializer extends EndecRecipeSerializer<UpgradeSmithingRecipe> {

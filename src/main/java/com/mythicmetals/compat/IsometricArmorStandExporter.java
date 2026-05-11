@@ -56,7 +56,7 @@ public class IsometricArmorStandExporter {
             var armorStand = new ArmorStand(EntityType.ARMOR_STAND, context.getSource().getWorld());
             var armorSet = MythicArmor.TIDESINGER;
             armorSet.getArmorItems().forEach(armorItem -> {
-                var armorStack = new ItemStack(armorItem.builtInRegistryHolder(), 1, DataComponentPatch.builder().set(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.fromItem(patternItem)).build());
+                var armorStack = new ItemStack(armorItem.builtInRegistryHolder(), 1, DataComponentPatch.builder().set(MythicDataComponents.TIDESINGER.get(), TidesingerPatternComponent.fromItem(patternItem)).build());
                 armorStand.setItemSlot(armorItem.getEquipmentSlot(), armorStack);
             });
             armorStand.setNoBasePlate(true);

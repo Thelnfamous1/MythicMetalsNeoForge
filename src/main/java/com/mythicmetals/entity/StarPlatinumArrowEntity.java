@@ -20,11 +20,11 @@ public class StarPlatinumArrowEntity extends AbstractArrow {
     public static final ItemStack STAR_PLAT_STACK = new ItemStack(MythicTools.STAR_PLATINUM_ARROW);
 
     public StarPlatinumArrowEntity(LivingEntity owner, Level world, ItemStack stack, @Nullable ItemStack weapon) {
-        super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE, owner, world, stack, weapon);
+        super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE.get(), owner, world, stack, weapon);
     }
 
     public StarPlatinumArrowEntity(Level world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) {
-        super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE, x, y, z, world, stack, shotFrom);
+        super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE.get(), x, y, z, world, stack, shotFrom);
     }
 
     public StarPlatinumArrowEntity(EntityType<StarPlatinumArrowEntity> type, Level world) {
