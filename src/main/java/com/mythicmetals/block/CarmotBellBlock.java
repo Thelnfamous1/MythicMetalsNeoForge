@@ -50,9 +50,9 @@ public class CarmotBellBlock extends BaseEntityBlock {
             if (bell.canBeUsed()) {
                 bell.setChanged();
                 heal(world, be.getBlockPos().getCenter(), player);
-                world.playLocalSound(pos, RegisterSounds.CARMOT_BELL_DING, SoundSource.BLOCKS, 1.0f, 1.0f, true);
+                world.playLocalSound(pos, RegisterSounds.CARMOT_BELL_DING.get(), SoundSource.BLOCKS, 1.0f, 1.0f, true);
             } else {
-                world.playLocalSound(pos, RegisterSounds.CARMOT_BELL_DING_PLAIN, SoundSource.BLOCKS, 1.0f, 1.0f, true);
+                world.playLocalSound(pos, RegisterSounds.CARMOT_BELL_DING_PLAIN.get(), SoundSource.BLOCKS, 1.0f, 1.0f, true);
             }
             return InteractionResult.SUCCESS;
         }
@@ -89,7 +89,7 @@ public class CarmotBellBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, RegisterBlockEntityTypes.CARMOT_BELL_BLOCK, CarmotBellBlockEntity::tick);
+        return createTickerHelper(type, RegisterBlockEntityTypes.CARMOT_BELL_BLOCK.get(), CarmotBellBlockEntity::tick);
     }
 
     @Override

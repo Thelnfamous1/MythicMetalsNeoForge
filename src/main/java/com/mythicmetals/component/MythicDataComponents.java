@@ -1,14 +1,19 @@
 package com.mythicmetals.component;
 
 import com.mojang.serialization.Codec;
+import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import io.wispforest.owo.serialization.CodecUtils;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
 public class MythicDataComponents {
+    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
+            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MythicMetals.MOD_ID);
     public static final Supplier<DataComponentType<GoldFoldedComponent>> GOLD_FOLDED = RegistryHelper.dataComponentType(
         "gold_folded", builder -> builder
             .persistent(CodecUtils.toCodec(GoldFoldedComponent.ENDEC))

@@ -29,7 +29,7 @@ public class AquariumResonatorBlockEntity extends BlockEntity implements Conduit
     }
 
     public AquariumResonatorBlockEntity(BlockPos pos, BlockState state) {
-        super(RegisterBlockEntityTypes.AQUARIUM_RESONATOR, pos, state);
+        super(RegisterBlockEntityTypes.AQUARIUM_RESONATOR.get(), pos, state);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, AquariumResonatorBlockEntity blockEntity) {
@@ -60,7 +60,7 @@ public class AquariumResonatorBlockEntity extends BlockEntity implements Conduit
 
     private static void empowerNearbyEntities(Level world, BlockPos pos, BlockState state, AquariumResonatorBlockEntity blockEntity) {
         List<LivingEntity> list = world.getEntitiesOfClass(
-                LivingEntity.class, getEffectZone(pos), entity -> entity.isAlive() && entity.isInWaterOrRain()
+                LivingEntity.class, getEffectZone(pos), entity -> entity.showVehicleHealth() && entity.isInWaterOrRain()
         );
 
         list.forEach(livingEntity -> {

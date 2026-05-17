@@ -58,7 +58,7 @@ public class StormyxShield extends ShieldItem {
         super.onUseTick(world, user, stack, remainingUseTicks);
 
         if (remainingUseTicks % 40 == 1) {
-            WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_MAINTAIN, SoundSource.AMBIENT, 1.0F, 1.5F);
+            WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_MAINTAIN.get(), SoundSource.AMBIENT, 1.0F, 1.5F);
             stack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(user.getUsedItemHand()));
         }
     }
@@ -68,7 +68,7 @@ public class StormyxShield extends ShieldItem {
         var stack = user.getItemInHand(hand);
         user.startUsingItem(hand);
         stack.set(WAS_USED, true);
-        WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_BEGIN, SoundSource.AMBIENT, 1.0F, 1.5F);
+        WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_BEGIN.get(), SoundSource.AMBIENT, 1.0F, 1.5F);
         return InteractionResultHolder.consume(stack);
     }
 
@@ -99,7 +99,7 @@ public class StormyxShield extends ShieldItem {
             stack.remove(WAS_USED);
             player.getCooldowns().addCooldown(stack.getItem(), 160);
         }
-        WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_END, SoundSource.AMBIENT, 0.9F, 1.5F);
+        WorldOps.playSound(world, user.blockPosition(), RegisterSounds.PROJECTILE_BARRIER_END.get(), SoundSource.AMBIENT, 0.9F, 1.5F);
         return stack;
     }
 

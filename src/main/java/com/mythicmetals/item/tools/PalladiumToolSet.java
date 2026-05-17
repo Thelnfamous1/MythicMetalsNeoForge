@@ -16,8 +16,8 @@ public class PalladiumToolSet extends ToolSet {
     // TODO - Move to config
     public static final int MAX_HEAT = 6;
 
-    public PalladiumToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
-        super(material, damage, speed, settingsProcessor);
+    public PalladiumToolSet(String name, Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
+        super(name, material, damage, speed, settingsProcessor);
     }
 
     @Override

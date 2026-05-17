@@ -2,15 +2,19 @@ package com.mythicmetals.ability;
 
 import com.mythicmetals.armor.ArmorSet;
 import com.mythicmetals.item.tools.ToolSet;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.loader.api.FabricLoader;
+//import net.fabricmc.api.EnvType;
+//import net.fabricmc.api.Environment;
+//import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+//import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
 import java.util.*;
 
 /**
@@ -50,7 +54,7 @@ public class Ability {
 
     public void addItem(Item item, Style style) {
         items.add(item);
-        if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT))
+        if (FMLEnvironment.dist.isClient())
             addTooltip(item, style);
 
     }
@@ -60,7 +64,7 @@ public class Ability {
         items.add(armorSet.getChestplate());
         items.add(armorSet.getLeggings());
         items.add(armorSet.getBoots());
-        if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)) {
+        if (FMLEnvironment.dist.isClient()) {
             addTooltip(armorSet.getHelmet(), style);
             addTooltip(armorSet.getChestplate(), style);
             addTooltip(armorSet.getLeggings(), style);
@@ -75,7 +79,7 @@ public class Ability {
         items.add(toolSet.getHoe());
         items.add(toolSet.getPickaxe());
         items.add(toolSet.getShovel());
-        if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)) {
+        if (FMLEnvironment.dist.isClient()) {
             addTooltip(toolSet.getSword(), style);
             addTooltip(toolSet.getAxe(), style);
             addTooltip(toolSet.getHoe(), style);
@@ -84,9 +88,12 @@ public class Ability {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+    //@Environment(EnvType.CLIENT)
     public void addTooltip(Item item, Style style) {
-        ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+        NeoForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> {
+        //ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+            ItemStack stack = event.getItemStack();
+            List<Component> lines = event.getToolTip();
             MutableComponent text = Component.literal("");
             if (stack.is(item)) {
                 text.append(Component.translatable("abilities.mythicmetals." + tooltip));

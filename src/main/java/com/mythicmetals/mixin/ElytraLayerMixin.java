@@ -4,8 +4,6 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mythicmetals.armor.CelestiumElytra;
 import com.mythicmetals.armor.MythicArmor;
 import com.mythicmetals.misc.RegistryHelper;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Environment(EnvType.CLIENT)
+//@Environment(EnvType.CLIENT)
 @Mixin(ElytraLayer.class)
 public abstract class ElytraLayerMixin {
 

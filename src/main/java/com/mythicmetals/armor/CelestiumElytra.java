@@ -4,7 +4,7 @@ import com.mythicmetals.entity.MythicEntityAttributes;
 import com.mythicmetals.item.MythicItems;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.registry.RegisterSounds;
-import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
+//import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -14,12 +14,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.BuiltInRegistries;
+//import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.gameevent.GameEvent;
 
-public class CelestiumElytra extends ElytraItem implements FabricElytraItem {
+public class CelestiumElytra extends ElytraItem /*implements FabricElytraItem*/ {
     public CelestiumElytra(Item.Properties settings) {
         super(settings);
     }
@@ -31,7 +31,7 @@ public class CelestiumElytra extends ElytraItem implements FabricElytraItem {
 
     @Override
     public Holder<SoundEvent> getEquipSound() {
-        return BuiltInRegistries.SOUND_EVENT.wrapAsHolder(RegisterSounds.EQUIP_CELESTIUM_ELYTRA);
+        return RegisterSounds.EQUIP_CELESTIUM_ELYTRA;
     }
 
     public static boolean isWearing(LivingEntity entity) {
@@ -40,16 +40,18 @@ public class CelestiumElytra extends ElytraItem implements FabricElytraItem {
     }
 
     @Override
-    public void doVanillaElytraTick(LivingEntity entity, ItemStack chestStack) {
+    //public void doVanillaElytraTick(LivingEntity entity, ItemStack chestStack) {
+    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
         int nextRoll = entity.getFallFlyingTicks() + 1;
 
         if (!entity.level().isClientSide && nextRoll % 10 == 0) {
             if ((nextRoll / 10) % 4 == 0) {
-                chestStack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
+                stack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
             }
 
             entity.gameEvent(GameEvent.ELYTRA_GLIDE);
         }
+        return true;
     }
 
     public static ItemAttributeModifiers createDefaultAttributes() {

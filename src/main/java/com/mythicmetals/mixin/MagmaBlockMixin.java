@@ -18,7 +18,7 @@ public class MagmaBlockMixin {
 
     @Inject(method = "stepOn", at = @At("HEAD"), cancellable = true)
     private void cancelBurnWithPalladiumBoots(Level world, BlockPos pos, BlockState state, Entity entity, CallbackInfo ci) {
-        if (!entity.isAlive()) return;
+        if (!entity.showVehicleHealth()) return;
         for (ItemStack armorItems : ((LivingEntity) entity).getArmorSlots()) {
             if (armorItems.getItem().equals(MythicArmor.PALLADIUM.getBoots())) {
                 ci.cancel();

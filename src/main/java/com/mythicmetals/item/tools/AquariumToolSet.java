@@ -17,8 +17,8 @@ import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operati
 
 public class AquariumToolSet extends ToolSet {
     public static final String ABILITY_MODIFIER = "aquarium_tool_underwater_mining_speed_bonus";
-    public AquariumToolSet(Tier material, int[] damage, float[] speed) {
-        super(material, damage, speed);
+    public AquariumToolSet(String name, Tier material, int[] damage, float[] speed) {
+        super(name, material, damage, speed);
     }
 
     @Override

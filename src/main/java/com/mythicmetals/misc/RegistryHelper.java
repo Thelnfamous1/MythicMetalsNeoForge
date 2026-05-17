@@ -2,11 +2,27 @@ package com.mythicmetals.misc;
 
 import com.mojang.serialization.MapCodec;
 import com.mythicmetals.MythicMetals;
+import com.mythicmetals.armor.MythicArmorMaterials;
+import com.mythicmetals.block.MythicBlocks;
+import com.mythicmetals.block.entity.RegisterBlockEntityTypes;
+import com.mythicmetals.component.MythicDataComponents;
+import com.mythicmetals.effects.MythicStatusEffects;
+import com.mythicmetals.entity.MythicEntities;
+import com.mythicmetals.entity.MythicEntityAttributes;
+import com.mythicmetals.item.MythicItems;
+import com.mythicmetals.item.MythicPotions;
+import com.mythicmetals.recipe.MythicRecipeSerializers;
+import com.mythicmetals.registry.RegisterCriteria;
+import com.mythicmetals.registry.RegisterLootConditions;
+import com.mythicmetals.registry.RegisterPointOfInterests;
+import com.mythicmetals.registry.RegisterSounds;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.item.ArmorMaterial;
@@ -15,6 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.EntityType;
@@ -28,7 +45,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.*;
 
@@ -42,59 +58,19 @@ import java.util.function.UnaryOperator;
  */
 public class RegistryHelper {
 
-    public static final DeferredRegister.Blocks BLOCKS =
-            DeferredRegister.createBlocks(MythicMetals.MOD_ID);
-
-    public static final DeferredRegister.Items ITEMS =
-            DeferredRegister.createItems(MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
-            DeferredRegister.create(Registries.ENTITY_TYPE, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES =
-            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
-            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<Attribute> ATTRIBUTES =
-            DeferredRegister.create(Registries.ATTRIBUTE, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<Potion> POTIONS =
-            DeferredRegister.create(Registries.POTION, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<MobEffect> MOB_EFFECTS =
-            DeferredRegister.create(Registries.MOB_EFFECT, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES =
-            DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
-            DeferredRegister.create(Registries.RECIPE_SERIALIZER, MythicMetals.MOD_ID);
-
-    public static final DeferredRegister<PoiType> POI_TYPES =
-            DeferredRegister.create(Registries.POINT_OF_INTEREST_TYPE, MythicMetals.MOD_ID);
-
     public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_SERIALIZERS =
             DeferredRegister.create(NeoForgeRegistries.CONDITION_SERIALIZERS, MythicMetals.MOD_ID);
 
-    public static void register(IEventBus bus) {
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
-        ENTITY_TYPES.register(bus);
-        BLOCK_ENTITY_TYPES.register(bus);
-        DATA_COMPONENTS.register(bus);
-        ATTRIBUTES.register(bus);
-        POTIONS.register(bus);
-        LOOT_CONDITION_TYPES.register(bus);
-        MOB_EFFECTS.register(bus);
-        RECIPE_SERIALIZERS.register(bus);
-        POI_TYPES.register(bus);
-        CONDITION_SERIALIZERS.register(bus);
-    }
-
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MythicMetals.MOD_ID, path);
+    }
+
+    public static DeferredHolder<ArmorMaterial, ArmorMaterial> armorMaterial(
+            String name,
+            Supplier<ArmorMaterial> armorMaterialSupplier
+    ) {
+
+        return MythicArmorMaterials.ARMOR_MATERIALS.register(name, armorMaterialSupplier);
     }
 
     public static <T extends Block> DeferredBlock<T> blockOnly(
@@ -102,7 +78,7 @@ public class RegistryHelper {
             Supplier<T> blockSupplier
     ) {
 
-        return BLOCKS.register(name, blockSupplier);
+        return MythicBlocks.BLOCKS.register(name, blockSupplier);
     }
 
     public static <T extends Block> DeferredBlock<T> registerBlock(
@@ -112,9 +88,9 @@ public class RegistryHelper {
     ) {
 
         DeferredBlock<T> block =
-                BLOCKS.register(name, blockSupplier);
+                MythicBlocks.BLOCKS.register(name, blockSupplier);
 
-        ITEMS.register(name,
+        MythicItems.ITEMS.register(name,
                 () -> new BlockItem(block.get(), itemProperties));
 
         return block;
@@ -126,9 +102,9 @@ public class RegistryHelper {
             String path,
             Supplier<T> blockSupplier
     ) {
-        DeferredBlock<T> block = BLOCKS.register(path, blockSupplier);
+        DeferredBlock<T> block = MythicBlocks.BLOCKS.register(path, blockSupplier);
 
-        ITEMS.register(path,
+        MythicItems.ITEMS.register(path,
                 () -> new BlockItem(
                         block.get(),
                         new Item.Properties()
@@ -146,7 +122,7 @@ public class RegistryHelper {
             boolean fireproof,
             boolean uncommon
     ) {
-        DeferredBlock<T> block = BLOCKS.register(path, blockSupplier);
+        DeferredBlock<T> block = MythicBlocks.BLOCKS.register(path, blockSupplier);
 
         Item.Properties properties = new Item.Properties()
                 .group(MythicMetals.TABBED_GROUP)
@@ -160,7 +136,7 @@ public class RegistryHelper {
             properties.rarity(Rarity.UNCOMMON);
         }
 
-        ITEMS.register(path,
+        MythicItems.ITEMS.register(path,
                 () -> new BlockItem(block.get(), properties)
         );
 
@@ -171,14 +147,14 @@ public class RegistryHelper {
             String path,
             Supplier<T> supplier
     ) {
-        return ITEMS.register(path, supplier);
+        return MythicItems.ITEMS.register(path, supplier);
     }
 
     public static DeferredHolder<LootItemConditionType, LootItemConditionType> lootConditionType(
             String path,
             MapCodec<? extends LootItemCondition> lootCodec
     ) {
-        return LOOT_CONDITION_TYPES.register(path,
+        return RegisterLootConditions.LOOT_CONDITION_TYPES.register(path,
                 () -> new LootItemConditionType(lootCodec));
     }
 
@@ -186,7 +162,7 @@ public class RegistryHelper {
             String path,
             MapCodec<? extends LootItemCondition> lootCodec
     ) {
-        return LOOT_CONDITION_TYPES.register(path,
+        return RegisterLootConditions.LOOT_CONDITION_TYPES.register(path,
                 () -> new LootItemConditionType(lootCodec));
     }
 
@@ -202,7 +178,7 @@ public class RegistryHelper {
             String path,
             Supplier<PoiType> poiTypeSupplier
     ) {
-        return POI_TYPES.register(path,
+        return RegisterPointOfInterests.POI_TYPES.register(path,
                 poiTypeSupplier);
     }
 
@@ -210,14 +186,14 @@ public class RegistryHelper {
             String path,
             Supplier<Attribute> supplier
     ) {
-        return ATTRIBUTES.register(path, supplier);
+        return MythicEntityAttributes.ATTRIBUTES.register(path, supplier);
     }
 
     public static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> dataComponentType(
             String path,
             UnaryOperator<DataComponentType.Builder<T>> builderOperator
     ) {
-        return DATA_COMPONENTS.register(path,
+        return MythicDataComponents.DATA_COMPONENTS.register(path,
                 () -> builderOperator
                         .apply(DataComponentType.builder())
                         .build());
@@ -227,28 +203,60 @@ public class RegistryHelper {
             String name,
             MobEffectInstance statusEffectInstance
     ) {
-        return POTIONS.register(name,
+        return MythicPotions.POTIONS.register(name,
                 () -> new Potion(statusEffectInstance));
+    }
+
+    public static DeferredHolder<Potion, Potion> potion(
+            String name,
+            Supplier<Potion> potionSupplier
+    ) {
+        return MythicPotions.POTIONS.register(name,
+                potionSupplier);
     }
 
     public static DeferredHolder<MobEffect, MobEffect> mobEffect(
             String name,
             Supplier<MobEffect> statusEffectInstance
     ) {
-        return MOB_EFFECTS.register(name,
+        return MythicStatusEffects.MOB_EFFECTS.register(name,
                 statusEffectInstance);
+    }
+
+    public static DeferredHolder<SoundEvent, SoundEvent> soundEvent(
+            String name,
+            Supplier<SoundEvent> soundEventSupplier
+    ) {
+        return RegisterSounds.SOUND_EVENTS.register(name,
+                soundEventSupplier);
+    }
+
+    public static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> blockEntity(
+            String name,
+            Supplier<BlockEntityType<T>> blockEntityTypeSupplier
+    ) {
+        return RegisterBlockEntityTypes.BLOCK_ENTITY_TYPES.register(name,
+                blockEntityTypeSupplier);
     }
 
     public static <T extends Recipe<?>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<T>> recipeSerializer(
             String name,
             Supplier<RecipeSerializer<T>> statusEffectInstance
     ) {
-        return RECIPE_SERIALIZERS.register(name,
+        return MythicRecipeSerializers.RECIPE_SERIALIZERS.register(name,
                 statusEffectInstance);
     }
 
     public static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> entityType(String path, Supplier<EntityType<T>> type) {
-        return ENTITY_TYPES.register(path, type);
+        return MythicEntities.ENTITY_TYPES.register(path, type);
+    }
+
+    public static <T extends CriterionTrigger<?>> DeferredHolder<CriterionTrigger<?>, T> triggerType(
+            String name,
+            Supplier<T> triggerSupplier
+    ) {
+        return RegisterCriteria.TRIGGER_TYPES.register(name,
+                triggerSupplier);
     }
 
     public static void item(String path, Item item) {

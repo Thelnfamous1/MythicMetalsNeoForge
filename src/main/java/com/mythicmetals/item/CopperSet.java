@@ -3,13 +3,13 @@ package com.mythicmetals.item;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import net.minecraft.world.item.Item;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
+import net.neoforged.neoforge.registries.DeferredItem;
+
 import java.util.function.Consumer;
 
 public class CopperSet {
-    private Item nuggetItem = null;
-    private Item dustItem = null;
+    private DeferredItem<Item> nuggetItem = null;
+    private DeferredItem<Item> dustItem = null;
 
     private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
         final var settings = new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(0);
@@ -18,26 +18,28 @@ public class CopperSet {
     }
 
     public CopperSet() {
-        this(settings -> {
+        this("copper", settings -> {
         });
     }
 
-    public CopperSet(Consumer<Item.Properties> settingsConsumer) {
+    public CopperSet(String name, Consumer<Item.Properties> settingsConsumer) {
         if (MythicMetals.CONFIG.enableNuggets()) {
-            this.nuggetItem = makeItem(createSettings(settingsConsumer));
+            this.nuggetItem = RegistryHelper.item(name + "_nugget", () -> makeItem(createSettings(settingsConsumer)));
         }
         if (MythicMetals.CONFIG.enableDusts()) {
-            this.dustItem = makeItem(createSettings(settingsConsumer));
+            this.dustItem = RegistryHelper.item(name + "_dust", () -> makeItem(createSettings(settingsConsumer)));
         }
     }
 
     public void register(String name) {
+        /*
         if (nuggetItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_nugget"), nuggetItem);
         }
         if (dustItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
         }
+         */
     }
 
     protected Item makeItem(Item.Properties settings) {
@@ -45,10 +47,10 @@ public class CopperSet {
     }
 
     public Item getNugget() {
-        return nuggetItem;
+        return nuggetItem.get();
     }
 
     public Item getDust() {
-        return dustItem;
+        return dustItem.get();
     }
 }

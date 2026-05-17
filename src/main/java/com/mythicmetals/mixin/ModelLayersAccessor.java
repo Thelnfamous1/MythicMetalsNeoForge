@@ -9,7 +9,7 @@ import java.util.Set;
 @Mixin(ModelLayers.class)
 public interface ModelLayersAccessor {
 
-    @Accessor
+    @Accessor("ALL_MODELS")
     static Set<ModelLayerLocation> getLAYERS() {
         throw new UnsupportedOperationException();
     }

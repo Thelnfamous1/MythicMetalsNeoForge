@@ -11,8 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public class SteelToolSet extends ToolSet {
-    public SteelToolSet(Tier material, int[] damage, float[] speed) {
-        super(material, damage, speed);
+    public SteelToolSet(String name, Tier material, int[] damage, float[] speed) {
+        super(name, material, damage, speed);
     }
 
     @Override

@@ -6,8 +6,8 @@ import net.minecraft.world.item.*;
 
 public class PrometheumToolSet extends ToolSet {
 
-    public PrometheumToolSet(Tier material, int[] damage, float[] speed) {
-        super(material, damage, speed);
+    public PrometheumToolSet(String name, Tier material, int[] damage, float[] speed) {
+        super(name, material, damage, speed);
     }
 
     @Override

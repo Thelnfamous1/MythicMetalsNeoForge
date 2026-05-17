@@ -17,6 +17,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.registries.DeferredItem;
+
 import java.util.concurrent.CompletableFuture;
 
 public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
@@ -151,15 +153,15 @@ public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
             }
         });
 
-        ReflectionUtils.iterateAccessibleStaticFields(MythicItems.Mats.class, Item.class, (item, name, field) -> {
+        ReflectionUtils.iterateAccessibleStaticFields(MythicItems.Mats.class, DeferredItem.class, (item, name, field) -> {
             if (item.equals(MythicItems.Mats.STARRITE) || item.equals(MythicItems.Mats.UNOBTAINIUM)) {
                 var modTag = MythicMetalsData.createModItemTag(name);
                 var commonTag = MythicMetalsData.createCommonItemTag(name);
-                tag(modTag).add(item);
+                tag(modTag).add(item.asItem());
                 tag(commonTag).addTag(modTag);
             } else {
                 var rareMaterials = MythicMetalsData.createModItemTag("rare_materials");
-                tag(rareMaterials).add(item);
+                tag(rareMaterials).add(item.asItem());
             }
         });
 
@@ -233,56 +235,56 @@ public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
         // Edge cases from Mythic Tools
         // Swords
         tag(MythicMetalsData.createModItemTag(ConventionalItemTags.MELEE_WEAPON_TOOLS.location().getPath()))
-            .add(MythicTools.RED_AEGIS_SWORD)
-            .add(MythicTools.WHITE_AEGIS_SWORD)
-            .add(MythicTools.MIDAS_GOLD_SWORD)
-            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD)
-            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD);
+            .add(MythicTools.RED_AEGIS_SWORD.get())
+            .add(MythicTools.WHITE_AEGIS_SWORD.get())
+            .add(MythicTools.MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD.get());
         tag(MythicMetalsData.createModItemTag("swords"))
-            .add(MythicTools.RED_AEGIS_SWORD)
-            .add(MythicTools.WHITE_AEGIS_SWORD)
-            .add(MythicTools.MIDAS_GOLD_SWORD)
-            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD)
-            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD);
+            .add(MythicTools.RED_AEGIS_SWORD.get())
+            .add(MythicTools.WHITE_AEGIS_SWORD.get())
+            .add(MythicTools.MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD.get());
         tag(ConventionalItemTags.MELEE_WEAPON_TOOLS)
-            .add(MythicTools.RED_AEGIS_SWORD)
-            .add(MythicTools.WHITE_AEGIS_SWORD)
-            .add(MythicTools.MIDAS_GOLD_SWORD)
-            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD)
-            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD);
+            .add(MythicTools.RED_AEGIS_SWORD.get())
+            .add(MythicTools.WHITE_AEGIS_SWORD.get())
+            .add(MythicTools.MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD.get());
         tag(ItemTags.SWORD_ENCHANTABLE)
-            .add(MythicTools.RED_AEGIS_SWORD)
-            .add(MythicTools.WHITE_AEGIS_SWORD)
-            .add(MythicTools.MIDAS_GOLD_SWORD)
-            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD)
-            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD);
+            .add(MythicTools.RED_AEGIS_SWORD.get())
+            .add(MythicTools.WHITE_AEGIS_SWORD.get())
+            .add(MythicTools.MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.GILDED_MIDAS_GOLD_SWORD.get())
+            .add(MythicTools.ROYAL_MIDAS_GOLD_SWORD.get());
         // Mining Tools + Pickaxe Tag
         tag(ItemTags.PICKAXES)
-            .add(MythicTools.MYTHRIL_DRILL)
-            .add(MythicTools.ORICHALCUM_HAMMER);
+            .add(MythicTools.MYTHRIL_DRILL.get())
+            .add(MythicTools.ORICHALCUM_HAMMER.get());
         tag(MythicMetalsData.createModItemTag("pickaxes"))
-            .add(MythicTools.MYTHRIL_DRILL)
-            .add(MythicTools.ORICHALCUM_HAMMER);
+            .add(MythicTools.MYTHRIL_DRILL.get())
+            .add(MythicTools.ORICHALCUM_HAMMER.get());
         tag(MythicMetalsData.createModItemTag(ConventionalItemTags.MINING_TOOL_TOOLS.location().getPath()))
-            .add(MythicTools.MYTHRIL_DRILL)
-            .add(MythicTools.ORICHALCUM_HAMMER);
+            .add(MythicTools.MYTHRIL_DRILL.get())
+            .add(MythicTools.ORICHALCUM_HAMMER.get());
         tag(ConventionalItemTags.MINING_TOOL_TOOLS)
-            .add(MythicTools.MYTHRIL_DRILL)
-            .add(MythicTools.ORICHALCUM_HAMMER);
+            .add(MythicTools.MYTHRIL_DRILL.get())
+            .add(MythicTools.ORICHALCUM_HAMMER.get());
         // Arrows
         tag(MythicMetalsData.createModItemTag("arrows"))
-            .add(MythicTools.RUNITE_ARROW)
-            .add(MythicTools.TIPPED_RUNITE_ARROW)
-            .add(MythicTools.STAR_PLATINUM_ARROW);
+            .add(MythicTools.RUNITE_ARROW.get())
+            .add(MythicTools.TIPPED_RUNITE_ARROW.get())
+            .add(MythicTools.STAR_PLATINUM_ARROW.get());
         tag(MythicMetalsData.createCommonItemTag("arrows"))
-            .add(MythicTools.RUNITE_ARROW)
-            .add(MythicTools.TIPPED_RUNITE_ARROW)
-            .add(MythicTools.STAR_PLATINUM_ARROW);
+            .add(MythicTools.RUNITE_ARROW.get())
+            .add(MythicTools.TIPPED_RUNITE_ARROW.get())
+            .add(MythicTools.STAR_PLATINUM_ARROW.get());
         // Shields
         tag(MythicMetalsData.createModItemTag(ConventionalItemTags.SHIELD_TOOLS.location().getPath()))
-            .add(MythicTools.STORMYX_SHIELD);
+            .add(MythicTools.STORMYX_SHIELD.get());
         tag(ConventionalItemTags.SHIELD_TOOLS)
-            .add(MythicTools.STORMYX_SHIELD);
+            .add(MythicTools.STORMYX_SHIELD.get());
 
         ReflectionUtils.iterateAccessibleStaticFields(MythicArmor.class, ArmorSet.class, (armorSet, name, field) -> {
             var modTag = MythicMetalsData.createModItemTag("armor/" + name);
@@ -334,13 +336,13 @@ public class MythicItemTagProvider extends FabricTagProvider.ItemTagProvider {
          * Edge cases for Mythic Armor (The Celestium Elytra)
          */
         tag(MythicMetalsData.createModItemTag("equipment/celestium"))
-            .add(MythicArmor.CELESTIUM_ELYTRA);
+            .add(MythicArmor.CELESTIUM_ELYTRA.get());
         tag(MythicMetalsData.createModItemTag("armor/celestium"))
-            .add(MythicArmor.CELESTIUM_ELYTRA);
+            .add(MythicArmor.CELESTIUM_ELYTRA.get());
         tag(MythicMetalsData.createModItemTag("elytra"))
-            .add(MythicArmor.CELESTIUM_ELYTRA);
+            .add(MythicArmor.CELESTIUM_ELYTRA.get());
         tag(MythicMetalsData.createCommonItemTag("elytra"))
-            .add(MythicArmor.CELESTIUM_ELYTRA);
+            .add(MythicArmor.CELESTIUM_ELYTRA.get());
 
         ReflectionUtils.iterateAccessibleStaticFields(MythicItems.Templates.class, Item.class, (item, name, field) -> {
             var modTag = MythicMetalsData.createModItemTag("smithing_templates");

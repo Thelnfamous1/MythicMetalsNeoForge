@@ -5,6 +5,7 @@ import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.misc.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +25,8 @@ public class HallowedArmor extends ArmorItem {
         this(MythicArmorMaterials.HALLOWED, type, settings);
     }
 
-    public HallowedArmor(ArmorMaterial material, ArmorItem.Type slot, Item.Properties settings) {
-        super(RegistryHelper.getEntry(material), slot, settings);
+    public HallowedArmor(Holder<ArmorMaterial> material, ArmorItem.Type slot, Item.Properties settings) {
+        super(material, slot, settings);
         this.type = slot;
     }
 

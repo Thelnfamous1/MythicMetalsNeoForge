@@ -3,7 +3,8 @@ package com.mythicmetals.block;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.entity.BanglumNukeEntity;
 import com.mythicmetals.registry.RegisterSounds;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+//import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,19 +16,28 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class BanglumNukeHandler {
     public static void init() {
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+        //UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+
+        NeoForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock event) -> {
+            Player player = event.getEntity();
+            InteractionHand hand = event.getHand();
+            BlockHitResult hitResult = event.getHitVec();
+            Level world = event.getLevel();
             var stack = player.getItemInHand(hand);
 
-            if (!stack.is(Items.FLINT_AND_STEEL)) return InteractionResult.PASS;
+            if (!stack.is(Items.FLINT_AND_STEEL)) /*return InteractionResult.PASS;*/ return;
 
             var targetBlock = world.getBlockState(hitResult.getBlockPos());
 
             if (!targetBlock.is(MythicBlocks.BANGLUM.getStorageBlock())
                 && !targetBlock.is(MythicBlocks.MORKITE.getStorageBlock()))
-                return InteractionResult.PASS;
+                /*return InteractionResult.PASS;*/ return;
 
             var pos = hitResult.getBlockPos();
 
@@ -37,13 +47,15 @@ public class BanglumNukeHandler {
                         if (tryLightBigTntAt(world, player, pos.getX() - x, pos.getY() - y, pos.getZ() - z)) {
                             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 
-                            return InteractionResult.SUCCESS;
+                            /*return InteractionResult.SUCCESS;*/
+                            event.setCanceled(true);
+                            event.setCancellationResult(InteractionResult.SUCCESS);
                         }
                     }
                 }
             }
 
-            return InteractionResult.PASS;
+            /*return InteractionResult.PASS;*/ return;
         });
     }
 

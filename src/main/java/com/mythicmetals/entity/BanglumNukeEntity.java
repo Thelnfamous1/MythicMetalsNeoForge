@@ -1,6 +1,6 @@
 package com.mythicmetals.entity;
 
-import com.mojang.authlib.GameProfile;
+//import com.mojang.authlib.GameProfile;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.data.MythicTags;
@@ -105,7 +105,7 @@ public class BanglumNukeEntity extends BanglumTntEntity {
         for (Player player : level().players()) {
             if (player.distanceToSqr(this) > soundRadius * soundRadius) continue;
 
-            player.level().playSound(this, this.blockPosition(), RegisterSounds.BANGLUM_NUKE_EXPLOSION, SoundSource.BLOCKS, 5.0F, (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 0.7F);
+            player.level().playSound(this, this.blockPosition(), RegisterSounds.BANGLUM_NUKE_EXPLOSION.get(), SoundSource.BLOCKS, 5.0F, (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 0.7F);
         }
 
         // Handle damaging entities near the nuke explosion

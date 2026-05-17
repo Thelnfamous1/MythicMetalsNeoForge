@@ -21,7 +21,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+//import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -41,8 +41,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.mythicmetals.entity.MythicEntityAttributes.FIRE_VULNERABILITY;
 
 // TODO(Ravel): can not resolve target class LivingEntity
 // TODO(Ravel): can not resolve target class LivingEntity
@@ -143,12 +141,14 @@ public abstract class LivingEntityMixin extends Entity {
     // TODO(Ravel): no target class
 // TODO(Ravel): no target class
 // TODO(Ravel): no target class
+    /*
     @Inject(method = "createLivingAttributes", require = 1, allow = 1, at = @At("RETURN"))
     private static void mythicmetals$addAttributes(final CallbackInfoReturnable<AttributeSupplier.Builder> info) {
         info.getReturnValue().add(MythicEntityAttributes.CARMOT_SHIELD);
-        info.getReturnValue().add(FIRE_VULNERABILITY);
+        info.getReturnValue().add(MythicEntityAttributes.FIRE_VULNERABILITY);
         info.getReturnValue().add(MythicEntityAttributes.ELYTRA_ROCKET_SPEED);
     }
+     */
 
     // TODO(Ravel): no target class
 // TODO(Ravel): no target class
@@ -157,7 +157,7 @@ public abstract class LivingEntityMixin extends Entity {
     private boolean mythicmetals$bypassFireResistance(boolean original) {
         // We respect Fire Invulnerability, but not Fire Resistance
         // original = source.isFire() && this.hasEffect(MobEffects.FIRE_RESISTANCE)
-        return original && !(this.getAttributeValue(FIRE_VULNERABILITY) > 0);
+        return original && !(this.getAttributeValue(MythicEntityAttributes.FIRE_VULNERABILITY) > 0);
     }
 
     // TODO(Ravel): no target class
@@ -169,11 +169,11 @@ public abstract class LivingEntityMixin extends Entity {
      */
     @ModifyVariable(method = "hurt", at = @At(value = "HEAD"), argsOnly = true)
     private float mythicmetals$changeFireDamage(float original, DamageSource source) {
-        if (!this.getAttributes().hasAttribute(FIRE_VULNERABILITY) || !source.is(DamageTypeTags.IS_FIRE)) {
+        if (!this.getAttributes().hasAttribute(MythicEntityAttributes.FIRE_VULNERABILITY) || !source.is(DamageTypeTags.IS_FIRE)) {
             return original;
         }
 
-        float baseDamage = (float) this.getAttributeValue(FIRE_VULNERABILITY);
+        float baseDamage = (float) this.getAttributeValue(MythicEntityAttributes.FIRE_VULNERABILITY);
         float modifier = this.hasEffect(MobEffects.FIRE_RESISTANCE) ? Math.min(Mth.floor((baseDamage / 2.0f)), 1) : baseDamage;
         return original + modifier;
     }
@@ -321,7 +321,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (effect.getEffect().value().equals(MythicStatusEffects.COMBUSTION) && this.isAlwaysTicking()) {
             if (source instanceof AreaEffectCloud cloudEntity && ((WasSpawnedFromCreeper) cloudEntity).mythicmetals$isSpawnedFromCreeper()) {
                 //noinspection ConstantConditions
-                RegisterCriteria.RECEIVED_COMBUSTION_FROM_CREEPER.trigger(((ServerPlayer) (Object) this));
+                RegisterCriteria.RECEIVED_COMBUSTION_FROM_CREEPER.get().trigger(((ServerPlayer) (Object) this));
             }
         }
     }

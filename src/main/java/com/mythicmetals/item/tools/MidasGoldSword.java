@@ -142,15 +142,15 @@ public class MidasGoldSword extends SwordItem {
 
     public static ItemStack createSwordFromGold(int goldCount) {
         if (goldCount > 640) {
-            var stack = new ItemStack(MythicTools.ROYAL_MIDAS_GOLD_SWORD);
+            var stack = new ItemStack(MythicTools.ROYAL_MIDAS_GOLD_SWORD.get());
             stack.set(GOLD_FOLDED, GoldFoldedComponent.of(goldCount, true));
             return stack;
         } else if (goldCount > 319) {
-            var stack = new ItemStack(MythicTools.GILDED_MIDAS_GOLD_SWORD);
+            var stack = new ItemStack(MythicTools.GILDED_MIDAS_GOLD_SWORD.get());
             stack.set(GOLD_FOLDED, GoldFoldedComponent.of(goldCount));
             return stack;
         } else {
-            var stack = MythicTools.MIDAS_GOLD_SWORD.getDefaultInstance();
+            var stack = MythicTools.MIDAS_GOLD_SWORD.get().getDefaultInstance();
             stack.set(GOLD_FOLDED, GoldFoldedComponent.of(goldCount));
             return stack;
         }

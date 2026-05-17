@@ -18,7 +18,7 @@ public class CampfireBlockMixin {
 
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void stompMarshmellows(BlockState state, Level world, BlockPos pos, Entity entity, CallbackInfo ci) {
-        if (!entity.isAlive()) return;
+        if (!entity.showVehicleHealth()) return;
         for (ItemStack armorItems : ((LivingEntity) entity).getArmorSlots()) {
             if (armorItems.getItem().equals(MythicArmor.PALLADIUM.getBoots())) {
                 ci.cancel();

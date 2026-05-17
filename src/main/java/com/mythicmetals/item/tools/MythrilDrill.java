@@ -5,7 +5,7 @@ import com.mythicmetals.component.*;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.MythicItems;
 import com.mythicmetals.misc.RegistryHelper;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
+//import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.Tags;
 import org.joml.Math;
 import java.util.*;
 
@@ -41,13 +42,13 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
      * Map used to store the different types of drill upgrades
      * Used for handling tooltips
      */
-    public static Map<Item, String> drillUpgrades = Util.make(new HashMap<>(), map -> {
+    public static Map<Holder<Item>, String> drillUpgrades = Util.make(new HashMap<>(), map -> {
         map.put(MythicItems.Mats.AQUARIUM_PEARL, "aquarium");
         map.put(MythicItems.Mats.CARMOT_STONE, "carmot");
-        map.put(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM.get(), "midas_gold");
+        map.put(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK_ITEM, "midas_gold");
         map.put(MythicItems.Mats.PROMETHEUM_BOUQUET, "prometheum");
         map.put(MythicItems.Mats.STORMYX_SHELL, "stormyx");
-        map.put(Items.AIR, "empty");
+        map.put(Items.AIR.builtInRegistryHolder(), "empty");
     });
 
     public MythrilDrill(Tier material, Item.Properties settings) {
@@ -145,7 +146,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
             }
             stack.set(MythicDataComponents.DRILL, drillComponent.reduce(drillComponent.fuel()));
 
-            if (state.is(ConventionalBlockTags.ORES)) {
+            if (state.is(Tags.Blocks.ORES)) {
                 // Do not perform this if silk touch is present
                 for (Holder<Enchantment> enchantment : stack.getEnchantments().keySet()) {
                     if (enchantment.is(MythicTags.SILK_TOUCH_LIKE)) {
@@ -154,7 +155,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
                 }
 
                 // Restore air when mining ores underwater
-                if (upgradeComponent.hasUpgrade(MythicItems.Mats.AQUARIUM_PEARL)) {
+                if (upgradeComponent.hasUpgrade(MythicItems.Mats.AQUARIUM_PEARL.get())) {
                     miner.setAirSupply(Math.min(miner.getAirSupply() + 60, miner.getMaxAirSupply()));
                 }
                 // Randomly drop gold from midas gold
@@ -174,7 +175,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
             if (stack.get(MythicDataComponents.UPGRADES) == null) return;
             var drillComponent = stack.getOrDefault(MythicDataComponents.DRILL, DEFAULT);
             var upgradeComponent = stack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2));
-            if (upgradeComponent.hasUpgrade(MythicItems.Mats.PROMETHEUM_BOUQUET)) {
+            if (upgradeComponent.hasUpgrade(MythicItems.Mats.PROMETHEUM_BOUQUET.get())) {
                 // Initialize auto repair upgrades
                 if (!stack.has(MythicDataComponents.PROMETHEUM)) {
                     stack.set(MythicDataComponents.PROMETHEUM, PrometheumComponent.DEFAULT);
@@ -198,15 +199,22 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
             upgrades.addToTooltip(context, lines::add, type);
             for (int i = 0; i < upgrades.size(); i++) {
                 var item = upgrades.items().get(i);
-                lines.add(Component.translatable("tooltip.mythril_drill.upgrade_slot", i + 1, Component.translatable("tooltip.mythril_drill.upgrade." + drillUpgrades.get(item))));
+                lines.add(Component.translatable("tooltip.mythril_drill.upgrade_slot", i + 1, Component.translatable("tooltip.mythril_drill.upgrade." + drillUpgrades.get(item.builtInRegistryHolder()))));
             }
         }
     }
 
+    /*
     @Override
     public boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
         // Allow you to break blocks when fuel ticks down
         return oldStack.has(MythicDataComponents.DRILL) && newStack.has(MythicDataComponents.DRILL) || oldStack.getDamageValue() != newStack.getDamageValue();
+    }
+     */
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return !(oldStack.has(MythicDataComponents.DRILL) && newStack.has(MythicDataComponents.DRILL) || oldStack.getDamageValue() != newStack.getDamageValue());
     }
 
     @Override
@@ -234,7 +242,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
             attributes = attributes.withModifierAdded(Attributes.LUCK, modifier, EquipmentSlotGroup.MAINHAND);
             changes = true;
         }
-        if (upgrades.hasUpgrade(MythicItems.Mats.AQUARIUM_PEARL)) {
+        if (upgrades.hasUpgrade(MythicItems.Mats.AQUARIUM_PEARL.get())) {
             var modifier = new AttributeModifier(
                 RegistryHelper.id("mythril_drill_underwater_mining_bonus"),
                 3.0,

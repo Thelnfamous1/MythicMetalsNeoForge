@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class StarPlatinumArrowEntity extends AbstractArrow {
-    public static final ItemStack STAR_PLAT_STACK = new ItemStack(MythicTools.STAR_PLATINUM_ARROW);
+    //public static final ItemStack STAR_PLAT_STACK = new ItemStack(MythicTools.STAR_PLATINUM_ARROW);
 
     public StarPlatinumArrowEntity(LivingEntity owner, Level world, ItemStack stack, @Nullable ItemStack weapon) {
         super(MythicEntities.STAR_PLATINUM_ARROW_ENTITY_TYPE.get(), owner, world, stack, weapon);
@@ -33,12 +33,12 @@ public class StarPlatinumArrowEntity extends AbstractArrow {
 
     @Override
     protected ItemStack getPickupItem() {
-        return STAR_PLAT_STACK;
+        return MythicTools.STAR_PLATINUM_ARROW.toStack();
     }
 
     @Override
     protected ItemStack getDefaultPickupItem() {
-        return STAR_PLAT_STACK;
+        return MythicTools.STAR_PLATINUM_ARROW.toStack();
     }
 
     @Override

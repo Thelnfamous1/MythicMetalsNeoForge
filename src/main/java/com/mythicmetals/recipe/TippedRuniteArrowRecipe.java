@@ -46,7 +46,7 @@ public class TippedRuniteArrowRecipe extends CustomRecipe {
         if (!itemStack.is(Items.LINGERING_POTION)) {
             return ItemStack.EMPTY;
         } else {
-            ItemStack itemStack2 = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW, 8);
+            ItemStack itemStack2 = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW.get(), 8);
             itemStack2.set(DataComponents.POTION_CONTENTS, itemStack.get(DataComponents.POTION_CONTENTS));
             return itemStack2;
         }

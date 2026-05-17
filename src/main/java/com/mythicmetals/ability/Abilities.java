@@ -5,10 +5,11 @@ import com.mythicmetals.block.MythicBlocks;
 import com.mythicmetals.item.MythicItems;
 import com.mythicmetals.item.tools.MythicTools;
 import com.mythicmetals.item.tools.MythrilDrill;
-import net.fabricmc.loader.api.FabricLoader;
+//import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.item.Items;
 import net.minecraft.network.chat.Style;
 import net.minecraft.ChatFormatting;
+import net.neoforged.fml.ModList;
 
 // TODO(Ravel): ambiguous static import, members with name MetalColors have different new names
 //
@@ -52,21 +53,21 @@ public class Abilities {
         KNOCKBACK.addItem(MythicTools.LEGENDARY_BANGLUM.getHoe(), MetalColors.GOLD_STYLE);
         MythrilDrill.drillUpgrades.forEach((item, s) -> {
             if (item != Items.AIR) {
-                UPGRADE_TOOLTIP.addItem(item, Style.EMPTY.withColor(MetalColors.MYTHRIL.rgb()));
+                UPGRADE_TOOLTIP.addItem(item.value(), Style.EMPTY.withColor(MetalColors.MYTHRIL.rgb()));
             }
         });
         // Aegis Sword abilities
-        FIRE_ASPECT.addItem(MythicTools.RED_AEGIS_SWORD, Style.EMPTY.withColor(MetalColors.RED_AEGIS.rgb()));
-        SMITE.addItem(MythicTools.WHITE_AEGIS_SWORD, Style.EMPTY.withColor(ChatFormatting.YELLOW));
+        FIRE_ASPECT.addItem(MythicTools.RED_AEGIS_SWORD.get(), Style.EMPTY.withColor(MetalColors.RED_AEGIS.rgb()));
+        SMITE.addItem(MythicTools.WHITE_AEGIS_SWORD.get(), Style.EMPTY.withColor(ChatFormatting.YELLOW));
         // Material Tooltips
-        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.AQUARIUM_PEARL, MetalColors.AQUA_STYLE);
-        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.BANGLUM_CHUNK, MetalColors.GOLD_STYLE);
-        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.CARMOT_STONE, MetalColors.CARMOT_STYLE);
+        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.AQUARIUM_PEARL.get(), MetalColors.AQUA_STYLE);
+        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.BANGLUM_CHUNK.get(), MetalColors.GOLD_STYLE);
+        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.CARMOT_STONE.get(), MetalColors.CARMOT_STYLE);
         MATERIAL_TOOLTIP.addItem(MythicBlocks.ENCHANTED_MIDAS_GOLD_BLOCK.asItem(), MetalColors.GOLD_STYLE);
-        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.STORMYX_SHELL, Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE));
+        MATERIAL_TOOLTIP.addItem(MythicItems.Mats.STORMYX_SHELL.get(), Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE));
         // Mod compat specific abilities
         // TODO - Uncomment once Origins compat is updated and tested
-        if (FabricLoader.getInstance().isModLoaded("origins")) {
+        if (ModList.get().isLoaded("origins")) {
             WATER_PROTECTION.addItem(MythicArmor.AQUARIUM.getChestplate(), MetalColors.AQUA_STYLE);
             WATER_PROTECTION.addItem(MythicArmor.AQUARIUM.getLeggings(), MetalColors.AQUA_STYLE);
             BETTER_WATER_PROTECTION.addItem(MythicArmor.TIDESINGER.getChestplate(), MetalColors.TIDESINGER_BLUE);

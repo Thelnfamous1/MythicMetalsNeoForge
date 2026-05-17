@@ -41,7 +41,7 @@ public class MythicMetalsREIClientPlugin implements REIClientPlugin {
                     input.add(EntryIngredients.of(itemStack));
                     for (int i = 0; i < 4; i++)
                         input.add(arrowStack);
-                    var outputStack = PotionContents.createItemStack(MythicTools.TIPPED_RUNITE_ARROW, potion);
+                    var outputStack = PotionContents.createItemStack(MythicTools.TIPPED_RUNITE_ARROW.get(), potion);
                     outputStack.setCount(8);
                     EntryIngredient output = EntryIngredients.of(outputStack);
                     registry.add(new DefaultCustomDisplay(null, input, Collections.singletonList(output)));

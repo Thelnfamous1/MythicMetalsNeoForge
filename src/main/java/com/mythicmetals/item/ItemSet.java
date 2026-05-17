@@ -1,22 +1,20 @@
 package com.mythicmetals.item;
 
 import com.mythicmetals.MythicMetals;
-import com.mythicmetals.misc.RegistryHelper;
-import io.wispforest.owo.util.TagInjector;
 import net.minecraft.world.item.Item;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.registries.DeferredItem;
+
 import java.util.function.Consumer;
 
 public class ItemSet {
-    private final Item ingotItem;
-    private Item rawOreItem = null;
-    private Item nuggetItem = null;
-    private Item dustItem = null;
+    private final DeferredItem<Item> ingotItem;
+    private DeferredItem<Item> rawOreItem = null;
+    private DeferredItem<Item> nuggetItem = null;
+    private DeferredItem<Item> dustItem = null;
     private boolean requiresBlasting = false;
     // Used for smelting recipes during datagen
     private final float xp;
+    private final String name;
 
     private static Item.Properties createSettings(Consumer<Item.Properties> settingsProcessor) {
         final var settings = new Item.Properties().group(MythicMetals.TABBED_GROUP).tab(0);
@@ -24,51 +22,74 @@ public class ItemSet {
         return settings;
     }
 
-    public ItemSet(float xp) {
-        this(false, false, xp, settings -> {
-        });
+    public ItemSet(String name, float xp) {
+        this(name, false, false, xp, settings -> {
+        }, false);
     }
 
-    public ItemSet(float xp, boolean requiresBlasting) {
-        this(false, requiresBlasting, xp, settings -> {
-        });
+    public ItemSet(String name,float xp, boolean requiresBlasting) {
+        this(name, false, requiresBlasting, xp, settings -> {
+        }, false);
     }
 
-    public ItemSet(boolean isAlloy) {
-        this(isAlloy, true, 0.1f, settings -> {
-        });
+    public ItemSet(String name, boolean isAlloy, boolean isStarPlatinum) {
+        this(name, isAlloy, true, 0.1f, settings -> {
+        }, isStarPlatinum);
     }
 
-    public ItemSet(boolean isAlloy, float xp) {
-        this(isAlloy, false, xp, settings -> {
-        });
+    public ItemSet(String name,boolean isAlloy) {
+        this(name, isAlloy, true, 0.1f, settings -> {
+        }, false);
     }
 
-    public ItemSet(boolean isAlloy, float xp, boolean requiresBlasting) {
-        this(isAlloy, requiresBlasting, xp, settings -> {
-        });
+    public ItemSet(String name,boolean isAlloy, float xp) {
+        this(name, isAlloy, false, xp, settings -> {
+        }, false);
     }
 
-    public ItemSet(boolean isAlloy, boolean requiresBlasting, Consumer<Item.Properties> settingsConsumer) {
-        this(isAlloy, requiresBlasting, 0.1f, settingsConsumer);
+    public ItemSet(String name,boolean isAlloy, float xp, boolean requiresBlasting) {
+        this(name, isAlloy, requiresBlasting, xp, settings -> {
+        }, false);
     }
 
-    public ItemSet(boolean isAlloy, boolean requiresBlasting, float xp, Consumer<Item.Properties> settingsConsumer) {
-        this.ingotItem = makeItem(createSettings(settingsConsumer));
+    public ItemSet(String name,boolean isAlloy, boolean requiresBlasting, Consumer<Item.Properties> settingsConsumer) {
+        this(name, isAlloy, requiresBlasting, 0.1f, settingsConsumer, false);
+    }
+
+    public ItemSet(String name,boolean isAlloy, boolean requiresBlasting, float xp, Consumer<Item.Properties> settingsConsumer) {
+        this(name, isAlloy, requiresBlasting, xp, settingsConsumer, false);
+    }
+
+    public ItemSet(String name, boolean isAlloy, boolean requiresBlasting, float xp, Consumer<Item.Properties> settingsConsumer, boolean isStarPlatinum) {
+        this.name = name;
+        this.ingotItem = MythicItems.ITEMS.register(
+                isStarPlatinum ? name : name + "_ingot",
+                () -> makeItem(createSettings(settingsConsumer))
+        );
         if (!isAlloy) {
-            this.rawOreItem = makeItem(createSettings(settingsConsumer));
+            this.rawOreItem = MythicItems.ITEMS.register(
+                    "raw_" + name,
+                    () -> makeItem(createSettings(settingsConsumer))
+            );
         }
         if (MythicMetals.CONFIG.enableNuggets()) {
-            this.nuggetItem = makeItem(createSettings(settingsConsumer));
+            this.nuggetItem = MythicItems.ITEMS.register(
+                    name + "_nugget",
+                    () -> makeItem(createSettings(settingsConsumer))
+            );
         }
         if (MythicMetals.CONFIG.enableDusts()) {
-            this.dustItem = makeItem(createSettings(settingsConsumer));
+            this.dustItem = MythicItems.ITEMS.register(
+                    name + "_dust",
+                    () -> makeItem(createSettings(settingsConsumer))
+            );
         }
         this.xp = xp;
         this.requiresBlasting = requiresBlasting;
     }
 
     public void register(String name) {
+        /*
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_ingot"), ingotItem);
         if (rawOreItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id("raw_" + name), rawOreItem);
@@ -81,9 +102,11 @@ public class ItemSet {
         if (dustItem != null) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_dust"), dustItem);
         }
+         */
     }
 
     public void register(String name, boolean imStarPlatinum) {
+        /*
         if (imStarPlatinum) {
             Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name), ingotItem);
             if (nuggetItem != null) {
@@ -95,6 +118,7 @@ public class ItemSet {
         } else {
             register(name);
         }
+         */
 
     }
 
@@ -103,19 +127,19 @@ public class ItemSet {
     }
 
     public Item getRawOre() {
-        return rawOreItem;
+        return rawOreItem.get();
     }
 
     public Item getIngot() {
-        return ingotItem;
+        return ingotItem.get();
     }
 
     public Item getNugget() {
-        return nuggetItem;
+        return nuggetItem.get();
     }
 
     public Item getDust() {
-        return dustItem;
+        return dustItem.get();
     }
 
     public boolean requiresBlasting() {

@@ -3,14 +3,17 @@ package com.mythicmetals.block;
 import com.google.common.collect.*;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
-import io.wispforest.owo.util.Maldenhagen;
+//import io.wispforest.owo.util.Maldenhagen;
 import io.wispforest.owo.util.TagInjector;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -300,6 +303,14 @@ public class BlockSet {
                 .createOreStorageBlock(storageMiningLevel);
         }
 
+        public Builder createAquariumSet(float oreStrength, ResourceLocation oreMiningLevel, float storageStrength, ResourceLocation storageMiningLevel) {
+            return strength(oreStrength)
+                    .createOre(oreMiningLevel)
+                    .strength(storageStrength)
+                    .createAquariumStorageBlock(storageMiningLevel)
+                    .createOreStorageBlock(storageMiningLevel);
+        }
+
         /**
          * Puts a storage block and an anvil in the blockset.
          *
@@ -410,7 +421,7 @@ public class BlockSet {
         public Builder createLuminantOre(ResourceLocation miningLevel, UniformInt experience, int luminance) {
             final var settings = blockSettings(currentHardness, currentResistance, currentSounds).lightLevel(blockState -> luminance);
             settingsProcessor.accept(settings);
-            RegistryHelper.block(
+            this.ore = RegistryHelper.block(
                     name + "_ore",
                     () -> new DropExperienceBlock(experience, settings), // ConstantInt.ZERO?
                     fireproof,
@@ -503,7 +514,7 @@ public class BlockSet {
             final var settings = blockSettings(currentHardness, currentResistance, currentSounds);
             settingsProcessor.accept(settings);
             this.ore = RegistryHelper.block(
-                    name + "_block",
+                    name + "_ore",
                     () -> new StarriteOreBlock(settings, experience),
                     fireproof,
                     uncommon);
@@ -521,7 +532,7 @@ public class BlockSet {
             final var settings = blockSettings(currentHardness, currentResistance, currentSounds);
             settingsProcessor.accept(settings);
             this.ore = RegistryHelper.block(
-                    name + "_block",
+                    name + "_ore",
                     () -> new BanglumOreBlock(settings),
                     fireproof,
                     uncommon
@@ -542,7 +553,7 @@ public class BlockSet {
             final var settings = blockSettings(currentHardness, currentResistance, currentSounds);
             settingsProcessor.accept(settings);
             this.oreVariants.put(name, RegistryHelper.block(
-                    name + "_block",
+                    name + "_" + this.name + "_ore",
                     () -> new StarriteOreBlock(settings, experience),
                     fireproof,
                     uncommon
@@ -562,7 +573,7 @@ public class BlockSet {
             final var settings = blockSettings(currentHardness, currentResistance, currentSounds);
             settingsProcessor.accept(settings);
             this.oreVariants.put(name, RegistryHelper.block(
-                    name + "_block",
+                    name + "_" + this.name + "_ore",
                     () -> new BanglumOreBlock(settings),
                     fireproof,
                     uncommon
@@ -602,6 +613,25 @@ public class BlockSet {
             this.storageBlock = RegistryHelper.block(
                     name + "_block",
                     () -> new Block(settings),
+                    fireproof,
+                    uncommon
+            );
+            miningLevels.put(storageBlock, miningLevel);
+            miningLevels.put(storageBlock, PICKAXE);
+            return this;
+        }
+
+        public Builder createAquariumStorageBlock(ResourceLocation miningLevel) {
+            final var settings = blockSettings(currentHardness, currentResistance, currentSounds);
+            settingsProcessor.accept(settings);
+            this.storageBlock = RegistryHelper.block(
+                    name + "_block",
+                    () -> new Block(settings){
+                        @Override
+                        public boolean isConduitFrame(BlockState state, LevelReader level, BlockPos pos, BlockPos conduit) {
+                            return true;
+                        }
+                    },
                     fireproof,
                     uncommon
             );

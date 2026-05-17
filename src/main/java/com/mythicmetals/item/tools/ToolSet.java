@@ -9,8 +9,10 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
+//import net.minecraft.core.registries.BuiltInRegistries;
+//import net.minecraft.core.Registry;
+import net.neoforged.neoforge.registries.DeferredItem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,11 +27,11 @@ import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operati
 
 public class ToolSet {
 
-    private final SwordItem sword;
-    private final AxeItem axe;
-    private final PickaxeItem pickaxe;
-    private final ShovelItem shovel;
-    private final HoeItem hoe;
+    private final DeferredItem<SwordItem> sword;
+    private final DeferredItem<AxeItem> axe;
+    private final DeferredItem<PickaxeItem> pickaxe;
+    private final DeferredItem<ShovelItem> shovel;
+    private final DeferredItem<HoeItem> hoe;
 
     private final List<Float> attackSpeed = new ArrayList<>();
 
@@ -39,17 +41,17 @@ public class ToolSet {
         return settings;
     }
 
-    public ToolSet(Tier material, int[] damage, float[] speed) {
-        this(material, damage, speed, settings -> {
+    public ToolSet(String name, Tier material, int[] damage, float[] speed) {
+        this(name, material, damage, speed, settings -> {
         });
     }
 
-    public ToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
-        this.sword = this.makeSword(material, damage[0], speed[0], createSettings(settingsProcessor));
-        this.axe = this.makeAxe(material, damage[1], speed[1], createSettings(settingsProcessor));
-        this.pickaxe = this.makePickaxe(material, damage[2], speed[2], createSettings(settingsProcessor));
-        this.shovel = this.makeShovel(material, damage[3], speed[3], createSettings(settingsProcessor));
-        this.hoe = this.makeHoe(material, damage[4], speed[4], createSettings(settingsProcessor));
+    public ToolSet(String name, Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
+        this.sword = RegistryHelper.item(name + "_sword", () -> this.makeSword(material, damage[0], speed[0], createSettings(settingsProcessor)));
+        this.axe = RegistryHelper.item(name + "_axe", () -> this.makeAxe(material, damage[1], speed[1], createSettings(settingsProcessor)));
+        this.pickaxe = RegistryHelper.item(name + "_pickaxe", () -> this.makePickaxe(material, damage[2], speed[2], createSettings(settingsProcessor)));
+        this.shovel = RegistryHelper.item(name + "_shovel", () -> this.makeShovel(material, damage[3], speed[3], createSettings(settingsProcessor)));
+        this.hoe = RegistryHelper.item(name + "_hoe", () -> this.makeHoe(material, damage[4], speed[4], createSettings(settingsProcessor)));
         attackSpeed.add(speed[4]);
         attackSpeed.add(speed[3]);
         attackSpeed.add(speed[2]);
@@ -58,11 +60,13 @@ public class ToolSet {
     }
 
     public void register(String name) {
+        /*
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_sword"), sword);
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_axe"), axe);
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_pickaxe"), pickaxe);
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_shovel"), shovel);
         Registry.register(BuiltInRegistries.ITEM, RegistryHelper.id(name + "_hoe"), hoe);
+         */
     }
 
     protected SwordItem makeSword(Tier material, int damage, float speed, Item.Properties settings) {
@@ -91,27 +95,27 @@ public class ToolSet {
      * @return List of ToolItems in order: Sword, Axe, Pickaxe, Shovel, Hoe
      */
     public List<TieredItem> get() {
-        return List.of(sword, axe, pickaxe, shovel, hoe);
+        return List.of(sword.get(), axe.get(), pickaxe.get(), shovel.get(), hoe.get());
     }
 
     public SwordItem getSword() {
-        return sword;
+        return sword.get();
     }
 
     public AxeItem getAxe() {
-        return axe;
+        return axe.get();
     }
 
     public PickaxeItem getPickaxe() {
-        return pickaxe;
+        return pickaxe.get();
     }
 
     public ShovelItem getShovel() {
-        return shovel;
+        return shovel.get();
     }
 
     public HoeItem getHoe() {
-        return hoe;
+        return hoe.get();
     }
 
     public List<Float> getAttackSpeed() {

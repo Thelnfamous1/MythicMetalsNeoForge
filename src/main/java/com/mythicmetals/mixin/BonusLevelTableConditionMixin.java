@@ -39,7 +39,7 @@ public class BonusLevelTableConditionMixin {
             return level + 1;
         }
 
-        if (toolCtxStack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2)).hasUpgrade(MythicItems.Mats.CARMOT_STONE)) {
+        if (toolCtxStack.getOrDefault(MythicDataComponents.UPGRADES, UpgradeComponent.empty(2)).hasUpgrade(MythicItems.Mats.CARMOT_STONE.get())) {
             return level + 1;
         }
         return level;

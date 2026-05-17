@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.*;
 import net.minecraft.world.level.Level;
 
 // TODO(Ravel): ambiguous static import, members with name ADD_MULTIPLIED_BASE have different new names
@@ -23,8 +22,8 @@ import net.minecraft.world.level.Level;
 import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
 
 public class TidesingerToolSet extends ToolSet {
-    public TidesingerToolSet(Tier material, int[] damage, float[] speed) {
-        super(material, damage, speed);
+    public TidesingerToolSet(String name, Tier material, int[] damage, float[] speed) {
+        super(name, material, damage, speed);
     }
 
     @Override

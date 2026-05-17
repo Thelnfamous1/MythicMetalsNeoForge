@@ -40,7 +40,7 @@ public class BanglumTntMinecartEntity extends MinecartTNT {
 
     @Override
     protected Item getDropItem() {
-        return MythicTools.BANGLUM_TNT_MINECART;
+        return MythicTools.BANGLUM_TNT_MINECART.get();
     }
 
     // [VanillaCopy], but increases the power cap to 8

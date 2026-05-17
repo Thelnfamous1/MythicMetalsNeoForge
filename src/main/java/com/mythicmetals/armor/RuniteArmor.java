@@ -5,6 +5,7 @@ import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.misc.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +24,7 @@ public class RuniteArmor extends HallowedArmor {
         this(MythicArmorMaterials.RUNITE, type, settings);
     }
 
-    public RuniteArmor(ArmorMaterial material, ArmorItem.Type type, Properties settings) {
+    public RuniteArmor(Holder<ArmorMaterial> material, ArmorItem.Type type, Properties settings) {
         super(material, type, settings);
         this.type = type;
     }

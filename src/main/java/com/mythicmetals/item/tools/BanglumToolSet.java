@@ -19,8 +19,8 @@ public class BanglumToolSet extends ToolSet {
         return new BanglumShovel(material, settings.attributes(createAttributeModifiers(material, damage, speed)));
     }
 
-    public BanglumToolSet(Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
-        super(material, damage, speed, settingsProcessor);
+    public BanglumToolSet(String name, Tier material, int[] damage, float[] speed, Consumer<Item.Properties> settingsProcessor) {
+        super(name, material, damage, speed, settingsProcessor);
     }
 
 }

@@ -1,15 +1,19 @@
 package com.mythicmetals.effects;
 
+import com.mythicmetals.MythicMetals;
 import com.mythicmetals.entity.MythicEntityAttributes;
 import com.mythicmetals.misc.RegistryHelper;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MythicStatusEffects {
-
+    public static final DeferredRegister<MobEffect> MOB_EFFECTS =
+            DeferredRegister.create(Registries.MOB_EFFECT, MythicMetals.MOD_ID);
     public static final DeferredHolder<MobEffect, MobEffect> WORMHOLE_SPECIAL = RegistryHelper.mobEffect("wormhole_special", () -> new WormholeSpecial(MobEffectCategory.HARMFUL, 133337));
     public static final DeferredHolder<MobEffect, MobEffect> HEAT = RegistryHelper.mobEffect("heat", () -> new MobEffect(MobEffectCategory.HARMFUL, 16747008){});
     public static final DeferredHolder<MobEffect, MobEffect> COMBUSTION = RegistryHelper.mobEffect("combustion", () -> new CombustingStatusEffect(MobEffectCategory.HARMFUL, 16747008)

@@ -5,6 +5,7 @@ import com.mythicmetals.client.models.MythicModelHandler;
 import com.mythicmetals.misc.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ public class MetallurgiumArmor extends HallowedArmor {
         this(MythicArmorMaterials.METALLURGIUM, type, settings);
     }
 
-    public MetallurgiumArmor(ArmorMaterial material, ArmorItem.Type type, Item.Properties settings) {
+    public MetallurgiumArmor(Holder<ArmorMaterial> material, ArmorItem.Type type, Item.Properties settings) {
         super(material, type, settings);
         this.type = type;
     }

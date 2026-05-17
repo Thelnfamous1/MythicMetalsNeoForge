@@ -3,8 +3,10 @@ package com.mythicmetals.block;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.misc.RegistryHelper;
 import com.mythicmetals.registry.RegisterSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.*;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -13,14 +15,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class MythicBlocks {
-
+    public static final DeferredRegister.Blocks BLOCKS =
+            DeferredRegister.createBlocks(MythicMetals.MOD_ID);
     public static final Map<String, BlockSet> BLOCKSET_MAP = new HashMap<>();
     private static final ResourceLocation STONE_MINING_LEVEL = BlockTags.NEEDS_STONE_TOOL.location();
     private static final ResourceLocation IRON_MINING_LEVEL = BlockTags.NEEDS_IRON_TOOL.location();
@@ -35,7 +40,7 @@ public class MythicBlocks {
         .finish();
 
     public static final BlockSet AQUARIUM = BlockSet.Builder.begin("aquarium", false)
-        .createDefaultSet(4F, IRON_MINING_LEVEL, 4.5F, IRON_MINING_LEVEL)
+        .createAquariumSet(4F, IRON_MINING_LEVEL, 4.5F, IRON_MINING_LEVEL)
         .createAnvil(IRON_MINING_LEVEL)
         .finish();
     public static final DeferredBlock<Block> AQUARIUM_GLASS =
@@ -43,7 +48,12 @@ public class MythicBlocks {
                     "aquarium_glass",
                     () -> new TransparentBlock(
                             BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_STAINED_GLASS)
-                    )
+                    ){
+                        @Override
+                        public boolean isConduitFrame(BlockState state, LevelReader level, BlockPos pos, BlockPos conduit) {
+                            return true;
+                        }
+                    }
             );
 
     public static final DeferredBlock<AquariumResonatorBlock> AQUARIUM_RESONATOR =
@@ -307,7 +317,7 @@ public class MythicBlocks {
 
 
     public static void init() {
-        BlockSet.Builder.register();
+        //BlockSet.Builder.register();
         /*
         RegistryHelper.block("aquarium_glass", AQUARIUM_GLASS);
         RegistryHelper.block("aquarium_resonator", AQUARIUM_RESONATOR);

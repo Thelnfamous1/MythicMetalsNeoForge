@@ -19,7 +19,7 @@ public class TippedRuniteArrowItem extends RuniteArrowItem {
 
     @Override
     public ItemStack getDefaultInstance() {
-        var stack = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW);
+        var stack = new ItemStack(MythicTools.TIPPED_RUNITE_ARROW.get());
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.POISON));
         return stack;
     }

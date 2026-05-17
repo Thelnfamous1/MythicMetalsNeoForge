@@ -11,7 +11,7 @@ public class CarmotBellBlockEntity extends BlockEntity {
     protected int cooldown = 0;
 
     public CarmotBellBlockEntity(BlockPos pos, BlockState state) {
-        super(RegisterBlockEntityTypes.CARMOT_BELL_BLOCK, pos, state);
+        super(RegisterBlockEntityTypes.CARMOT_BELL_BLOCK.get(), pos, state);
     }
 
     public static void tick(Level world, BlockPos blockPos, BlockState blockState, CarmotBellBlockEntity be) {

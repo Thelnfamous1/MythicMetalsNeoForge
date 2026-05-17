@@ -3,7 +3,7 @@ package com.mythicmetals.misc;
 import com.mojang.authlib.GameProfile;
 import com.mythicmetals.item.tools.HammerBase;
 //import eu.pb4.common.protection.api.CommonProtection;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+//import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,11 +11,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockBreaker {
@@ -78,17 +81,26 @@ public class BlockBreaker {
 
     public static void initHammerTime() {
         // Original Block Pos is always the center block of where the hammer hits
-        PlayerBlockBreakEvents.BEFORE.register((world, player, originalBlockPos, state, blockEntity) -> {
+        //PlayerBlockBreakEvents.BEFORE.register((world, player, originalBlockPos, state, blockEntity) -> {
+        NeoForge.EVENT_BUS.addListener((BlockEvent.BreakEvent event) -> {
+            Player player = event.getPlayer();
+            BlockState state = event.getState();
+            Level world = player.level();
+            BlockPos originalBlockPos = event.getPos();
             var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof HammerBase hammer)) {
-                return true; // don't do this for non-hammers
+                //return true; // don't do this for non-hammers
+                return;
             }
             if (!hammer.isCorrectToolForDrops(stack, state)) {
-                return true; // don't break anything extra if you are not mining rocks or stones
+                //return true; // don't break anything extra if you are not mining rocks or stones
+                return;
             }
             if (isProtected(world, originalBlockPos, player.getGameProfile(), player)) {
-                return false;
+                //return false;
+                event.setCanceled(true);
+                return;
             }
             var reach = BlockBreaker.getReachDistance(player);
 
@@ -118,7 +130,7 @@ public class BlockBreaker {
             }
             if (hasMined) stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
 
-            return true;
+            //return true;
         });
     }
 

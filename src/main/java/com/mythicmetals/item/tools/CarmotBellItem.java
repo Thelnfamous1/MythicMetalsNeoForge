@@ -52,7 +52,7 @@ public class CarmotBellItem extends BlockItem {
         MythicParticleSystem.HEALING_AREA.spawn(world, user.position(), RANGE);
         MythicParticleSystem.HEALING_HEARTS.spawn(world, user.position());
         user.getCooldowns().addCooldown(this, 480);
-        world.playSound(user, user.blockPosition(), RegisterSounds.CARMOT_BELL_RING, SoundSource.PLAYERS);
+        world.playSound(user, user.blockPosition(), RegisterSounds.CARMOT_BELL_RING.get(), SoundSource.PLAYERS);
         return InteractionResultHolder.success(stack);
     }
 

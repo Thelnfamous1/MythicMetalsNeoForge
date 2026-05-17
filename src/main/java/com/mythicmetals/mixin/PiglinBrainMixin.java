@@ -36,7 +36,7 @@ public class PiglinBrainMixin {
     private static void checkForMidasGoldArmor(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         for (ItemStack itemStack : entity.getArmorSlots()) {
             Item item = itemStack.getItem();
-            if (item instanceof ArmorItem armorItem && armorItem.getMaterial().value() == MythicArmorMaterials.MIDAS_GOLD) {
+            if (item instanceof ArmorItem armorItem && armorItem.getMaterial().value() == MythicArmorMaterials.MIDAS_GOLD.value()) {
                 cir.setReturnValue(true);
             }
         }

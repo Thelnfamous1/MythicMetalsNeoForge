@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 // [VanillaCopy]
 public class RuniteArrowEntity extends AbstractArrow {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(RuniteArrowEntity.class, EntityDataSerializers.INT);
-    public static final ItemStack RUNITE_ARROW_STACK = new ItemStack(MythicTools.RUNITE_ARROW);
+    //public static final ItemStack RUNITE_ARROW_STACK = new ItemStack(MythicTools.RUNITE_ARROW.get());
 
     public RuniteArrowEntity(EntityType<RuniteArrowEntity> type, Level world) {
         super(type, world);
@@ -28,7 +28,7 @@ public class RuniteArrowEntity extends AbstractArrow {
     }
 
     public RuniteArrowEntity(LivingEntity shooter, Level world, @Nullable ItemStack shotFrom) {
-        super(MythicEntities.RUNITE_ARROW_ENTITY_TYPE.get(), shooter, world, RUNITE_ARROW_STACK, shotFrom);
+        super(MythicEntities.RUNITE_ARROW_ENTITY_TYPE.get(), shooter, world, MythicTools.RUNITE_ARROW.toStack(), shotFrom);
         this.initColor();
     }
 
@@ -52,7 +52,7 @@ public class RuniteArrowEntity extends AbstractArrow {
 
     @Override
     protected ItemStack getDefaultPickupItem() {
-        return RUNITE_ARROW_STACK;
+        return MythicTools.RUNITE_ARROW.toStack();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class RuniteArrowEntity extends AbstractArrow {
             }
         } else if (this.inGround && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.EMPTY) && this.inGroundTime >= 600) {
             this.level().broadcastEntityEvent(this, (byte) 0);
-            this.setPickupItemStack(RUNITE_ARROW_STACK);
+            this.setPickupItemStack(MythicTools.RUNITE_ARROW.toStack());
         }
     }
 

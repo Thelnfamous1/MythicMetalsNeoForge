@@ -6,6 +6,6 @@ import net.minecraft.core.BlockPos;
 
 public class EnchantedMidasGoldBlockEntity extends BlockEntity {
     public EnchantedMidasGoldBlockEntity(BlockPos pos, BlockState state) {
-        super(RegisterBlockEntityTypes.ENCHANTED_MIDAS_GOLD_BLOCK, pos, state);
+        super(RegisterBlockEntityTypes.ENCHANTED_MIDAS_GOLD_BLOCK.get(), pos, state);
     }
 }

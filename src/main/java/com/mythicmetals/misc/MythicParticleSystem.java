@@ -5,10 +5,12 @@ import io.wispforest.owo.particles.ClientParticles;
 import io.wispforest.owo.particles.systems.ParticleSystem;
 import io.wispforest.owo.particles.systems.ParticleSystemController;
 import io.wispforest.owo.util.VectorRandomUtils;
-import net.fabricmc.loader.api.FabricLoader;
+//import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.ModList;
+
 import java.util.Random;
 
 public class MythicParticleSystem {
@@ -134,7 +136,7 @@ public class MythicParticleSystem {
     });
 
     public static final ParticleSystem<Float> EXPLOSIVE_EXPLOSION = CONTROLLER.register(Float.class, (world, pos, power) -> {
-        if (FabricLoader.getInstance().isModLoaded("explosiveenhancement")) {
+        if (ModList.get().isLoaded("explosiveenhancement")) {
             ExplosiveEnhancementCompat.spawnParticles(world, pos.x, pos.y, pos.z, power);
         }
     });

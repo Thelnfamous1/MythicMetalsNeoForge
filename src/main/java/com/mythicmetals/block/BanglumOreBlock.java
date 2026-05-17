@@ -5,7 +5,7 @@ import com.mythicmetals.component.UpgradeComponent;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.item.MythicItems;
 import io.wispforest.owo.particles.ClientParticles;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
+//import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.Tags;
 
 public class BanglumOreBlock extends DropExperienceBlock {
     public BanglumOreBlock(BlockBehaviour.Properties settings) {
@@ -53,7 +54,7 @@ public class BanglumOreBlock extends DropExperienceBlock {
                 if (enchantment.is(MythicTags.SILK_TOUCH_LIKE)) {
                     chance -= 45;
                 }
-                if (enchantment.is(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)) {
+                if (enchantment.is(/*ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS*/Tags.Enchantments.INCREASE_BLOCK_DROPS)) {
                     chance += enchantments.getLevel(enchantment) * 7;
                 }
                 if (enchantment.is(MythicTags.INCREASES_MINING_SPEED)) {
@@ -63,12 +64,12 @@ public class BanglumOreBlock extends DropExperienceBlock {
         }
 
         // Extra fortune = more allergic
-        if (upgrades.hasUpgrade(MythicItems.Mats.CARMOT_STONE)) {
+        if (upgrades.hasUpgrade(MythicItems.Mats.CARMOT_STONE.get())) {
             chance += 10;
         }
 
         // Banglum Defuser really living up to its name
-        if (upgrades.hasUpgrade(MythicItems.Mats.STORMYX_SHELL)) {
+        if (upgrades.hasUpgrade(MythicItems.Mats.STORMYX_SHELL.get())) {
             chance -= 92;
         }
 
