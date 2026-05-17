@@ -141,7 +141,7 @@ dependencies {
     // OwO
     annotationProcessor "io.wispforest:owo-lib-neoforge:${project.owo_version}"
     implementation "io.wispforest:owo-lib-neoforge:${project.owo_version}"
-    jarJar "io.wispforest:owo-sentinel:${project.owo_version}"
+    jarJar "io.wispforest:owo-sentinel:${project.owo_version_alt}"
 
     accessTransformer "io.wispforest:owo-lib-neoforge:${project.owo_version}"
     interfaceInjection "io.wispforest:owo-lib-neoforge:${project.owo_version}"
