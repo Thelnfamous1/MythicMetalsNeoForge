@@ -3,8 +3,6 @@ package com.mythicmetals.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mythicmetals.MythicMetals;
 import com.mythicmetals.armor.MythicArmor;
-import com.mythicmetals.component.DrillComponent;
-import com.mythicmetals.component.MythicDataComponents;
 import com.mythicmetals.data.MythicTags;
 import com.mythicmetals.effects.MythicStatusEffects;
 import com.mythicmetals.entity.CombustionCooldown;
@@ -13,7 +11,6 @@ import com.mythicmetals.item.MythicItems;
 import com.mythicmetals.misc.MythicParticleSystem;
 import com.mythicmetals.misc.WasSpawnedFromCreeper;
 import com.mythicmetals.registry.RegisterCriteria;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -330,6 +327,7 @@ public abstract class LivingEntityMixin extends Entity {
 // TODO(Ravel): no target class
 // TODO(Ravel): no target class
     //@Environment(EnvType.CLIENT)
+    /*
     @Inject(method = "swing(Lnet/minecraft/world/InteractionHand;Z)V", at = @At("HEAD"), cancellable = true)
     private void mythicmetals$cancelSwingOnActiveMythrilDrill(InteractionHand hand, boolean fromServerPlayer, CallbackInfo ci) {
         if (!this.level().isClientSide()) {
@@ -343,6 +341,7 @@ public abstract class LivingEntityMixin extends Entity {
             ci.cancel();
         }
     }
+     */
 
     // TODO(Ravel): no target class
 // TODO(Ravel): no target class

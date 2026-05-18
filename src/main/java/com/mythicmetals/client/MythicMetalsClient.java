@@ -250,7 +250,7 @@ public class MythicMetalsClient /*implements ClientModInitializer*/ {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
                 HallowedArmor armor = (HallowedArmor) itemStack.getItem();
-                HumanoidModel model = armor.getArmorModel();
+                HumanoidModel model = (HumanoidModel) armor.getArmorModel();
                 original.copyPropertiesTo(model);
                 return model;
             }

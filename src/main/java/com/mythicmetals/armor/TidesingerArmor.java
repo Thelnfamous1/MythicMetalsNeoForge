@@ -8,10 +8,8 @@ import com.mythicmetals.misc.RegistryHelper;
 //import net.fabricmc.api.EnvType;
 //import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,30 +21,17 @@ import java.util.List;
 
 public class TidesingerArmor extends HallowedArmor {
 
-    //@Environment(EnvType.CLIENT)
-    private HumanoidModel<LivingEntity> model;
-    public final Type type;
-
     public TidesingerArmor(Type type, Item.Properties settings) {
         this(MythicArmorMaterials.TIDESINGER, type, settings);
     }
 
     public TidesingerArmor(Holder<ArmorMaterial> material, Type slot, Item.Properties settings) {
         super(material, slot, settings.component(MythicDataComponents.TIDESINGER, TidesingerPatternComponent.empty()));
-        this.type = slot;
-    }
-
-    //@Environment(EnvType.CLIENT)
-    public HumanoidModel<LivingEntity> getArmorModel() {
-        if (model == null) {
-            model = provideArmorModelForSlot(type.getSlot());
-        }
-        return model;
     }
 
     //@Environment(EnvType.CLIENT)
     @Override
-    protected HumanoidModel<LivingEntity> provideArmorModelForSlot(EquipmentSlot slot) {
+    protected Object provideArmorModelForSlot(EquipmentSlot slot) {
         var models = Minecraft.getInstance().getEntityModels();
         var root = models.bakeLayer(MythicModelHandler.TIDESINGER);
         return new TidesingerBipedModel(root, slot);
