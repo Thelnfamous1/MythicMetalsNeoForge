@@ -252,4 +252,9 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+    project {
+        runs {
+            useArgsFile = false
+        }
+    }
 }

@@ -78,7 +78,7 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
         if (clickType == ClickAction.SECONDARY) {
             var drillComponent = drill.getOrDefault(MythicDataComponents.DRILL, DEFAULT);
             // If right-clicking Drill onto Morkite, try to fuel it
-            if (slot.getItem().getItem().equals(MythicItems.Mats.MORKITE)) {
+            if (slot.getItem().is(MythicItems.Mats.MORKITE)) {
                 int morkiteCount = slot.getItem().getCount();
                 if (slot.tryRemove((MAX_FUEL - drillComponent.fuel()) / FUEL_CONSTANT, morkiteCount, player).isPresent()) {
                     int fuel = Mth.clamp(drillComponent.fuel() + (morkiteCount * FUEL_CONSTANT), 0, MAX_FUEL);
@@ -94,9 +94,8 @@ public class MythrilDrill extends DiggerItem implements AutoRepairable {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack drill, ItemStack cursorStack, Slot slot, ClickAction clickType, Player player, SlotAccess cursorStackReference) {
         if (clickType == ClickAction.SECONDARY) {
-            var cursorItem = cursorStack.getItem();
             // If right-clicking with Morkite on Drill, try to fuel it
-            if (cursorItem.equals(MythicItems.Mats.MORKITE)) {
+            if (cursorStack.is(MythicItems.Mats.MORKITE)) {
                 var drillComponent = drill.getOrDefault(MythicDataComponents.DRILL, DEFAULT);
 
                 // Don't bother interacting if the Drills fuel is full
